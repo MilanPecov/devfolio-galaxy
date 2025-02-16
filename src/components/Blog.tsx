@@ -1,6 +1,9 @@
 
+import { Link } from "react-router-dom";
+
 const posts = [
   {
+    slug: "building-high-performance-ticketing-systems",
     title: "Building High-Performance Ticketing Systems",
     excerpt:
       "Learn how we architected a system capable of handling over 100,000 bookings per minute using modern cloud infrastructure.",
@@ -9,6 +12,7 @@ const posts = [
     categories: ["Architecture", "Cloud", "Performance"],
   },
   {
+    slug: "scaling-django-applications-with-kubernetes",
     title: "Scaling Django Applications with Kubernetes",
     excerpt:
       "A deep dive into our journey of scaling Django applications using Kubernetes and Google Cloud Platform.",
@@ -17,6 +21,7 @@ const posts = [
     categories: ["Backend", "Infrastructure", "DevOps"],
   },
   {
+    slug: "event-driven-architecture-in-practice",
     title: "Event-Driven Architecture in Practice",
     excerpt:
       "How we implemented event-driven architecture using RabbitMQ and Kafka to handle high-throughput ticketing operations.",
@@ -67,12 +72,12 @@ const Blog = () => {
                 <h3 className="text-xl font-semibold mb-2 text-[#1E293B]">{post.title}</h3>
                 <p className="text-gray-600 mb-4">{post.excerpt}</p>
               </div>
-              <a
-                href="#"
+              <Link
+                to={`/blog/${post.slug}`}
                 className="inline-block text-[#1E293B] font-medium hover:text-[#475569] transition-colors"
               >
                 Read More →
-              </a>
+              </Link>
             </article>
           ))}
         </div>
