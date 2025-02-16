@@ -1,16 +1,47 @@
 
 const skills = [
   {
-    category: "Frontend",
-    items: ["React", "Vue.js", "TypeScript", "Tailwind CSS", "Next.js"],
+    category: "Engineering Leadership",
+    items: [
+      "Team Leadership",
+      "Technical Vision",
+      "Architecture Design",
+      "Mentoring",
+      "PCI Compliance",
+    ],
   },
   {
-    category: "Backend",
-    items: ["Node.js", "Python", "PostgreSQL", "MongoDB", "GraphQL"],
+    category: "Backend & Infrastructure",
+    items: [
+      "Python",
+      "Django",
+      "Node.js",
+      "PostgreSQL",
+      "ClickHouse",
+      "Kubernetes",
+    ],
   },
   {
-    category: "Tools & Others",
-    items: ["Git", "Docker", "AWS", "Figma", "Jest"],
+    category: "Frontend & Tools",
+    items: [
+      "React.js",
+      "TypeScript",
+      "Next.js",
+      "Angular.js",
+      "CI/CD",
+      "Docker",
+    ],
+  },
+  {
+    category: "Cloud & Databases",
+    items: [
+      "Google Cloud",
+      "AWS",
+      "MongoDB",
+      "Redis",
+      "Cassandra",
+      "RabbitMQ",
+    ],
   },
 ];
 
@@ -26,11 +57,11 @@ const Skills = () => {
             Technical Expertise
           </h2>
           <p className="text-gray-600">
-            A comprehensive overview of my technical skills and proficiencies.
+            Over a decade of experience in building and scaling enterprise systems.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 gap-8">
           {skills.map((skill, index) => (
             <div
               key={index}

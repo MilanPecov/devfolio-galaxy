@@ -1,30 +1,28 @@
 
-import { Github, ExternalLink } from "lucide-react";
+import { Github, ExternalLink, Youtube } from "lucide-react";
 
 const projects = [
   {
-    title: "Project One",
-    description: "A full-stack application built with React and Node.js",
-    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
-    tech: ["React", "Node.js", "MongoDB", "Tailwind CSS"],
-    githubUrl: "#",
-    liveUrl: "#",
+    title: "AI-Powered Customer Support",
+    description: "RAG application built with Django, LangChain, and Pinecone for streamlined customer support, integrated with various documentation sources.",
+    image: "https://images.unsplash.com/photo-1531482615713-2afd69097998",
+    tech: ["Django", "LangChain", "Pinecone", "Streamlit"],
+    year: "2023-2024",
   },
   {
-    title: "Project Two",
-    description: "E-commerce platform with real-time inventory management",
-    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
-    tech: ["Next.js", "Prisma", "PostgreSQL", "Stripe"],
-    githubUrl: "#",
-    liveUrl: "#",
+    title: "N-Puzzle Solver Suite",
+    description: "Python package implementing A* search algorithm with various heuristics to efficiently solve the 15-puzzle problem.",
+    image: "https://images.unsplash.com/photo-1616486788371-62d930495c44",
+    tech: ["Python", "A* Algorithm", "Heuristic Search"],
+    year: "2017-2018",
   },
   {
-    title: "Project Three",
-    description: "Real-time collaboration tool for remote teams",
-    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
-    tech: ["Vue.js", "Firebase", "Tailwind CSS", "WebRTC"],
-    githubUrl: "#",
-    liveUrl: "#",
+    title: "Intelligent Robotic Connect Four",
+    description: "Advanced system combining computer vision, AI, and robotics to enable a robot to play Connect Four against human players.",
+    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e",
+    tech: ["Computer Vision", "AI", "Robotics"],
+    year: "2013-2014",
+    videoUrl: "https://www.youtube.com/watch?v=Ik9_9VnBTjw",
   },
 ];
 
@@ -40,8 +38,7 @@ const Projects = () => {
             Featured Work
           </h2>
           <p className="text-gray-600">
-            A collection of projects that showcase my skills and experience in
-            web development.
+            A selection of projects showcasing my expertise in AI, robotics, and software development.
           </p>
         </div>
 
@@ -60,7 +57,10 @@ const Projects = () => {
                 />
               </div>
               <div className="p-6">
-                <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="text-xl font-semibold">{project.title}</h3>
+                  <span className="text-sm text-gray-500">{project.year}</span>
+                </div>
                 <p className="text-gray-600 mb-4">{project.description}</p>
                 <div className="flex flex-wrap gap-2 mb-4">
                   {project.tech.map((tech) => (
@@ -72,22 +72,19 @@ const Projects = () => {
                     </span>
                   ))}
                 </div>
-                <div className="flex gap-4">
-                  <a
-                    href={project.githubUrl}
-                    className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-                  >
-                    <Github size={20} />
-                    Code
-                  </a>
-                  <a
-                    href={project.liveUrl}
-                    className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-                  >
-                    <ExternalLink size={20} />
-                    Live Demo
-                  </a>
-                </div>
+                {project.videoUrl && (
+                  <div className="flex gap-4">
+                    <a
+                      href={project.videoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+                    >
+                      <Youtube size={20} />
+                      Watch Demo
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           ))}
