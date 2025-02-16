@@ -18,10 +18,10 @@ const Hero = () => {
           </p>
           <div className="flex items-center justify-center gap-4">
             <a
-              href="#projects"
+              href="#blog"
               className="inline-flex items-center gap-2 bg-[#1E293B] text-white px-6 py-3 rounded-lg hover:bg-[#334155] transition-colors duration-300"
             >
-              View Projects
+              Read Tech Insights
               <ArrowRight size={20} />
             </a>
             <a
