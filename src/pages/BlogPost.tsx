@@ -2,6 +2,8 @@
 import Navbar from "@/components/Navbar";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const posts = [
   {
@@ -16,17 +18,70 @@ const posts = [
       <h2>Introduction</h2>
       <p>At Showpass, we faced the challenge of building a ticketing system that could handle massive concurrent user load during high-demand event sales. This article details our journey in architecting a solution that can process over 100,000 bookings per minute.</p>
 
-      <h2>The Challenge</h2>
-      <p>High-demand events present unique technical challenges. When thousands of users attempt to purchase tickets simultaneously, traditional architectures often struggle to maintain consistency while delivering acceptable performance.</p>
+      <h2>Implementation Example</h2>
+      <p>Here's how we implemented our rate limiting using Python:</p>
 
-      <h2>Our Solution</h2>
-      <p>We implemented a distributed system using:</p>
-      <ul>
-        <li>Kubernetes for orchestration</li>
-        <li>Redis for distributed locking</li>
-        <li>ClickHouse for real-time analytics</li>
-        <li>Event-driven architecture with Kafka</li>
-      </ul>
+      <pre><code class="language-python">
+import redis
+from functools import wraps
+from datetime import datetime, timedelta
+
+class RateLimiter:
+    def __init__(self, redis_client):
+        self.redis = redis_client
+    
+    def limit_requests(self, max_requests=100, window_seconds=60):
+        def decorator(f):
+            @wraps(f)
+            async def wrapped(request, *args, **kwargs):
+                key = f"rate_limit:{request.client_ip}"
+                
+                # Get current count
+                current = await self.redis.get(key) or 0
+                
+                if int(current) >= max_requests:
+                    raise Exception("Rate limit exceeded")
+                
+                # Increment and set expiry
+                pipe = self.redis.pipeline()
+                pipe.incr(key)
+                pipe.expire(key, window_seconds)
+                await pipe.execute()
+                
+                return await f(request, *args, **kwargs)
+            return wrapped
+        return decorator
+      </code></pre>
+
+      <p>And here's the corresponding frontend JavaScript code:</p>
+
+      <pre><code class="language-javascript">
+const handleBooking = async (eventId) => {
+  try {
+    const response = await fetch('/api/bookings', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        eventId,
+        quantity: 1,
+        timestamp: Date.now()
+      })
+    });
+
+    if (response.status === 429) {
+      throw new Error('Too many requests. Please try again later.');
+    }
+
+    const data = await response.json();
+    return data.bookingId;
+  } catch (error) {
+    console.error('Booking failed:', error);
+    throw error;
+  }
+};
+      </code></pre>
 
       <h2>Results</h2>
       <p>The new architecture allowed us to handle peak loads of over 100,000 concurrent users while maintaining sub-second response times and ensuring transaction consistency.</p>
@@ -104,6 +159,61 @@ const BlogPost = () => {
     );
   }
 
+  // Process content to replace code blocks with syntax highlighted versions
+  const processContent = (content: string) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(content, 'text/html');
+    
+    // Replace code blocks with syntax highlighted versions
+    doc.querySelectorAll('pre code').forEach((block) => {
+      const language = block.className.replace('language-', '');
+      const code = block.textContent || '';
+      
+      const highlightedCode = (
+        <SyntaxHighlighter
+          language={language}
+          style={oneDark}
+          className="rounded-lg !bg-[#1E293B] !p-4 my-4"
+        >
+          {code.trim()}
+        </SyntaxHighlighter>
+      );
+      
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = '__HIGHLIGHT__' + JSON.stringify({ code, language });
+      block.parentElement?.replaceWith(wrapper);
+    });
+
+    return doc.body.innerHTML;
+  };
+
+  const renderContent = (content: string) => {
+    const processedContent = processContent(content);
+    const parts = processedContent.split('__HIGHLIGHT__');
+    
+    return parts.map((part, index) => {
+      if (part.startsWith('{') && part.endsWith('}')) {
+        const { code, language } = JSON.parse(part);
+        return (
+          <SyntaxHighlighter
+            key={index}
+            language={language}
+            style={oneDark}
+            className="rounded-lg !bg-[#1E293B] !p-4 my-4"
+          >
+            {code.trim()}
+          </SyntaxHighlighter>
+        );
+      }
+      return (
+        <div
+          key={index}
+          dangerouslySetInnerHTML={{ __html: part }}
+        />
+      );
+    });
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -136,10 +246,9 @@ const BlogPost = () => {
               <span>{post.readTime}</span>
             </div>
 
-            <div
-              className="prose prose-slate max-w-none"
-              dangerouslySetInnerHTML={{ __html: post.content }}
-            />
+            <div className="prose prose-slate max-w-none">
+              {renderContent(post.content)}
+            </div>
           </div>
         </div>
       </article>
