@@ -147,8 +147,8 @@ const BlogPost = () => {
     return (
       <div className="min-h-screen bg-white">
         <Navbar />
-        <div className="container mx-auto px-6 py-20">
-          <div className="text-center">
+        <div className="container mx-auto px-6 py-12">
+          <div>
             <h1 className="text-2xl font-bold text-gray-900">Post not found</h1>
             <Link to="/" className="text-blue-600 hover:text-blue-800">
               Return home
@@ -226,7 +226,7 @@ const BlogPost = () => {
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
-      <article className="container mx-auto px-6 py-20">
+      <article className="container mx-auto px-4 sm:px-6 py-12">
         <div className="max-w-3xl mx-auto">
           <Link
             to="/"
@@ -237,7 +237,7 @@ const BlogPost = () => {
           </Link>
 
           <div className="animate-fade-up">
-            <div className="flex flex-wrap gap-2 mb-4">
+            <div className="flex flex-wrap gap-2 mb-6">
               {post.categories.map((category) => (
                 <span
                   key={category}
@@ -248,14 +248,16 @@ const BlogPost = () => {
               ))}
             </div>
 
-            <h1 className="text-4xl font-bold text-[#1E293B] mb-4">{post.title}</h1>
+            <h1 className="text-4xl font-bold text-[#1E293B] mb-4 text-left">
+              {post.title}
+            </h1>
 
             <div className="flex items-center gap-4 text-sm text-gray-500 mb-8">
               <span>{post.date}</span>
               <span>{post.readTime}</span>
             </div>
 
-            <div className="prose prose-slate max-w-none">
+            <div className="prose prose-slate max-w-none prose-headings:text-left prose-p:text-left prose-strong:text-gray-900 prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-img:rounded-lg">
               {renderContent()}
             </div>
           </div>
