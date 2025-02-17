@@ -1,5 +1,5 @@
-
 import { Link } from "react-router-dom";
+import { Server, Database, Cloud, ArrowRight } from "lucide-react";
 
 const posts = [
   {
@@ -33,10 +33,16 @@ const posts = [
 
 const Blog = () => {
   return (
-    <section id="blog" className="py-20 bg-[#F8FAFC]">
-      <div className="container mx-auto px-6">
+    <section id="blog" className="py-20 relative overflow-hidden">
+      {/* Abstract background */}
+      <div className="absolute inset-0 bg-[#F8FAFC]">
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(238,238,238,0.6)_1px,transparent_1px),linear-gradient(rgba(238,238,238,0.6)_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#F8FAFC] via-white/90 to-[#F8FAFC]"></div>
+      </div>
+
+      <div className="container mx-auto px-6 relative">
         <div className="max-w-3xl mx-auto text-center mb-16 animate-fade-up">
-          <span className="inline-block px-4 py-2 bg-[#E2E8F0] rounded-full text-sm font-medium mb-4">
+          <span className="inline-block px-4 py-2 bg-[#1E293B]/5 text-[#1E293B] rounded-full text-sm font-medium mb-4 backdrop-blur-sm border border-[#1E293B]/10">
             Technical Insights
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-[#1E293B] mb-4">
@@ -51,32 +57,35 @@ const Blog = () => {
           {posts.map((post, index) => (
             <article
               key={index}
-              className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 animate-fade-up border border-[#E2E8F0] hover:border-[#CBD5E1]"
+              className="group relative bg-white rounded-xl p-8 hover:shadow-xl transition-all duration-500 animate-fade-up border border-gray-100 hover:border-gray-200"
               style={{ animationDelay: `${index * 100}ms` }}
             >
               <div>
-                <div className="flex flex-wrap gap-2 mb-4">
+                <div className="flex flex-wrap gap-2 mb-6">
                   {post.categories.map((category) => (
                     <span
                       key={category}
-                      className="px-2 py-1 bg-[#F1F5F9] text-[#475569] rounded text-xs font-medium"
+                      className="px-3 py-1 bg-[#1E293B]/5 text-[#1E293B] rounded-full text-xs font-medium"
                     >
                       {category}
                     </span>
                   ))}
                 </div>
-                <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
+                <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
                   <span>{post.date}</span>
                   <span>{post.readTime}</span>
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-[#1E293B]">{post.title}</h3>
-                <p className="text-gray-600 mb-4">{post.excerpt}</p>
+                <h3 className="text-xl font-semibold mb-3 text-[#1E293B] group-hover:text-[#334155] transition-colors">
+                  {post.title}
+                </h3>
+                <p className="text-gray-600 mb-6 line-clamp-3">{post.excerpt}</p>
               </div>
               <Link
                 to={`/blog/${post.slug}`}
-                className="inline-block text-[#1E293B] font-medium hover:text-[#475569] transition-colors"
+                className="inline-flex items-center gap-2 text-[#1E293B] font-medium group-hover:text-[#475569] transition-colors"
               >
-                Read More →
+                Read More 
+                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
               </Link>
             </article>
           ))}
