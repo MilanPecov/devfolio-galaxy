@@ -159,59 +159,68 @@ const BlogPost = () => {
     );
   }
 
-  // Process content to replace code blocks with syntax highlighted versions
-  const processContent = (content: string) => {
+  const renderContent = () => {
     const parser = new DOMParser();
-    const doc = parser.parseFromString(content, 'text/html');
-    
-    // Replace code blocks with syntax highlighted versions
-    doc.querySelectorAll('pre code').forEach((block) => {
-      const language = block.className.replace('language-', '');
-      const code = block.textContent || '';
-      
-      const highlightedCode = (
-        <SyntaxHighlighter
-          language={language}
-          style={oneDark}
-          className="rounded-lg !bg-[#1E293B] !p-4 my-4"
-        >
-          {code.trim()}
-        </SyntaxHighlighter>
-      );
-      
-      const wrapper = document.createElement('div');
-      wrapper.innerHTML = '__HIGHLIGHT__' + JSON.stringify({ code, language });
-      block.parentElement?.replaceWith(wrapper);
-    });
+    const doc = parser.parseFromString(post.content, 'text/html');
+    const elements: React.ReactNode[] = [];
 
-    return doc.body.innerHTML;
-  };
+    const processNode = (node: Node, index: number): React.ReactNode => {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const element = node as Element;
 
-  const renderContent = (content: string) => {
-    const processedContent = processContent(content);
-    const parts = processedContent.split('__HIGHLIGHT__');
-    
-    return parts.map((part, index) => {
-      if (part.startsWith('{') && part.endsWith('}')) {
-        const { code, language } = JSON.parse(part);
-        return (
-          <SyntaxHighlighter
-            key={index}
-            language={language}
-            style={oneDark}
-            className="rounded-lg !bg-[#1E293B] !p-4 my-4"
-          >
-            {code.trim()}
-          </SyntaxHighlighter>
-        );
+        // Handle code blocks
+        if (element.tagName === 'PRE' && element.querySelector('code')) {
+          const codeElement = element.querySelector('code');
+          const language = codeElement?.className.replace('language-', '') || '';
+          const code = codeElement?.textContent || '';
+
+          return (
+            <SyntaxHighlighter
+              key={index}
+              language={language}
+              style={oneDark}
+              className="rounded-lg !bg-[#1E293B] !p-4 my-4"
+            >
+              {code.trim()}
+            </SyntaxHighlighter>
+          );
+        }
+
+        // Handle other HTML elements
+        const children: React.ReactNode[] = [];
+        element.childNodes.forEach((child, childIndex) => {
+          const processedChild = processNode(child, childIndex);
+          if (processedChild) {
+            children.push(processedChild);
+          }
+        });
+
+        if (element.tagName === 'H2') {
+          return <h2 key={index} className="text-2xl font-bold mt-8 mb-4">{children}</h2>;
+        }
+
+        if (element.tagName === 'P') {
+          return <p key={index} className="mb-4">{children}</p>;
+        }
+
+        return children;
       }
-      return (
-        <div
-          key={index}
-          dangerouslySetInnerHTML={{ __html: part }}
-        />
-      );
+
+      if (node.nodeType === Node.TEXT_NODE) {
+        return node.textContent;
+      }
+
+      return null;
+    };
+
+    doc.body.childNodes.forEach((node, index) => {
+      const processedNode = processNode(node, index);
+      if (processedNode) {
+        elements.push(processedNode);
+      }
     });
+
+    return elements;
   };
 
   return (
@@ -247,7 +256,7 @@ const BlogPost = () => {
             </div>
 
             <div className="prose prose-slate max-w-none">
-              {renderContent(post.content)}
+              {renderContent()}
             </div>
           </div>
         </div>
