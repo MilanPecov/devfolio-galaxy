@@ -1,29 +1,26 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import BlogPost from "./pages/BlogPost";
-import NotFound from "./pages/NotFound";
+import { BrowserRouter } from "react-router-dom";
+import "./App.css";
+import Hero from "@/components/Hero";
+import Skills from "@/components/Skills";
+import Projects from "@/components/Projects";
+import Blog from "@/components/Blog";
+import Contact from "@/components/Contact";
+import { Routes, Route } from "react-router-dom";
+import BlogPost from "@/pages/BlogPost";
+import NotFound from "@/pages/NotFound";
+import Index from "@/pages/Index";
 
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
 
 export default App;
