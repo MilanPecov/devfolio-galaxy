@@ -25,19 +25,19 @@ const Hero = () => {
         options={{
           background: {
             color: {
-              value: "transparent",
+              value: "#1E293B",
             },
           },
           fpsLimit: 120,
           particles: {
             color: {
-              value: "#94A3B8",
+              value: "#FFFFFF",
             },
             links: {
-              color: "#94A3B8",
+              color: "#FFFFFF",
               distance: 150,
               enable: true,
-              opacity: 0.2,
+              opacity: 0.1,
               width: 1,
             },
             move: {
@@ -57,7 +57,7 @@ const Hero = () => {
               value: 80,
             },
             opacity: {
-              value: 0.2,
+              value: 0.1,
             },
             size: {
               value: { min: 1, max: 3 },
@@ -65,13 +65,13 @@ const Hero = () => {
           },
           detectRetina: true,
         }}
-        className="absolute inset-0 -z-10"
+        className="absolute inset-0 -z-10 opacity-10"
       />
 
       {/* Grid background pattern */}
       <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(238,238,238,0.6)_1px,transparent_1px),linear-gradient(rgba(238,238,238,0.6)_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-white via-white/90 to-[#F8FAFC]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(238,238,238,0.3)_1px,transparent_1px),linear-gradient(rgba(238,238,238,0.3)_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-white/95 to-[#F8FAFC]"></div>
       </div>
       
       {/* Decorative elements */}
@@ -79,8 +79,8 @@ const Hero = () => {
       <Database className="absolute bottom-20 right-10 text-gray-100 w-24 h-24 -rotate-12 opacity-20" />
 
       <div className="container mx-auto px-6">
-        <div className="max-w-3xl mx-auto text-center space-y-8 animate-fade-up">
-          <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#1E293B]/5 text-[#1E293B] rounded-full text-sm font-medium mb-4 backdrop-blur-sm border border-[#1E293B]/10">
+        <div className="max-w-3xl mx-auto text-center space-y-8 animate-fade-up backdrop-blur-[2px]">
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#1E293B]/10 text-[#1E293B] rounded-full text-sm font-medium mb-4 backdrop-blur-sm border border-[#1E293B]/10">
             <MapPin size={16} />
             Calgary, Canada
           </span>
