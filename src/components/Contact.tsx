@@ -102,11 +102,9 @@ const Contact = () => {
 
           <div className="mt-12 text-center animate-fade-up">
             <a
-              href="mailto:your.email@example.com"
+              href="milan.pecov91@gmail.com"
               className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
             >
-              <Mail size={20} />
-              your.email@example.com
             </a>
           </div>
         </div>

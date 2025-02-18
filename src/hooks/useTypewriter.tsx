@@ -1,40 +1,29 @@
+import { useEffect, useState } from 'react';
 
-import { useState, useEffect } from 'react';
-
-export const useTypewriter = (
-  text: string, 
-  speed: number = 100, 
-  prefix: string = ''
-) => {
+export const useTypewriter = (text, speed = 100, prefix = '') => {
   const [displayText, setDisplayText] = useState('');
-  const [isTyping, setIsTyping] = useState(true);
   const [showCursor, setShowCursor] = useState(true);
 
   useEffect(() => {
-    let index = 0;
-    if (isTyping) {
-      const timer = setInterval(() => {
-        if (index < text.length) {
-          setDisplayText((prev) => prev + text.charAt(index));
-          index++;
-        } else {
-          setIsTyping(false);
-          clearInterval(timer);
-        }
+    if (displayText.length < text.length) {
+      const timer = setTimeout(() => {
+        setDisplayText(text.slice(0, displayText.length + 1));
       }, speed);
-
-      return () => clearInterval(timer);
+      return () => clearTimeout(timer);
     }
-  }, [text, speed, isTyping]);
+  }, [displayText, text, speed]);
 
-  // Cursor blink effect
   useEffect(() => {
+    // Once all text is typed, stop blinking the cursor.
+    if (displayText === text) {
+      setShowCursor(false);
+      return;
+    }
     const cursorTimer = setInterval(() => {
-      setShowCursor((prev) => !prev);
+      setShowCursor(prev => !prev);
     }, 530);
-
     return () => clearInterval(cursorTimer);
-  }, []);
+  }, [displayText, text]);
 
-  return { displayText, isTyping, showCursor, prefix };
+  return { displayText, showCursor, prefix };
 };

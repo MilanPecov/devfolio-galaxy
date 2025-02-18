@@ -1,4 +1,3 @@
-
 const skills = [
   {
     category: "Engineering Leadership",
@@ -6,41 +5,91 @@ const skills = [
       "Team Leadership",
       "Technical Vision",
       "Architecture Design",
-      "Mentoring",
-      "PCI Compliance",
+      "Mentoring & Coaching",
+      "Agile Methodologies",
+      "Security & Compliance (PCI)",
+      "Cross-Functional Collaboration",
     ],
   },
   {
-    category: "Backend & Infrastructure",
+    category: "Software Design",
+    items: [
+      "Clean Code",
+      "Domain-Driven Design",
+      "Design Patterns",
+      "Event-Driven & Service-Oriented Architectures",
+      "Modular Monolith Design",
+      "Test-Driven Development",
+    ],
+  },
+  {
+    category: "Backend",
     items: [
       "Python",
       "Django",
+      "Celery",
+      "FastAPI",
+      "Flask",
       "Node.js",
-      "PostgreSQL",
-      "ClickHouse",
-      "Kubernetes",
+      "Go",
     ],
   },
   {
-    category: "Frontend & Tools",
+    category: "Frontend",
     items: [
-      "React.js",
+      "JavaScript",
       "TypeScript",
-      "Next.js",
-      "Angular.js",
-      "CI/CD",
-      "Docker",
+      "ReactJS",
+      "NextJS",
+      "AngularJS",
     ],
   },
   {
-    category: "Cloud & Databases",
+    category: "Databases & Cache",
     items: [
-      "Google Cloud",
-      "AWS",
+      "PostgreSQL",
+      "MySQL",
+      "BigQuery",
+      "ClickHouse",
       "MongoDB",
-      "Redis",
       "Cassandra",
+      "Redis",
+      "Memcached",
+    ],
+  },
+  {
+    category: "Cloud Services",
+    items: ["GCP", "Kubernetes", "AWS", "Heroku", "Linode"],
+  },
+  {
+    category: "AI & Data",
+    items: [
+      "LangChain",
+      "Pinecone",
+      "LLM Prompt Engineering",
+      "RAG Approach",
+    ],
+  },
+  {
+    category: "Observability & Monitoring",
+    items: [
+      "Datadog",
+      "Grafana",
+      "Prometheus",
+      "Sentry",
+      "Elastic Stack",
+    ],
+  },
+  {
+    category: "Other Technologies",
+    items: [
+      "Nginx",
+      "Apache Server",
+      "Docker",
       "RabbitMQ",
+      "Kafka",
+      "Git",
+      "Linux/Debian",
     ],
   },
 ];
@@ -54,10 +103,10 @@ const Skills = () => {
             Skills
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Technical Expertise
+            Technology Proficiency
           </h2>
           <p className="text-gray-600">
-            Over a decade of experience in building and scaling enterprise systems.
+            Expertise across software design, backend, frontend, cloud, data, and leadership.
           </p>
         </div>
 

@@ -75,10 +75,11 @@ const Blog = () => {
                   <span>{post.date}</span>
                   <span>{post.readTime}</span>
                 </div>
-                <h3 className="text-xl font-semibold mb-3 text-[#1E293B] group-hover:text-[#334155] transition-colors">
+                {/* Align title and description to left */}
+                <h3 className="text-xl font-semibold mb-3 text-[#1E293B] group-hover:text-[#334155] transition-colors text-left">
                   {post.title}
                 </h3>
-                <p className="text-gray-600 mb-6 line-clamp-3">{post.excerpt}</p>
+                <p className="text-gray-600 mb-6 text-left">{post.excerpt}</p>
               </div>
               <Link
                 to={`/blog/${post.slug}`}

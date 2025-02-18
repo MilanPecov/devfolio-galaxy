@@ -6,9 +6,9 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const menuItems = [
-    { name: "Skills", href: "#skills" },
-    { name: "Insights", href: "#blog" },
-    { name: "Contact", href: "#contact" },
+    {name: "Insights", href: "#blog"},
+    {name: "Skills", href: "#skills"},
+    {name: "Contact", href: "#contact"},
   ];
 
   return (
@@ -17,7 +17,7 @@ const Navbar = () => {
       <div className="container mx-auto px-6 py-4 relative">
         <div className="flex items-center justify-between">
           <a href="/" className="text-xl font-semibold text-[#1E293B]">
-            Portfolio
+            ~/milan
           </a>
 
           {/* Desktop Menu */}
