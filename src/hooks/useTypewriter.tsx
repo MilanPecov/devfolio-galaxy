@@ -1,9 +1,14 @@
 
 import { useState, useEffect } from 'react';
 
-export const useTypewriter = (text: string, speed: number = 100) => {
+export const useTypewriter = (
+  text: string, 
+  speed: number = 100, 
+  prefix: string = ''
+) => {
   const [displayText, setDisplayText] = useState('');
   const [isTyping, setIsTyping] = useState(true);
+  const [showCursor, setShowCursor] = useState(true);
 
   useEffect(() => {
     let index = 0;
@@ -22,5 +27,14 @@ export const useTypewriter = (text: string, speed: number = 100) => {
     }
   }, [text, speed, isTyping]);
 
-  return { displayText, isTyping };
+  // Cursor blink effect
+  useEffect(() => {
+    const cursorTimer = setInterval(() => {
+      setShowCursor((prev) => !prev);
+    }, 530);
+
+    return () => clearInterval(cursorTimer);
+  }, []);
+
+  return { displayText, isTyping, showCursor, prefix };
 };

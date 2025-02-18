@@ -7,9 +7,10 @@ import { loadFull } from "tsparticles";
 import { useTypewriter } from "@/hooks/useTypewriter";
 
 const Hero = () => {
-  const { displayText, isTyping } = useTypewriter(
-    "Engineering leader with a proven track record in scaling teams and building enterprise-grade ticketing systems.",
-    50
+  const { displayText, isTyping, showCursor } = useTypewriter(
+    "Software Engineering Leader with a proven track record in scaling teams and building enterprise-grade ticketing systems.",
+    50,
+    "milan@home:~$ "
   );
 
   const particlesInit = useCallback(async (engine: Engine) => {
@@ -87,12 +88,19 @@ const Hero = () => {
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight">
             Milan Pecov
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed min-h-[84px] bg-white/50 rounded-lg p-4">
-            {displayText}
-            {isTyping && (
-              <span className="inline-block w-1 h-5 ml-1 bg-indigo-400 animate-pulse" />
-            )}
-          </p>
+          <div className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed min-h-[84px] bg-gray-950/5 rounded-lg p-6 font-mono">
+            <div className="flex items-center gap-2 text-left mb-2">
+              <span className="text-green-600">milan@home</span>
+              <span className="text-gray-500">:~$</span>
+              <span className="text-indigo-600">whoami</span>
+            </div>
+            <div className="text-left">
+              {displayText}
+              {showCursor && (
+                <span className="inline-block w-2 h-5 ml-1 bg-indigo-400 animate-pulse" />
+              )}
+            </div>
+          </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <a
               href="#blog"
