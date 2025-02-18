@@ -25,19 +25,19 @@ const Hero = () => {
         options={{
           background: {
             color: {
-              value: "#1E293B",
+              value: "transparent",
             },
           },
           fpsLimit: 120,
           particles: {
             color: {
-              value: "#FFFFFF",
+              value: "#4F46E5",
             },
             links: {
-              color: "#FFFFFF",
+              color: "#4F46E5",
               distance: 150,
               enable: true,
-              opacity: 0.1,
+              opacity: 0.15,
               width: 1,
             },
             move: {
@@ -57,7 +57,7 @@ const Hero = () => {
               value: 80,
             },
             opacity: {
-              value: 0.1,
+              value: 0.2,
             },
             size: {
               value: { min: 1, max: 3 },
@@ -65,45 +65,45 @@ const Hero = () => {
           },
           detectRetina: true,
         }}
-        className="absolute inset-0 -z-10 opacity-10"
+        className="absolute inset-0 -z-10"
       />
 
-      {/* Grid background pattern */}
+      {/* Grid background pattern with gradient overlay */}
       <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(238,238,238,0.3)_1px,transparent_1px),linear-gradient(rgba(238,238,238,0.3)_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-white via-white/95 to-[#F8FAFC]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(79,70,229,0.1)_1px,transparent_1px),linear-gradient(rgba(79,70,229,0.1)_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/85 to-white/95"></div>
       </div>
       
       {/* Decorative elements */}
-      <Server className="absolute top-20 left-10 text-gray-100 w-24 h-24 rotate-12 opacity-20" />
-      <Database className="absolute bottom-20 right-10 text-gray-100 w-24 h-24 -rotate-12 opacity-20" />
+      <Server className="absolute top-20 left-10 text-indigo-500 w-24 h-24 rotate-12 opacity-20" />
+      <Database className="absolute bottom-20 right-10 text-indigo-500 w-24 h-24 -rotate-12 opacity-20" />
 
       <div className="container mx-auto px-6">
-        <div className="max-w-3xl mx-auto text-center space-y-8 animate-fade-up backdrop-blur-[2px]">
-          <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#1E293B]/10 text-[#1E293B] rounded-full text-sm font-medium mb-4 backdrop-blur-sm border border-[#1E293B]/10">
+        <div className="max-w-3xl mx-auto text-center space-y-8 animate-fade-up">
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-full text-sm font-medium mb-4 border border-indigo-100 shadow-sm">
             <MapPin size={16} />
             Calgary, Canada
           </span>
-          <h1 className="text-4xl md:text-6xl font-bold text-[#1E293B] leading-tight">
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight">
             Milan Pecov
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed min-h-[84px]">
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed min-h-[84px] bg-white/50 rounded-lg p-4">
             {displayText}
             {isTyping && (
-              <span className="inline-block w-1 h-5 ml-1 bg-gray-400 animate-pulse" />
+              <span className="inline-block w-1 h-5 ml-1 bg-indigo-400 animate-pulse" />
             )}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <a
               href="#blog"
-              className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#1E293B] to-[#334155] text-white px-8 py-4 rounded-lg hover:from-[#334155] hover:to-[#1E293B] transition-all duration-300 shadow-lg shadow-[#1E293B]/10 hover:shadow-xl hover:shadow-[#1E293B]/20"
+              className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white px-8 py-4 rounded-lg hover:from-indigo-500 hover:to-indigo-600 transition-all duration-300 shadow-lg shadow-indigo-500/20 hover:shadow-xl hover:shadow-indigo-500/30"
             >
               Read Tech Insights
               <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </a>
             <a
               href="#contact"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#E2E8F0] hover:bg-[#F1F5F9] text-[#1E293B] px-8 py-4 rounded-lg transition-all duration-300 shadow-lg shadow-[#1E293B]/5 hover:shadow-xl hover:shadow-[#1E293B]/10 border border-[#CBD5E1]"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-gray-900 px-8 py-4 rounded-lg transition-all duration-300 shadow-lg shadow-indigo-500/5 hover:shadow-xl hover:shadow-indigo-500/10 border border-gray-200"
             >
               Contact Me
             </a>
