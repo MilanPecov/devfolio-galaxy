@@ -1,8 +1,8 @@
+
 import Navbar from "@/components/Navbar";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Database, Server, Code } from "lucide-react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { createBlogPostContent } from "../utils/blogUtils";
 
 const posts = [
   {
@@ -12,9 +12,13 @@ const posts = [
       "Learn how to execute PostgreSQL schema changes without interrupting your service, using concurrent indexes, batched updates, and other battle-tested strategies.",
     date: "March 15, 2024",
     readTime: "10 min read",
-    categories: ["Database", "PostgreSQL", "DevOps"],
+    categories: ["Database", "PostgreSQL", "DevOps", "Django"],
     icon: <Database className="w-6 h-6 text-blue-600" />,
     content: `
+      <p>When your business depends on PostgreSQL, migrations in production aren't just technical details—they're critical operations that can make or break user experience, revenue, and even your team's peace of mind. Imagine your database migration like performing open-heart surgery on your system: it demands precision, strategy, and readiness for unexpected complications.</p>
+      
+      <p>If you're running a Django application with PostgreSQL, here's your comprehensive guide to executing migrations seamlessly, minimizing risks, and maintaining uninterrupted service.</p>
+      
       <h2>Why PostgreSQL Migrations Can Cause Downtime</h2>
       <p>Every PostgreSQL table corresponds to a physical file. Modifying schemas, such as adding constraints or changing column types, often requires PostgreSQL to rewrite these physical files, locking tables completely (AccessExclusiveLock). When a table is locked, your users experience interruptions ranging from sluggish responses to total service outages.</p>
       
@@ -283,8 +287,6 @@ const handleBooking = async (eventId) => {
     `,
   },
 ];
-
-import { createBlogPostContent } from "../utils/blogUtils";
 
 const BlogPost = () => {
   const { slug } = useParams();

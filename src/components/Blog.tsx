@@ -10,7 +10,7 @@ const posts = [
       "Learn how to execute PostgreSQL schema changes without interrupting your service, using concurrent indexes, batched updates, and other battle-tested strategies.",
     date: "March 15, 2024",
     readTime: "10 min read",
-    categories: ["Database", "PostgreSQL", "DevOps"],
+    categories: ["Database", "PostgreSQL", "DevOps", "Django"],
     icon: <Database className="w-6 h-6 text-blue-600" />,
   },
   {
