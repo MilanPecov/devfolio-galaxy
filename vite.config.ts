@@ -3,8 +3,8 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 
-// Automatically set base for GitHub Pages
-const isGitHubPages = process.env.NODE_ENV === "production";
+// Detect GitHub Pages Deployment
+const isGitHubPages = process.env.GITHUB_ACTIONS === "true";
 const BASE_URL = isGitHubPages ? "/devfolio-galaxy/" : "/";
 
 export default defineConfig(({ mode }) => ({
