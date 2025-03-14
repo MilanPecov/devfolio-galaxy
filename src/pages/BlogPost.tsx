@@ -1,7 +1,7 @@
 
 import Navbar from "@/components/Navbar";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Database, Server, Code } from "lucide-react";
+import { ArrowLeft, Database, Server, Code, ExternalLink } from "lucide-react";
 import { createBlogPostContent } from "../utils/blogUtils";
 
 const posts = [
@@ -48,7 +48,7 @@ email = models.EmailField(unique=True)
 CREATE UNIQUE INDEX CONCURRENTLY users_email_uniq ON users_user(email);
       </code></pre>
 
-      <p>Concurrent indexes minimize locking by building the index in the background without blocking writes. PostgreSQL achieves this by creating the index incrementally and validating data concurrently, which significantly reduces the duration and severity of locks compared to traditional indexing methods. While minor locks still occur briefly at the start and end of the index creation, the overall impact is minimal, ensuring your app remains operational and responsive throughout the migration process. (<a href="https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY" target="_blank">See PostgreSQL documentation for further details on index concurrency</a>.)</p>
+      <p>Concurrent indexes minimize locking by building the index in the background without blocking writes. PostgreSQL achieves this by creating the index incrementally and validating data concurrently, which significantly reduces the duration and severity of locks compared to traditional indexing methods. While minor locks still occur briefly at the start and end of the index creation, the overall impact is minimal, ensuring your app remains operational and responsive throughout the migration process. (<a href="https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY" target="_blank">See PostgreSQL documentation <span class="inline-icon">for further details on index concurrency</span></a>.)</p>
 
       <h3>2. Delayed Constraint Validation</h3>
       <p>For foreign keys and other constraints, PostgreSQL supports delayed validations:</p>
@@ -60,10 +60,10 @@ FOREIGN KEY (team_id) REFERENCES teams_team(id) NOT VALID;
 ALTER TABLE users_user VALIDATE CONSTRAINT fk_user_team;
       </code></pre>
 
-      <p>This separates constraint checking from schema changes, significantly reducing downtime by delaying integrity checks until the new schema is fully in place. Specifically, PostgreSQL doesn't need to immediately verify data integrity for new nullable fields or constraints marked as 'NOT VALID', allowing regular database operations to continue without locking the entire table. Integrity checks are subsequently performed in a separate step, further minimizing any disruption. For more detailed insights into delayed constraint validation, see the <a href="https://www.postgresql.org/docs/current/sql-altertable.html#SQL-ALTERTABLE-NOTES" target="_blank">PostgreSQL documentation</a>.</p>
+      <p>This separates constraint checking from schema changes, significantly reducing downtime by delaying integrity checks until the new schema is fully in place. Specifically, PostgreSQL doesn't need to immediately verify data integrity for new nullable fields or constraints marked as 'NOT VALID', allowing regular database operations to continue without locking the entire table. Integrity checks are subsequently performed in a separate step, further minimizing any disruption. For more detailed insights into delayed constraint validation, see the <a href="https://www.postgresql.org/docs/current/sql-altertable.html#SQL-ALTERTABLE-NOTES" target="_blank">PostgreSQL documentation <span class="inline-icon">on alter table</span></a>.</p>
 
       <h3>3. Decoupling Database and Django State</h3>
-      <p>Use Django's SeparateDatabaseAndState migration strategy to align database schema changes with Django models without disruptive locks. This approach allows executing raw SQL changes while keeping Django's migration state in sync, preventing unnecessary schema modifications that could lead to prolonged locks. For more details, refer to the <a href="https://docs.djangoproject.com/en/5.1/ref/migration-operations/#separatedatabaseandstate" target="_blank">Django documentation</a>.</p>
+      <p>Use Django's SeparateDatabaseAndState migration strategy to align database schema changes with Django models without disruptive locks. This approach allows executing raw SQL changes while keeping Django's migration state in sync, preventing unnecessary schema modifications that could lead to prolonged locks. For more details, refer to the <a href="https://docs.djangoproject.com/en/5.1/ref/migration-operations/#separatedatabaseandstate" target="_blank">Django documentation <span class="inline-icon">on SeparateDatabaseAndState</span></a>.</p>
 
       <h2>Detailed Step-by-Step Implementation Guide</h2>
       
@@ -137,7 +137,7 @@ operations = [
 
       <h3>3. Table Rewrites with pg_repack</h3>
       
-      <p>PostgreSQL tables can suffer from performance degradation due to excessive table bloat, schema changes that require rewrites, or constraints that require data validation. A naive approach of altering large tables directly (e.g., ALTER COLUMN TYPE) can result in prolonged locking, impacting application availability. Instead, <a href="https://reorg.github.io/pg_repack/" target="_blank">pg_repack</a> provides a way to perform these operations safely without requiring exclusive locks.</p>
+      <p>PostgreSQL tables can suffer from performance degradation due to excessive table bloat, schema changes that require rewrites, or constraints that require data validation. A naive approach of altering large tables directly (e.g., ALTER COLUMN TYPE) can result in prolonged locking, impacting application availability. Instead, <a href="https://reorg.github.io/pg_repack/" target="_blank">pg_repack <span class="inline-icon">documentation</span></a> provides a way to perform these operations safely without requiring exclusive locks.</p>
       
       <h4>When to Use pg_repack</h4>
       <ul>
@@ -165,7 +165,7 @@ pg_repack --table users_user --jobs 4 --wait-timeout 300
       
       <h4>Important Considerations</h4>
       <ul>
-        <li>Ensure that pg_repack is installed and enabled in your database before use (<a href="https://reorg.github.io/pg_repack/" target="_blank">Installation Guide</a>).</li>
+        <li>Ensure that pg_repack is installed and enabled in your database before use (<a href="https://reorg.github.io/pg_repack/" target="_blank">Installation Guide <span class="inline-icon">for pg_repack</span></a>).</li>
         <li>pg_repack requires a primary key or a unique index to function efficiently.</li>
         <li>It works best in conjunction with autovacuum settings tuned to minimize bloat over time.</li>
         <li>Large tables should be monitored for potential performance impact, even if pg_repack avoids exclusive locks.</li>
