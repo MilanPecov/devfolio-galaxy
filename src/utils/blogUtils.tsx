@@ -1,6 +1,7 @@
+
 import React from 'react';
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { ExternalLink } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -27,16 +28,21 @@ export const createBlogPostContent = (content: string): React.ReactNode[] => {
           <SyntaxHighlighter
             key={index}
             language={language}
-            style={oneDark}
+            style={vscDarkPlus}
             className="rounded-lg !p-4 my-4 w-full"
             customStyle={{
-              backgroundColor: "#1E293B",
+              backgroundColor: "#1e2130",
               width: "100%"
             }}
             showLineNumbers={false}
             wrapLines={true}
             wrapLongLines={false}
             preserveWhitespace={true}
+            codeTagProps={{
+              style: {
+                backgroundColor: "#1e2130",
+              }
+            }}
           >
             {code.trim()}
           </SyntaxHighlighter>
@@ -97,7 +103,7 @@ export const createBlogPostContent = (content: string): React.ReactNode[] => {
 
         // Only add the external link icon if it's an external link and doesn't already have an icon
         const isExternal = href.startsWith('http');
-        const hasIcon = element.innerHTML.includes('inline-icon');
+        const hasIcon = element.innerHTML.includes('lucide-') || element.innerHTML.includes('inline-icon');
 
         return (
           <a
