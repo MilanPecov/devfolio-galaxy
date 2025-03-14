@@ -6,10 +6,10 @@ import { useTypewriter } from "@/hooks/useTypewriter";
 const Hero = () => {
   // Typewriter effect for the ls command output.
   const { displayText, showCursor } = useTypewriter(
-    "drwxr-xr-x  Director of Engineering\n" +
-      "drwxr-xr-x  Tech Lead\n" +
-      "drwxr-xr-x  Founding Engineer\n" +
-      "drwxr-xr-x  Technical Mentor & Advisor",
+    "dr-xr-xr-x  Director of Engineering\n" +
+      "drwxr--r--  Tech Lead\n" +
+      "drwxrwxrwx  Founding Engineer\n" +
+      "dr--r--r--  Technical Mentor & Advisor",
     30
   );
 
