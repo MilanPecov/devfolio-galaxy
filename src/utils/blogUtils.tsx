@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -34,6 +33,10 @@ export const createBlogPostContent = (content: string): React.ReactNode[] => {
               backgroundColor: "#1E293B",
               width: "100%"
             }}
+            showLineNumbers={false}
+            wrapLines={true}
+            wrapLongLines={false}
+            preserveWhitespace={true}
           >
             {code.trim()}
           </SyntaxHighlighter>

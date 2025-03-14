@@ -1,4 +1,3 @@
-
 import Navbar from "@/components/Navbar";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Database, Server, Code, ExternalLink } from "lucide-react";
@@ -204,18 +203,6 @@ ORDER BY duration DESC;
             <td>ALTER TABLE users_user ADD COLUMN new_col</td>
             <td>active</td>
           </tr>
-          <tr>
-            <td>9432</td>
-            <td>00:00:45.12</td>
-            <td>UPDATE users_user SET email = 'new@example.com'</td>
-            <td>idle in transaction</td>
-          </tr>
-          <tr>
-            <td>7654</td>
-            <td>00:00:32.87</td>
-            <td>SELECT * FROM users_user WHERE id = 12345</td>
-            <td>active</td>
-          </tr>
         </tbody>
       </table>
 
@@ -223,10 +210,10 @@ ORDER BY duration DESC;
 
       <pre><code class="language-sql">
 -- Cancel single blocking process
-SELECT pg_cancel_backend(1945);
+SELECT pg_cancel_backend(8821);
 
 -- Force terminate unresponsive process
-SELECT pg_terminate_backend(1945);
+SELECT pg_terminate_backend(8821);
 
 -- Kill all long-running queries (>5 minutes)
 SELECT pg_terminate_backend(pid)
