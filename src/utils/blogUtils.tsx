@@ -3,6 +3,7 @@ import React from 'react';
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { ExternalLink } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 /**
  * Process blog post content from HTML string to React components
@@ -39,6 +40,44 @@ export const createBlogPostContent = (content: string): React.ReactNode[] => {
         );
       }
 
+      // Handle tables
+      if (element.tagName === 'TABLE') {
+        const tableHeaders: React.ReactNode[] = [];
+        const tableRows: React.ReactNode[] = [];
+
+        // Process headers
+        const headerRow = element.querySelector('thead tr');
+        if (headerRow) {
+          headerRow.querySelectorAll('th').forEach((th, thIndex) => {
+            tableHeaders.push(
+              <TableHead key={thIndex}>{th.textContent}</TableHead>
+            );
+          });
+        }
+
+        // Process rows
+        element.querySelectorAll('tbody tr').forEach((tr, trIndex) => {
+          const cells: React.ReactNode[] = [];
+          tr.querySelectorAll('td').forEach((td, tdIndex) => {
+            cells.push(
+              <TableCell key={tdIndex}>{td.textContent}</TableCell>
+            );
+          });
+          tableRows.push(<TableRow key={trIndex}>{cells}</TableRow>);
+        });
+
+        return (
+          <div key={index} className="my-4 w-full overflow-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>{tableHeaders}</TableRow>
+              </TableHeader>
+              <TableBody>{tableRows}</TableBody>
+            </Table>
+          </div>
+        );
+      }
+
       // Handle links
       if (element.tagName === 'A') {
         const href = element.getAttribute('href') || '';
@@ -47,34 +86,26 @@ export const createBlogPostContent = (content: string): React.ReactNode[] => {
         
         const children: React.ReactNode[] = [];
         childNodes.forEach((child, childIndex) => {
-          if (child.nodeType === Node.ELEMENT_NODE && (child as Element).className === 'inline-icon') {
-            children.push(
-              <span key={`icon-${childIndex}`} className="inline-flex items-center">
-                {(child as Element).textContent}
-                <ExternalLink className="ml-1 h-4 w-4" />
-              </span>
-            );
-          } else {
-            const processedChild = processNode(child, childIndex);
-            if (processedChild) {
-              children.push(processedChild);
-            }
+          const processedChild = processNode(child, childIndex);
+          if (processedChild) {
+            children.push(processedChild);
           }
         });
+
+        // Only add the external link icon if it's an external link and doesn't already have an icon
+        const isExternal = href.startsWith('http');
+        const hasIcon = element.innerHTML.includes('inline-icon');
 
         return (
           <a
             key={index}
             href={href}
-            target={target}
+            target={target || (isExternal ? '_blank' : '')}
             className="text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center"
+            rel={isExternal ? "noopener noreferrer" : undefined}
           >
             {children.length > 0 ? children : element.textContent}
-            {!children.some(child => 
-              typeof child === 'object' && 
-              React.isValidElement(child) && 
-              child.props.className?.includes('inline-icon')
-            ) && <ExternalLink className="ml-1 h-4 w-4" />}
+            {isExternal && !hasIcon && <ExternalLink className="ml-1 h-4 w-4" />}
           </a>
         );
       }
