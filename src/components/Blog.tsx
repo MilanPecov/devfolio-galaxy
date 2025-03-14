@@ -1,24 +1,27 @@
+
 import { Link } from "react-router-dom";
-import { Server, Database, Cloud, ArrowRight } from "lucide-react";
+import { ArrowRight, Database, Code, Server } from "lucide-react";
 
 const posts = [
+  {
+    slug: "zero-downtime-postgresql-migrations",
+    title: "The Essential Guide to Zero-Downtime PostgreSQL Migrations in Production",
+    excerpt:
+      "Learn how to execute PostgreSQL schema changes without interrupting your service, using concurrent indexes, batched updates, and other battle-tested strategies.",
+    date: "March 15, 2024",
+    readTime: "10 min read",
+    categories: ["Database", "PostgreSQL", "DevOps"],
+    icon: <Database className="w-6 h-6 text-blue-600" />,
+  },
   {
     slug: "building-high-performance-ticketing-systems",
     title: "Building High-Performance Ticketing Systems",
     excerpt:
       "Learn how we architected a system capable of handling over 100,000 bookings per minute using modern cloud infrastructure.",
-    date: "March 15, 2024",
-    readTime: "10 min read",
-    categories: ["Architecture", "Cloud", "Performance"],
-  },
-  {
-    slug: "scaling-django-applications-with-kubernetes",
-    title: "Scaling Django Applications with Kubernetes",
-    excerpt:
-      "A deep dive into our journey of scaling Django applications using Kubernetes and Google Cloud Platform.",
     date: "March 10, 2024",
     readTime: "8 min read",
-    categories: ["Backend", "Infrastructure", "DevOps"],
+    categories: ["Architecture", "Cloud", "Performance"],
+    icon: <Server className="w-6 h-6 text-indigo-600" />,
   },
   {
     slug: "event-driven-architecture-in-practice",
@@ -28,6 +31,7 @@ const posts = [
     date: "March 5, 2024",
     readTime: "12 min read",
     categories: ["System Design", "Backend", "Architecture"],
+    icon: <Code className="w-6 h-6 text-emerald-600" />,
   },
 ];
 
@@ -61,15 +65,20 @@ const Blog = () => {
               style={{ animationDelay: `${index * 100}ms` }}
             >
               <div>
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {post.categories.map((category) => (
-                    <span
-                      key={category}
-                      className="px-3 py-1 bg-[#1E293B]/5 text-[#1E293B] rounded-full text-xs font-medium"
-                    >
-                      {category}
-                    </span>
-                  ))}
+                <div className="flex justify-between items-start mb-6">
+                  <div className="flex flex-wrap gap-2">
+                    {post.categories.map((category) => (
+                      <span
+                        key={category}
+                        className="px-3 py-1 bg-[#1E293B]/5 text-[#1E293B] rounded-full text-xs font-medium"
+                      >
+                        {category}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="p-2 rounded-full bg-[#F8FAFC]">
+                    {post.icon}
+                  </div>
                 </div>
                 <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
                   <span>{post.date}</span>

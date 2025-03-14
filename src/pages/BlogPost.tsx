@@ -1,19 +1,188 @@
-
 import Navbar from "@/components/Navbar";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Database, Server, Code } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const posts = [
   {
+    slug: "zero-downtime-postgresql-migrations",
+    title: "The Essential Guide to Zero-Downtime PostgreSQL Migrations in Production",
+    excerpt:
+      "Learn how to execute PostgreSQL schema changes without interrupting your service, using concurrent indexes, batched updates, and other battle-tested strategies.",
+    date: "March 15, 2024",
+    readTime: "10 min read",
+    categories: ["Database", "PostgreSQL", "DevOps"],
+    icon: <Database className="w-6 h-6 text-blue-600" />,
+    content: `
+      <h2>Why PostgreSQL Migrations Can Cause Downtime</h2>
+      <p>Every PostgreSQL table corresponds to a physical file. Modifying schemas, such as adding constraints or changing column types, often requires PostgreSQL to rewrite these physical files, locking tables completely (AccessExclusiveLock). When a table is locked, your users experience interruptions ranging from sluggish responses to total service outages.</p>
+      
+      <p>Let's clarify this with a practical scenario:</p>
+      
+      <h3>The Dreaded Real-World Example: Locking Your User Table</h3>
+      <p>Suppose you have a User table with millions of records:</p>
+
+      <pre><code class="language-python">
+class User(models.Model):
+    name = models.CharField(max_length=255)
+    email = models.CharField(max_length=255)
+
+# Desired change:
+email = models.EmailField(unique=True)
+      </code></pre>
+
+      <p>A naive migration approach (ALTER TABLE ADD UNIQUE) can freeze the entire application for several minutes, resulting in HTTP 500 errors and angry customers.</p>
+
+      <h2>Battle-Tested Strategies for Safe Migrations</h2>
+      <p>Here are robust, actionable strategies to ensure zero-downtime migrations:</p>
+
+      <h3>1. Concurrent Index Creation</h3>
+      <p>Always use concurrent indexes to safely add uniqueness constraints without locking:</p>
+
+      <pre><code class="language-sql">
+CREATE UNIQUE INDEX CONCURRENTLY users_email_uniq ON users_user(email);
+      </code></pre>
+
+      <p>Concurrent indexes avoid long locks, allowing your app to operate seamlessly.</p>
+
+      <h3>2. Delayed Constraint Validation</h3>
+      <p>For foreign keys and other constraints, PostgreSQL supports delayed validations:</p>
+
+      <pre><code class="language-sql">
+ALTER TABLE users_user ADD CONSTRAINT fk_user_team 
+FOREIGN KEY (team_id) REFERENCES teams_team(id) NOT VALID;
+
+ALTER TABLE users_user VALIDATE CONSTRAINT fk_user_team;
+      </code></pre>
+
+      <p>This separates constraint checking from schema changes, significantly reducing downtime.</p>
+
+      <h3>3. Decoupling Database and Django State</h3>
+      <p>When Django's internal state diverges from the database schema:</p>
+
+      <pre><code class="language-python">
+SeparateDatabaseAndState(
+    database_operations=[
+        migrations.RunSQL(...)
+    ],
+    state_operations=[
+        migrations.AlterField(...)
+    ]
+)
+      </code></pre>
+
+      <p>This approach keeps your Django models consistent without triggering disruptive locks.</p>
+
+      <h3>4. Safe Table Rewrites with pg_repack</h3>
+      <p>For column type changes or extensive table rewrites, use pg_repack:</p>
+
+      <pre><code class="language-bash">
+pg_repack -t users_user
+      </code></pre>
+
+      <p>It rebuilds tables with minimal locking, maintaining uninterrupted database availability.</p>
+
+      <h3>5. Batched Data Updates</h3>
+      <p>Perform large data backfills in manageable batches:</p>
+
+      <pre><code class="language-python">
+for users_batch in queryset_iterator(User.objects.all(), batch_size=1000):
+    users.update(new_field=value)
+      </code></pre>
+
+      <p>Batches avoid extended locks and replication lag, making migrations manageable.</p>
+
+      <h3>6. Lock Monitoring in Real-Time</h3>
+      <p>Always monitor database activity to detect locks immediately:</p>
+
+      <pre><code class="language-sql">
+SELECT pid, now() - xact_start AS duration, left(query, 50) AS query_snippet, state
+FROM pg_stat_activity
+WHERE (now() - query_start) > interval '1 minute'
+ORDER BY duration DESC;
+      </code></pre>
+
+      <p>Catching potential issues early prevents escalations into serious downtime.</p>
+
+      <h2>Detailed Step-by-Step Example</h2>
+      
+      <h3>Safely Adding a Unique Email Constraint</h3>
+      
+      <h4>Step 1: Concurrent Index Creation</h4>
+      <pre><code class="language-sql">
+CREATE UNIQUE INDEX CONCURRENTLY users_email_uniq ON users_user(email);
+      </code></pre>
+
+      <h4>Step 2: Django Migration to Attach Constraint Safely</h4>
+      <pre><code class="language-python">
+class Migration(migrations.Migration):
+    operations = [
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunSQL(
+                    sql="ALTER TABLE users_user ADD CONSTRAINT email_unique UNIQUE USING INDEX users_email_uniq;",
+                    reverse_sql="ALTER TABLE users_user DROP CONSTRAINT email_unique;"
+                )
+            ],
+            state_operations=[
+                migrations.AlterField(
+                    model_name='user',
+                    name='email',
+                    field=models.EmailField(unique=True),
+                )
+            ]
+        )
+    ]
+      </code></pre>
+
+      <h3>Foreign Key Constraints with Minimal Risk</h3>
+      <p>Follow a similar delayed validation approach:</p>
+      <ul>
+        <li>Add column as nullable</li>
+        <li>Add constraint with NOT VALID</li>
+        <li>Validate constraint separately</li>
+      </ul>
+      <p>This keeps your migrations smooth and transparent to users.</p>
+
+      <h2>Emergency Preparedness Checklist</h2>
+      
+      <h3>Before Migration:</h3>
+      <ul>
+        <li>Test migrations on production-like datasets</li>
+        <li>Prepare rollback scripts</li>
+        <li>Set up lock monitoring tools</li>
+      </ul>
+
+      <h3>During Migration:</h3>
+      <ul>
+        <li>Monitor locks actively with pg_stat_activity</li>
+        <li>Execute in non-atomic transactions</li>
+      </ul>
+
+      <h3>Post Migration:</h3>
+      <ul>
+        <li>Immediately validate constraints</li>
+        <li>Monitor application performance closely</li>
+        <li>Schedule clean-up with pg_repack</li>
+      </ul>
+
+      <h2>Design Philosophy: Expect Interruptions</h2>
+      <p>A fundamental rule for successful migrations is to always design for interruption. A migration should gracefully handle unexpected connection drops, never leaving the database in an inconsistent state.</p>
+
+      <h2>Final Thoughts</h2>
+      <p>Zero-downtime PostgreSQL migrations aren't just about avoiding outages; they're about ensuring a seamless user experience and safeguarding your business reputation. By mastering these patterns, you're equipping yourself to handle migrations confidently, making your deployments robust and reliable.</p>
+    `,
+  },
+  {
     slug: "building-high-performance-ticketing-systems",
     title: "Building High-Performance Ticketing Systems",
     excerpt:
       "Learn how we architected a system capable of handling over 100,000 bookings per minute using modern cloud infrastructure.",
-    date: "March 15, 2024",
-    readTime: "10 min read",
+    date: "March 10, 2024",
+    readTime: "8 min read",
     categories: ["Architecture", "Cloud", "Performance"],
+    icon: <Server className="w-6 h-6 text-indigo-600" />,
     content: `
       <h2>Introduction</h2>
       <p>At Showpass, we faced the challenge of building a ticketing system that could handle massive concurrent user load during high-demand event sales. This article details our journey in architecting a solution that can process over 100,000 bookings per minute.</p>
@@ -88,31 +257,6 @@ const handleBooking = async (eventId) => {
     `,
   },
   {
-    slug: "scaling-django-applications-with-kubernetes",
-    title: "Scaling Django Applications with Kubernetes",
-    excerpt:
-      "A deep dive into our journey of scaling Django applications using Kubernetes and Google Cloud Platform.",
-    date: "March 10, 2024",
-    readTime: "8 min read",
-    categories: ["Backend", "Infrastructure", "DevOps"],
-    content: `
-      <h2>Introduction</h2>
-      <p>As Showpass grew, we needed to scale our Django applications to handle increasing load. This article shares our experience migrating to Kubernetes and the lessons learned along the way.</p>
-
-      <h2>Why Kubernetes?</h2>
-      <p>We chose Kubernetes for its robust orchestration capabilities, automated scaling, and container management features. The transition wasn't without challenges, but the benefits have been substantial.</p>
-
-      <h2>Implementation</h2>
-      <p>Key aspects of our Kubernetes implementation:</p>
-      <ul>
-        <li>Containerization of Django applications</li>
-        <li>Implementation of horizontal pod autoscaling</li>
-        <li>Configuration of ingress controllers</li>
-        <li>Setting up monitoring and logging</li>
-      </ul>
-    `,
-  },
-  {
     slug: "event-driven-architecture-in-practice",
     title: "Event-Driven Architecture in Practice",
     excerpt:
@@ -120,6 +264,7 @@ const handleBooking = async (eventId) => {
     date: "March 5, 2024",
     readTime: "12 min read",
     categories: ["System Design", "Backend", "Architecture"],
+    icon: <Code className="w-6 h-6 text-emerald-600" />,
     content: `
       <h2>Introduction</h2>
       <p>Event-driven architecture has been crucial in building our scalable ticketing platform. This post explores how we use RabbitMQ and Kafka to handle complex ticketing workflows.</p>
@@ -138,6 +283,8 @@ const handleBooking = async (eventId) => {
     `,
   },
 ];
+
+import { createBlogPostContent } from "../utils/blogUtils";
 
 const BlogPost = () => {
   const { slug } = useParams();
@@ -159,70 +306,6 @@ const BlogPost = () => {
     );
   }
 
-  const renderContent = () => {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(post.content, 'text/html');
-    const elements: React.ReactNode[] = [];
-
-    const processNode = (node: Node, index: number): React.ReactNode => {
-      if (node.nodeType === Node.ELEMENT_NODE) {
-        const element = node as Element;
-
-        // Handle code blocks
-        if (element.tagName === 'PRE' && element.querySelector('code')) {
-          const codeElement = element.querySelector('code');
-          const language = codeElement?.className.replace('language-', '') || '';
-          const code = codeElement?.textContent || '';
-
-          return (
-            <SyntaxHighlighter
-              key={index}
-              language={language}
-              style={oneDark}
-              className="rounded-lg !bg-[#1E293B] !p-4 my-4"
-            >
-              {code.trim()}
-            </SyntaxHighlighter>
-          );
-        }
-
-        // Handle other HTML elements
-        const children: React.ReactNode[] = [];
-        element.childNodes.forEach((child, childIndex) => {
-          const processedChild = processNode(child, childIndex);
-          if (processedChild) {
-            children.push(processedChild);
-          }
-        });
-
-        if (element.tagName === 'H2') {
-          return <h2 key={index} className="text-2xl font-bold mt-8 mb-4">{children}</h2>;
-        }
-
-        if (element.tagName === 'P') {
-          return <p key={index} className="mb-4">{children}</p>;
-        }
-
-        return children;
-      }
-
-      if (node.nodeType === Node.TEXT_NODE) {
-        return node.textContent;
-      }
-
-      return null;
-    };
-
-    doc.body.childNodes.forEach((node, index) => {
-      const processedNode = processNode(node, index);
-      if (processedNode) {
-        elements.push(processedNode);
-      }
-    });
-
-    return elements;
-  };
-
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -237,15 +320,20 @@ const BlogPost = () => {
           </Link>
 
           <div className="animate-fade-up">
-            <div className="flex flex-wrap gap-2 mb-6">
-              {post.categories.map((category) => (
-                <span
-                  key={category}
-                  className="px-3 py-1 bg-[#F1F5F9] text-[#475569] rounded-full text-sm font-medium"
-                >
-                  {category}
-                </span>
-              ))}
+            <div className="flex justify-between items-start mb-6">
+              <div className="flex flex-wrap gap-2">
+                {post.categories.map((category) => (
+                  <span
+                    key={category}
+                    className="px-3 py-1 bg-[#F1F5F9] text-[#475569] rounded-full text-sm font-medium"
+                  >
+                    {category}
+                  </span>
+                ))}
+              </div>
+              <div className="p-2 rounded-full bg-[#F8FAFC]">
+                {post.icon}
+              </div>
             </div>
 
             <h1 className="text-4xl font-bold text-[#1E293B] mb-4 text-left">
@@ -258,7 +346,7 @@ const BlogPost = () => {
             </div>
 
             <div className="prose prose-slate max-w-none prose-headings:text-left prose-p:text-left prose-strong:text-gray-900 prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-img:rounded-lg">
-              {renderContent()}
+              {createBlogPostContent(post.content)}
             </div>
           </div>
         </div>
