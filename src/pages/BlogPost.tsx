@@ -16,7 +16,7 @@ const posts = [
     content: `
       <p>When your business depends on PostgreSQL, migrations in production aren't just technical details—they're critical operations that can make or break user experience, revenue, and even your team's peace of mind. Imagine your database migration like performing open-heart surgery on your system: it demands precision, strategy, and readiness for unexpected complications.</p>
       
-      <p>If you're running a Django application with PostgreSQL, here's your comprehensive guide to executing migrations seamlessly, minimizing risks, and maintaining uninterrupted service.</p>
+      <p>This guide is here to help you execute PostgreSQL migrations with minimal stress, ensuring a smooth experience—complete with a practical Django example.</p>
       
       <h2>Why PostgreSQL Migrations Can Cause Downtime</h2>
       <p>Every PostgreSQL table corresponds to a physical file. Modifying schemas, such as adding constraints or changing column types, often requires PostgreSQL to rewrite these physical files, locking tables completely (AccessExclusiveLock). When a table is locked, your users experience interruptions ranging from sluggish responses to total service outages.</p>
@@ -47,7 +47,7 @@ email = models.EmailField(unique=True)
 CREATE UNIQUE INDEX CONCURRENTLY users_email_uniq ON users_user(email);
       </code></pre>
 
-      <p>Concurrent indexes minimize locking by building the index in the background without blocking writes. PostgreSQL achieves this by creating the index incrementally and validating data concurrently, which significantly reduces the duration and severity of locks compared to traditional indexing methods. While minor locks still occur briefly at the start and end of the index creation, the overall impact is minimal, ensuring your app remains operational and responsive throughout the migration process. (<a href="https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY" target="_blank">See PostgreSQL documentation for further details on index concurrency</a>.)</p>
+      <p>Concurrent indexes minimize locking by building the index in the background without blocking writes. PostgreSQL achieves this by creating the index incrementally and validating data concurrently, which significantly reduces the duration and severity of locks compared to traditional indexing methods. While minor locks still occur briefly at the start and end of the index creation, the overall impact is minimal, ensuring your app remains operational and responsive throughout the migration process. <a href="https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY" target="_blank">PostgreSQL docs</a></p>
 
       <h3>2. Delayed Constraint Validation</h3>
       <p>For foreign keys and other constraints, PostgreSQL supports delayed validations:</p>
@@ -59,10 +59,10 @@ FOREIGN KEY (team_id) REFERENCES teams_team(id) NOT VALID;
 ALTER TABLE users_user VALIDATE CONSTRAINT fk_user_team;
       </code></pre>
 
-      <p>This separates constraint checking from schema changes, significantly reducing downtime by delaying integrity checks until the new schema is fully in place. Specifically, PostgreSQL doesn't need to immediately verify data integrity for new nullable fields or constraints marked as 'NOT VALID', allowing regular database operations to continue without locking the entire table. Integrity checks are subsequently performed in a separate step, further minimizing any disruption. For more detailed insights into delayed constraint validation, see the <a href="https://www.postgresql.org/docs/current/sql-altertable.html#SQL-ALTERTABLE-NOTES" target="_blank">PostgreSQL documentation on alter table</a>.</p>
+      <p>This separates constraint checking from schema changes, significantly reducing downtime by delaying integrity checks until the new schema is fully in place. Specifically, PostgreSQL doesn't need to immediately verify data integrity for new nullable fields or constraints marked as 'NOT VALID', allowing regular database operations to continue without locking the entire table. Integrity checks are subsequently performed in a separate step, further minimizing any disruption. <a href="https://www.postgresql.org/docs/current/sql-altertable.html#SQL-ALTERTABLE-NOTES" target="_blank">PostgreSQL docs</a>.</p>
 
       <h3>3. Decoupling Database and Django State</h3>
-      <p>Use Django's SeparateDatabaseAndState migration strategy to align database schema changes with Django models without disruptive locks. This approach allows executing raw SQL changes while keeping Django's migration state in sync, preventing unnecessary schema modifications that could lead to prolonged locks. For more details, refer to the <a href="https://docs.djangoproject.com/en/5.1/ref/migration-operations/#separatedatabaseandstate" target="_blank">Django documentation on SeparateDatabaseAndState</a>.</p>
+      <p>Use Django's SeparateDatabaseAndState migration strategy to align database schema changes with Django models without disruptive locks. This approach allows executing raw SQL changes while keeping Django's migration state in sync, preventing unnecessary schema modifications that could lead to prolonged locks. For more details, refer to the <a href="https://docs.djangoproject.com/en/5.1/ref/migration-operations/#separatedatabaseandstate" target="_blank">Django docs</a>.</p>
 
       <h2>Detailed Step-by-Step Implementation Guide</h2>
       
@@ -97,9 +97,32 @@ operations = [
       </code></pre>
 
       <h3>2. Foreign Keys (Team Relationship)</h3>
-      <p>Full migration code:</p>
-
+      <p>Adding foreign keys in PostgreSQL needs extra caution—especially with large datasets—to avoid locking tables and causing downtime. Here’s a simplified and clear approach to safely add a foreign key constraint:</p>
+      <h3>Step 1: Update the Django Model</h3>
+      
       <pre><code class="language-python">
+class User(models.Model):
+    team = models.ForeignKey("teams.Team", null=True, on_delete=models.SET_NULL)
+    </code></pre>
+       <h3>Step 2: SQL Migration Implementation</h3> 
+       <pre><code class="language-sql">
+-- Add the foreign key column as nullable to avoid locks
+ALTER TABLE users_user ADD COLUMN team_id INT NULL;
+
+-- Create an index concurrently for performance
+CREATE INDEX CONCURRENTLY idx_users_team_id ON users_user(team_id);
+
+-- Add the foreign key constraint without immediate validation
+ALTER TABLE users_user
+ADD CONSTRAINT fk_user_team FOREIGN KEY (team_id)
+REFERENCES teams_team(id) NOT VALID;
+
+-- Later, after ensuring data consistency, validate the constraint
+ALTER TABLE users_user VALIDATE CONSTRAINT fk_user_team;       
+</code></pre>
+
+      <h3>SQL Migration in Django</h3>
+      <pre><code class="language-sql">
 # migrations/0003_add_team_fk.py
 from django.db import migrations, models
 
@@ -111,10 +134,14 @@ operations = [
                 reverse_sql="ALTER TABLE users_user DROP COLUMN team_id;"
             ),
             migrations.RunSQL(
-                """ALTER TABLE users_user 
-                   ADD CONSTRAINT fk_user_team 
-                   FOREIGN KEY (team_id) 
-                   REFERENCES teams_team(id) 
+                "CREATE INDEX CONCURRENTLY idx_users_team_id ON users_user(team_id);",
+                reverse_sql="DROP INDEX CONCURRENTLY IF EXISTS idx_users_team_id;"
+            ),
+            migrations.RunSQL(
+                """ALTER TABLE users_user
+                   ADD CONSTRAINT fk_user_team
+                   FOREIGN KEY (team_id)
+                   REFERENCES teams_team(id)
                    NOT VALID;""",
                 reverse_sql="ALTER TABLE users_user DROP CONSTRAINT fk_user_team;"
             )
@@ -131,10 +158,17 @@ operations = [
         "ALTER TABLE users_user VALIDATE CONSTRAINT fk_user_team;",
         reverse_sql=migrations.RunSQL.noop
     )
-]
-      </code></pre>
+]      
+</code></pre>
 
-      <h3>3. Table Rewrites with pg_repack</h3>
+    <h3>Step 3: Backfill Data in Small batches</h3> 
+    <pre><code class="language-python">
+# Populate missing values gradually to avoid locking
+for batch in queryset_iterator(User.objects.filter(team_id__isnull=True), batch_size=2000):
+    batch.update(team_id=default_team_id)    
+</code></pre>
+
+      <h2>3. Table Rewrites with pg_repack</h2>
       
       <p>PostgreSQL tables can suffer from performance degradation due to excessive table bloat, schema changes that require rewrites, or constraints that require data validation. A naive approach of altering large tables directly (e.g., ALTER COLUMN TYPE) can result in prolonged locking, impacting application availability. Instead, <a href="https://reorg.github.io/pg_repack/" target="_blank">pg_repack</a> provides a way to perform these operations safely without requiring exclusive locks.</p>
       
@@ -173,7 +207,8 @@ pg_repack --table users_user --jobs 4 --wait-timeout 300
       <p>Using pg_repack as part of your migration strategy ensures your database remains performant and available while implementing schema changes safely.</p>
 
       <h2>Lock Monitoring & Emergency Response</h2>
-      <p>Identifying blockers:</p>
+      <p>Migrations can be unpredictable—what starts as a simple schema change can suddenly escalate into a system-wide slowdown. That’s why real-time lock monitoring is essential. Keeping a second SQL client open during migrations helps you catch slow queries before they become major problems.
+      <h2>Identifying blockers:</h2>
 
       <pre><code class="language-sql">
 SELECT pid,
