@@ -1,3 +1,4 @@
+
 name: Deploy Vite Site to GitHub Pages
 
 on:
@@ -25,6 +26,9 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+        
+      - name: Generate blog data
+        run: node src/apps/blog/scripts/build.js
 
       - name: Build project
         run: npm run build

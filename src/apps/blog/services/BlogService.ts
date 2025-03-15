@@ -1,8 +1,7 @@
+
 import { BlogRepository } from '../repository/BlogRepository';
-
 import { BlogPost } from "@/apps/blog";
-import { createBlogPostContent, getIconComponent, parseFrontmatter } from "@/apps/blog/utils";
-
+import { createBlogPostContent, getIconComponent } from "@/apps/blog/utils";
 
 /**
  * Main service for handling blog operations
@@ -19,25 +18,28 @@ export class BlogService {
    */
   public async loadBlogPost(slug: string): Promise<BlogPost | null> {
     try {
-      // Dynamically import the blog post content
-      const fileContents = await this.repository.importBlogContent(slug);
+      // Get pre-processed blog content from repository
+      const blogData = await this.repository.getBlogContent(slug);
       
-      // Parse frontmatter
-      const { data, content } = parseFrontmatter(fileContents);
+      if (!blogData) {
+        return null;
+      }
       
-      if (!data || Object.keys(data).length === 0) {
+      const { frontmatter, content } = blogData;
+      
+      if (!frontmatter || Object.keys(frontmatter).length === 0) {
         console.warn(`No frontmatter found for ${slug}`);
       }
       
       // Map the parsed data to our BlogPost interface with validation
       const blogPost: BlogPost = {
-        slug: data.slug || slug,
-        title: data.title || 'Untitled Post',
-        excerpt: data.excerpt || 'No excerpt available',
-        date: data.date || 'No date',
-        readTime: data.readTime || '5 min read',
-        categories: Array.isArray(data.categories) ? data.categories : [],
-        icon: getIconComponent(data.icon || 'Code', data.iconColor || 'blue'),
+        slug: frontmatter.slug || slug,
+        title: frontmatter.title || 'Untitled Post',
+        excerpt: frontmatter.excerpt || 'No excerpt available',
+        date: frontmatter.date || 'No date',
+        readTime: frontmatter.readTime || '5 min read',
+        categories: Array.isArray(frontmatter.categories) ? frontmatter.categories : [],
+        icon: getIconComponent(frontmatter.icon || 'Code', frontmatter.iconColor || 'blue'),
         content: createBlogPostContent(content || '')
       };
 
