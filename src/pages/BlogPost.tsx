@@ -5,6 +5,14 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { createBlogPostContent } from "@/utils/blogUtils";
 import { loadBlogPost, type BlogPost } from "@/services/blogService";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -62,8 +70,8 @@ const BlogPost = () => {
         <div className="container mx-auto px-6 py-12">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">{error || "Post not found"}</h1>
-            <Link to="/" className="text-blue-600 hover:text-blue-800">
-              Return home
+            <Link to="/blog" className="text-blue-600 hover:text-blue-800">
+              Return to blog
             </Link>
           </div>
         </div>
@@ -76,13 +84,26 @@ const BlogPost = () => {
       <Navbar />
       <article className="container mx-auto px-4 sm:px-6 py-12">
         <div className="max-w-3xl mx-auto">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-8"
-          >
-            <ArrowLeft size={20} />
-            Back to all posts
-          </Link>
+          {/* Breadcrumb navigation */}
+          <Breadcrumb className="mb-8">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/">Home</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/blog">Blog</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{post.title}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
 
           <div className="animate-fade-up">
             <div className="flex justify-between items-start mb-6">

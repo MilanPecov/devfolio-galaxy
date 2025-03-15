@@ -1,7 +1,9 @@
+
 import { BrowserRouter } from "react-router-dom";
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import BlogPost from "@/pages/BlogPost";
+import BlogListPage from "@/pages/BlogListPage";
 import NotFound from "@/pages/NotFound";
 import Index from "@/pages/Index";
 
@@ -12,6 +14,7 @@ function App() {
     <BrowserRouter basename={BASENAME}>
       <Routes>
         <Route path="/" element={<Index />} />
+        <Route path="/blog" element={<BlogListPage />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
