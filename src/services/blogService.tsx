@@ -33,14 +33,12 @@ const getIconComponent = (iconName: string, colorClass: string = 'blue'): React.
 const parseMarkdownFrontmatter = (content: string): { data: Record<string, any>; content: string } => {
   // Check if content exists and starts with frontmatter delimiter
   if (!content || !content.startsWith('---')) {
-    console.warn('Content missing or no frontmatter delimiter found');
     return { data: {}, content: content || '' };
   }
 
   // Find the end of the frontmatter block (second ---)
   const endOfFrontmatter = content.indexOf('---', 3);
   if (endOfFrontmatter === -1) {
-    console.warn('No closing frontmatter delimiter found');
     return { data: {}, content: content };
   }
 
@@ -109,81 +107,56 @@ const parseMarkdownFrontmatter = (content: string): { data: Record<string, any>;
     data[currentKey] = [...arrayItems];
   }
   
-  console.log("Parsed frontmatter:", data); // Debug log
-  
   return {
     data,
     content: mainContent
   };
 };
 
+// Get a list of all available blog posts
+const getBlogSlugs = (): string[] => {
+  return [
+    'evolving-postgresql-without-breaking-things',
+    'building-high-performance-ticketing-systems',
+    'event-driven-architecture-in-practice'
+  ];
+};
+
+// Helper function to dynamically import blog post content
+const importBlogContent = async (slug: string): Promise<string> => {
+  try {
+    return (await import(`../content/blog/${slug}.md?raw`)).default;
+  } catch (error) {
+    throw new Error(`Blog post with slug: ${slug} not found`);
+  }
+};
+
 // Helper function to load blog post content
 export const loadBlogPost = async (slug: string): Promise<BlogPost | null> => {
   try {
-    // In a real application, this would fetch from an API or file system
-    // For this demo, we're importing directly
-    let fileContents;
+    // Dynamically import the blog post content
+    const fileContents = await importBlogContent(slug);
     
-    // Use a switch statement to manually handle each blog post file
-    switch (slug) {
-      case 'evolving-postgresql-without-breaking-things':
-        fileContents = (await import('../content/blog/evolving-postgresql-without-breaking-things.md?raw')).default;
-        break;
-      case 'building-high-performance-ticketing-systems':
-        fileContents = (await import('../content/blog/building-high-performance-ticketing-systems.md?raw')).default;
-        break;
-      case 'event-driven-architecture-in-practice':
-        fileContents = (await import('../content/blog/event-driven-architecture-in-practice.md?raw')).default;
-        break;
-      default:
-        console.error(`Blog post with slug: ${slug} not found`);
-        return null;
+    // Parse frontmatter
+    const { data, content } = parseMarkdownFrontmatter(fileContents);
+    
+    if (Object.keys(data).length === 0) {
+      throw new Error(`Failed to parse frontmatter for ${slug}`);
     }
     
-    console.log(`Raw content for ${slug} (first 100 chars):`, fileContents.substring(0, 100).replace(/\n/g, '\\n') + '...');
+    // Map the parsed data to our BlogPost interface with validation
+    const blogPost: BlogPost = {
+      slug: data.slug || slug,
+      title: data.title || 'Untitled Post',
+      excerpt: data.excerpt || 'No excerpt available',
+      date: data.date || 'No date',
+      readTime: data.readTime || '5 min read',
+      categories: Array.isArray(data.categories) ? data.categories : [],
+      icon: getIconComponent(data.icon || 'Code', data.iconColor || 'blue'),
+      content: content || ''
+    };
     
-    // Parse frontmatter with our improved parser
-    try {
-      const { data, content } = parseMarkdownFrontmatter(fileContents);
-      
-      console.log(`Parsed frontmatter for ${slug}:`, data);
-      
-      if (Object.keys(data).length === 0) {
-        console.error(`Failed to parse frontmatter for ${slug}`);
-      }
-      
-      // Map the parsed data to our BlogPost interface with validation
-      const blogPost: BlogPost = {
-        slug: data.slug || slug,
-        title: data.title || 'Untitled Post',
-        excerpt: data.excerpt || 'No excerpt available',
-        date: data.date || 'No date',
-        readTime: data.readTime || '5 min read',
-        categories: Array.isArray(data.categories) ? data.categories : [],
-        icon: getIconComponent(data.icon || 'Code', data.iconColor || 'blue'),
-        content: content || ''
-      };
-      
-      console.log(`Prepared blog post object for ${slug}:`, {
-        title: blogPost.title,
-        excerpt: blogPost.excerpt.substring(0, 50) + '...',
-        categories: blogPost.categories
-      });
-      
-      return blogPost;
-    } catch (parseError) {
-      console.error(`Error parsing frontmatter for ${slug}:`, parseError);
-      return {
-        slug: slug,
-        title: 'Error Loading Post',
-        excerpt: 'There was an error parsing this post',
-        date: 'No date',
-        readTime: '0 min read',
-        categories: [],
-        icon: getIconComponent('Code', 'red'),
-        content: 'Error loading content'
-      };
-    }
+    return blogPost;
   } catch (error) {
     console.error(`Failed to load blog post with slug: ${slug}`, error);
     return null;
@@ -193,15 +166,7 @@ export const loadBlogPost = async (slug: string): Promise<BlogPost | null> => {
 // Function to load all blog posts
 export const loadAllBlogPosts = async (): Promise<BlogPost[]> => {
   try {
-    // In a real application, this would scan a directory or call an API
-    // For this demo, we're hardcoding the available slugs
-    const slugs = [
-      'evolving-postgresql-without-breaking-things',
-      'building-high-performance-ticketing-systems',
-      'event-driven-architecture-in-practice'
-    ];
-    
-    console.log('Loading blog posts for slugs:', slugs);
+    const slugs = getBlogSlugs();
     
     const postsPromises = slugs.map(async (slug) => {
       try {
@@ -228,13 +193,6 @@ export const loadAllBlogPosts = async (): Promise<BlogPost[]> => {
         
         return timeB - timeA;
       });
-    
-    console.log('Successfully loaded blog posts:', validPosts.length);
-    console.log('First post sample:', validPosts[0] ? {
-      title: validPosts[0].title,
-      excerpt: validPosts[0].excerpt?.substring(0, 50) + '...',
-      categories: validPosts[0].categories
-    } : 'No posts');
     
     return validPosts;
   } catch (error) {
