@@ -3,6 +3,12 @@ import { Database, Server, Code } from 'lucide-react';
 import React from 'react';
 import { marked } from 'marked';
 import matter from 'gray-matter';
+// Import Buffer from the buffer package (already installed)
+import { Buffer } from 'buffer';
+
+// Make Buffer available globally for gray-matter
+// This fixes the "Buffer is not defined" error in the browser
+window.Buffer = Buffer;
 
 // Define blog post types
 export interface BlogPost {
@@ -223,3 +229,4 @@ export const parseMarkdownToHtml = (markdown: string): string => {
     return '<p>Error parsing content</p>';
   }
 };
+
