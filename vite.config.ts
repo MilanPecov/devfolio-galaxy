@@ -1,5 +1,5 @@
 
-import { defineConfig } from "vite";
+import { defineConfig, Plugin } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
@@ -10,11 +10,11 @@ const isGitHubPages = process.env.GITHUB_ACTIONS === "true";
 const BASE_URL = isGitHubPages ? "/devfolio-galaxy/" : "/";
 
 // Function to generate blog data before build
-function generateBlogData() {
+function generateBlogData(): Plugin {
   return {
     name: 'generate-blog-data',
     buildStart() {
-      return new Promise((resolve, reject) => {
+      return new Promise<void>((resolve, reject) => {
         console.log('Generating blog data...');
         exec('node src/apps/blog/scripts/build.js', (error, stdout, stderr) => {
           if (error) {
@@ -43,9 +43,9 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
-    mode === "development" && componentTagger(),
+    mode === "development" ? componentTagger() : false,
     generateBlogData(),
-  ].filter(Boolean),
+  ].filter(Boolean) as Plugin[],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
