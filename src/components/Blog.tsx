@@ -11,26 +11,28 @@ const Blog = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Function to fetch all blog posts
     const fetchPosts = async () => {
       try {
         setLoading(true);
         const allPosts = await loadAllBlogPosts();
-        console.log('Loaded blog posts:', allPosts); // Debug log
         
+        // Check if posts were successfully loaded
         if (allPosts && allPosts.length > 0) {
           setPosts(allPosts);
         } else {
-          console.warn('No blog posts returned from loadAllBlogPosts');
+          // Handle case where no posts are returned
           setPosts([]);
           setError("No blog posts available.");
         }
       } catch (error) {
-        console.error("Failed to load blog posts:", error);
+        // Handle any errors that occur during fetching
         setError("Failed to load blog posts. Please try again later.");
         toast.error("Failed to load blog posts");
         // Ensure posts is at least an empty array to prevent mapping errors
         setPosts([]);
       } finally {
+        // Always set loading to false when done
         setLoading(false);
       }
     };
@@ -40,13 +42,14 @@ const Blog = () => {
 
   return (
     <section id="blog" className="py-20 relative overflow-hidden">
-      {/* Abstract background */}
+      {/* Abstract background with gradient and grid pattern */}
       <div className="absolute inset-0 bg-[#F8FAFC]">
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(238,238,238,0.6)_1px,transparent_1px),linear-gradient(rgba(238,238,238,0.6)_1px,transparent_1px)] bg-[size:24px_24px]"></div>
         <div className="absolute inset-0 bg-gradient-to-b from-[#F8FAFC] via-white/90 to-[#F8FAFC]"></div>
       </div>
 
       <div className="container mx-auto px-6 relative">
+        {/* Section header */}
         <div className="max-w-3xl mx-auto text-center mb-16 animate-fade-up">
           <span className="inline-block px-4 py-2 bg-[#1E293B]/5 text-[#1E293B] rounded-full text-sm font-medium mb-4 backdrop-blur-sm border border-[#1E293B]/10">
             Technical Insights
@@ -59,6 +62,7 @@ const Blog = () => {
           </p>
         </div>
 
+        {/* Loading state */}
         {loading ? (
           <div className="flex justify-center py-12">
             <div className="animate-pulse text-center">
@@ -66,12 +70,14 @@ const Blog = () => {
             </div>
           </div>
         ) : error ? (
+          // Error state
           <div className="flex justify-center py-12">
             <div className="text-center">
               <p className="text-red-500">{error}</p>
             </div>
           </div>
         ) : posts && posts.length > 0 ? (
+          // Blog posts list
           <div className="flex flex-col space-y-8 max-w-4xl mx-auto">
             {posts.map((post, index) => (
               <article
@@ -80,10 +86,12 @@ const Blog = () => {
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div className="flex flex-col md:flex-row gap-6">
+                  {/* Post icon */}
                   <div className="p-3 rounded-full bg-[#F8FAFC] md:self-start">
                     {post.icon}
                   </div>
                   <div className="flex-1 text-left">
+                    {/* Post categories */}
                     <div className="flex flex-wrap gap-2 mb-3">
                       {post.categories && post.categories.map((category, catIndex) => (
                         <span
@@ -94,16 +102,20 @@ const Blog = () => {
                         </span>
                       ))}
                     </div>
+                    {/* Post metadata */}
                     <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
                       <span>{post.date}</span>
                       <span>{post.readTime}</span>
                     </div>
+                    {/* Post title */}
                     <h3 className="text-xl md:text-2xl font-semibold mb-3 text-[#1E293B] group-hover:text-[#334155] transition-colors text-left">
                       {post.title}
                     </h3>
+                    {/* Post excerpt */}
                     <p className="text-gray-600 mb-6 text-left">
                       {post.excerpt}
                     </p>
+                    {/* Read more link */}
                     <div className="text-left">
                       <Link
                         to={`/blog/${post.slug}`}
@@ -119,6 +131,7 @@ const Blog = () => {
             ))}
           </div>
         ) : (
+          // Empty state - no posts available
           <div className="flex justify-center py-12">
             <div className="text-center">
               <p className="text-gray-500">No blog posts available.</p>
