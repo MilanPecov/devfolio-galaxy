@@ -72,24 +72,22 @@ const getBlogSlugs = (): string[] => {
 
 const importBlogContent = async (slug: string): Promise<string> => {
   try {
-    // First, try to import from the directory structure (for posts with chapters)
+    // For posts with chapters, try to load the index file first
     if (slug === 'evolving-postgresql-without-breaking-things') {
       try {
-        return (await import(`../content/blog/${slug}/index.md?raw`)).default;
+        const content = (await import(`../content/blog/${slug}/index.md?raw`)).default;
+        return content;
       } catch (error) {
         console.error(`Failed to import ${slug}/index.md:`, error);
-        // Fall back to trying the single file
-        return (await import(`../content/blog/${slug}.md?raw`)).default;
+        // Fall back to the single file
+        const content = (await import(`../content/blog/${slug}.md?raw`)).default;
+        return content;
       }
     }
     
     // For regular blog posts (single file)
-    try {
-      return (await import(`../content/blog/${slug}.md?raw`)).default;
-    } catch (e) {
-      console.error(`Failed to import ${slug}.md:`, e);
-      throw new Error(`Blog content not found`);
-    }
+    const content = (await import(`../content/blog/${slug}.md?raw`)).default;
+    return content;
   } catch (error) {
     console.error(`Content import error for ${slug}:`, error);
     throw new Error(`Blog content not found`);
@@ -161,27 +159,50 @@ export const loadBlogPost = async (slug: string): Promise<{ post: BlogPost | nul
     // Load the blog post content
     const fileContents = await importBlogContent(slug);
     
-    // Parse frontmatter and content
-    const { data, content } = matter(fileContents);
-    
-    if (!data || Object.keys(data).length === 0) {
-      console.error(`Failed to parse frontmatter for ${slug}`);
-      throw new Error(`Failed to parse frontmatter for ${slug}`);
+    try {
+      // Parse frontmatter and content
+      const { data, content } = matter(fileContents);
+      
+      if (!data || Object.keys(data).length === 0) {
+        console.error(`Failed to parse frontmatter for ${slug}`);
+        throw new Error(`Failed to parse frontmatter for ${slug}`);
+      }
+      
+      const blogPost: BlogPost = {
+        slug: data.slug || slug,
+        title: data.title || 'Untitled Post',
+        excerpt: data.excerpt || 'No excerpt available',
+        date: data.date || 'No date',
+        readTime: data.readTime || '5 min read',
+        categories: Array.isArray(data.categories) ? data.categories : [],
+        icon: getIconComponent(data.icon || 'Code', data.iconColor || 'blue'),
+        content: content || '',
+        hasChapters
+      };
+      
+      return { post: blogPost, chapters };
+    } catch (error) {
+      console.error(`Error parsing frontmatter for ${slug}:`, error);
+      
+      // Fallback to a default post if frontmatter parsing fails
+      if (slug === 'evolving-postgresql-without-breaking-things') {
+        const defaultPost: BlogPost = {
+          slug: slug,
+          title: 'Evolving PostgreSQL Without Breaking the World',
+          excerpt: 'PostgreSQL is built for integrity, but applications demand agility. How do you evolve a live database without halting the system?',
+          date: 'March 15, 2024',
+          readTime: '40 min read',
+          categories: ['Database', 'PostgreSQL', 'DevOps'],
+          icon: getIconComponent('Database', 'blue'),
+          content: fileContents,
+          hasChapters
+        };
+        
+        return { post: defaultPost, chapters };
+      }
+      
+      throw error;
     }
-    
-    const blogPost: BlogPost = {
-      slug: data.slug || slug,
-      title: data.title || 'Untitled Post',
-      excerpt: data.excerpt || 'No excerpt available',
-      date: data.date || 'No date',
-      readTime: data.readTime || '5 min read',
-      categories: Array.isArray(data.categories) ? data.categories : [],
-      icon: getIconComponent(data.icon || 'Code', data.iconColor || 'blue'),
-      content: content || '',
-      hasChapters
-    };
-    
-    return { post: blogPost, chapters };
   } catch (error) {
     console.error(`Failed to load blog post with slug: ${slug}`, error);
     return { post: null, chapters: [] };
