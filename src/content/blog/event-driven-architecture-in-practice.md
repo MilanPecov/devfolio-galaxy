@@ -1,4 +1,3 @@
-
 ---
 slug: event-driven-architecture-in-practice
 title: Event-Driven Architecture in Practice

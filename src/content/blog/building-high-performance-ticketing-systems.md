@@ -1,4 +1,3 @@
-
 ---
 slug: building-high-performance-ticketing-systems
 title: Building High-Performance Ticketing Systems

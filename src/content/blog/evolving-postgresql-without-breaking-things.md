@@ -1,4 +1,3 @@
-
 ---
 slug: evolving-postgresql-without-breaking-things
 title: Evolving PostgreSQL Without Breaking the World
