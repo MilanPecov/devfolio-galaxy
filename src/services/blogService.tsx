@@ -5,8 +5,10 @@ import { Database, Server, Code } from 'lucide-react';
 import React from 'react';
 import { Buffer } from 'buffer';
 
-// Ensure Buffer is available globally for gray-matter
-window.Buffer = Buffer;
+// Explicitly set Buffer on window for gray-matter
+if (typeof window !== 'undefined') {
+  window.Buffer = Buffer;
+}
 
 // Define blog post types
 export interface BlogPost {
@@ -57,9 +59,19 @@ export const loadBlogPost = async (slug: string): Promise<BlogPost | null> => {
         return null;
     }
     
+    console.log(`Raw content for ${slug}:`, fileContents.substring(0, 200) + '...');
+    
     // Parse frontmatter with proper error handling
     try {
+      // Handle Buffer not defined issue
+      if (typeof window !== 'undefined' && !window.Buffer) {
+        window.Buffer = Buffer;
+      }
+      
+      // Parse the markdown content
       const { data, content } = matter(fileContents);
+      
+      console.log(`Parsed frontmatter for ${slug}:`, data);
       
       // Map the parsed data to our BlogPost interface with validation
       return {
@@ -69,12 +81,21 @@ export const loadBlogPost = async (slug: string): Promise<BlogPost | null> => {
         date: data.date || 'No date',
         readTime: data.readTime || '5 min read',
         categories: Array.isArray(data.categories) ? data.categories : [],
-        icon: getIconComponent(data.icon || 'Code', data.iconColor),
+        icon: getIconComponent(data.icon || 'Code', data.iconColor || 'blue'),
         content: content || ''
       };
     } catch (parseError) {
       console.error(`Error parsing frontmatter for ${slug}:`, parseError);
-      return null;
+      return {
+        slug: slug,
+        title: 'Error Loading Post',
+        excerpt: 'There was an error parsing this post',
+        date: 'No date',
+        readTime: '0 min read',
+        categories: [],
+        icon: getIconComponent('Code', 'red'),
+        content: 'Error loading content'
+      };
     }
   } catch (error) {
     console.error(`Failed to load blog post with slug: ${slug}`, error);
@@ -93,6 +114,8 @@ export const loadAllBlogPosts = async (): Promise<BlogPost[]> => {
       'event-driven-architecture-in-practice'
     ];
     
+    console.log('Loading blog posts for slugs:', slugs);
+    
     const postsPromises = slugs.map(async (slug) => {
       try {
         return await loadBlogPost(slug);
@@ -105,7 +128,7 @@ export const loadAllBlogPosts = async (): Promise<BlogPost[]> => {
     const posts = await Promise.all(postsPromises);
     
     // Filter out any null results and sort by date (newest first)
-    return posts
+    const validPosts = posts
       .filter((post): post is BlogPost => post !== null)
       .sort((a, b) => {
         // Use a safer date comparison approach
@@ -118,6 +141,11 @@ export const loadAllBlogPosts = async (): Promise<BlogPost[]> => {
         
         return timeB - timeA;
       });
+    
+    console.log('Successfully loaded blog posts:', validPosts.length);
+    console.log('First post:', validPosts[0]?.title);
+    
+    return validPosts;
   } catch (error) {
     console.error('Failed to load all blog posts', error);
     return [];

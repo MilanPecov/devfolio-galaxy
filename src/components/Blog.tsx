@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { loadAllBlogPosts, type BlogPost } from "@/services/blogService";
+import { toast } from "sonner";
 
 const Blog = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -12,12 +13,21 @@ const Blog = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
+        setLoading(true);
         const allPosts = await loadAllBlogPosts();
         console.log('Loaded blog posts:', allPosts); // Debug log
-        setPosts(allPosts);
+        
+        if (allPosts && allPosts.length > 0) {
+          setPosts(allPosts);
+        } else {
+          console.warn('No blog posts returned from loadAllBlogPosts');
+          setPosts([]);
+          setError("No blog posts available.");
+        }
       } catch (error) {
         console.error("Failed to load blog posts:", error);
         setError("Failed to load blog posts. Please try again later.");
+        toast.error("Failed to load blog posts");
         // Ensure posts is at least an empty array to prevent mapping errors
         setPosts([]);
       } finally {
@@ -89,10 +99,10 @@ const Blog = () => {
                       <span>{post.readTime}</span>
                     </div>
                     <h3 className="text-xl md:text-2xl font-semibold mb-3 text-[#1E293B] group-hover:text-[#334155] transition-colors text-left">
-                      {post.title}
+                      {post.title || "Untitled Post"}
                     </h3>
                     <p className="text-gray-600 mb-6 text-left">
-                      {post.excerpt}
+                      {post.excerpt || "No excerpt available"}
                     </p>
                     <div className="text-left">
                       <Link
