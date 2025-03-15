@@ -4,85 +4,80 @@ import { ArrowLeft, Database, Server, Code, ExternalLink } from "lucide-react";
 import { createBlogPostContent } from "../utils/blogUtils";
 
 const posts = [
-  {
-    slug: "zero-downtime-postgresql-migrations",
-    title: "The Essential Guide to Zero-Downtime PostgreSQL Migrations in Production",
-    excerpt:
-      "Learn how to execute PostgreSQL schema changes without interrupting your service, using concurrent indexes, batched updates, and other battle-tested strategies.",
-    date: "March 15, 2024",
-    readTime: "10 min read",
-    categories: ["Database", "PostgreSQL", "DevOps", "Django"],
-    icon: <Database className="w-6 h-6 text-blue-600" />,
-    content: `
-      <p>When your business depends on PostgreSQL, migrations in production aren't just technical details—they're critical operations that can make or break user experience, revenue, and even your team's peace of mind. Imagine your database migration like performing open-heart surgery on your system: it demands precision, strategy, and readiness for unexpected complications.</p>
-      
-      <p>If you're running a Django application with PostgreSQL, here's your comprehensive guide to executing migrations seamlessly, minimizing risks, and maintaining uninterrupted service.</p>
-      
-      <h2>Why PostgreSQL Migrations Can Cause Downtime</h2>
-      <p>Every PostgreSQL table corresponds to a physical file. Modifying schemas, such as adding constraints or changing column types, often requires PostgreSQL to rewrite these physical files, locking tables completely (AccessExclusiveLock). When a table is locked, your users experience interruptions ranging from sluggish responses to total service outages.</p>
-      
-      <p>Let's clarify this with a practical scenario:</p>
+{
+  slug: "evolving-postgresql-without-breaking-things",
+  title: "Evolving PostgreSQL Without Breaking the World",
+  excerpt:
+    "PostgreSQL is built for integrity, but applications demand agility. How do you evolve a live database without halting the system? This guide explores zero-downtime migration techniques—concurrent indexing, safe foreign keys, and schema changes that preserve uptime.",
+  date: "March 15, 2024",
+  readTime: "40 min read",
+  categories: ["Database", "PostgreSQL", "DevOps", "Django"],
+  icon: <Database className="w-6 h-6 text-blue-600" />,
+  content: `
+    <p>To change a database is to change the world in miniature. It is an act of transformation, of restructuring something vast and interconnected while it continues to pulse with life. The database does not pause for us; it does not yield easily to our aspirations. Its architecture is built on the principles of order, consistency, and unbreakable rules. And yet, we must change it, we must move forward—without halting time itself.</p>
 
-      <h3>The Dreaded Real-World Example: Locking Your User Table</h3>
-      <p>Suppose you have a User table with millions of records:</p>
+    <p>In this journey, we will encounter resistance. PostgreSQL does not allow change without consequence. Every modification is an assertion of control over the system, an attempt to impose new order upon a structure already settled into its form. But we have tools. We have techniques. We can navigate this process, ensuring that the database evolves without collapsing under the weight of its own integrity.</p>
 
-      <pre><code class="language-python">
+    <h2>Prologue: The Immutable and the Changing</h2>
+    <p>It began with a simple requirement: enforce uniqueness on the <code>email</code> field in our <code>users</code> table. A trivial change, or so we thought.</p>
+
+    <pre><code class="language-python">
 class User(models.Model):
-    name = models.CharField(max_length=255)
-    email = models.CharField(max_length=255)
+    email = models.CharField(max_length=255)  # The past: free, unrestricted
+    </code></pre>
 
-# Desired change:
-email = models.EmailField(unique=True)
-      </code></pre>
+    <p>Our goal:</p>
 
-      <p>A naive migration approach (ALTER TABLE ADD UNIQUE) can freeze the entire application for several minutes, resulting in HTTP 500 errors and angry customers.</p>
+    <pre><code class="language-python">
+email = models.CharField(max_length=255, unique=True)  # The future: structured, ordered
+    </code></pre>
 
-      <h2>Battle-Tested Strategies for Safe Migrations</h2>
-      <p>Here are robust, actionable strategies to ensure zero-downtime migrations:</p>
+    <p>The request seemed innocent. But PostgreSQL sees differently. To apply a uniqueness constraint, it must inspect every row, verify every entry, ensure that order has always existed in a structure that was previously indifferent to it.</p>
 
-      <h3>1. Concurrent Index Creation</h3>
-      <p>Always use concurrent indexes to safely add uniqueness constraints without locking:</p>
+    <h2>Chapter 1: The Price of Order</h2>
+    <p>PostgreSQL enforces its rules through a formidable mechanism: the <strong>AccessExclusiveLock</strong>. When modifying a table’s schema, the database halts operations, preventing all writes, reads, and transactions until the change is complete.</p>
 
-      <pre><code class="language-sql">
-CREATE UNIQUE INDEX CONCURRENTLY users_email_uniq ON users_user(email);
-      </code></pre>
+    <p>Consider this naive approach:</p>
 
-      <p>Concurrent indexes minimize locking by building the index in the background without blocking writes. PostgreSQL achieves this by creating the index incrementally and validating data concurrently, which significantly reduces the duration and severity of locks compared to traditional indexing methods. While minor locks still occur briefly at the start and end of the index creation, the overall impact is minimal, ensuring your app remains operational and responsive throughout the migration process. (<a href="https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY" target="_blank">See PostgreSQL documentation for further details on index concurrency</a>.)</p>
+    <pre><code class="language-sql">
+-- A dangerous change that will lock the entire table
+ALTER TABLE users_user ADD CONSTRAINT users_email_unique UNIQUE(email);
+    </code></pre>
 
-      <h3>2. Delayed Constraint Validation</h3>
-      <p>For foreign keys and other constraints, PostgreSQL supports delayed validations:</p>
+    <p>On a small table, this would be instant. On a table with millions of records, it could take minutes—or longer. During this time, all queries that depend on this table will queue up, waiting for the migration to finish. The application will freeze. Users will see timeouts. Customer support will flood with complaints. And all because we asked PostgreSQL to enforce a rule that was not there before.</p>
 
-      <pre><code class="language-sql">
-ALTER TABLE users_user ADD CONSTRAINT fk_user_team 
-FOREIGN KEY (team_id) REFERENCES teams_team(id) NOT VALID;
+    <p>But we are not without options. There is a way to achieve order without bringing the system to its knees.</p>
 
-ALTER TABLE users_user VALIDATE CONSTRAINT fk_user_team;
-      </code></pre>
+    <h2>Chapter 2: Parallel Evolution – Creating Indexes Concurrently</h2>
+    <p>In 2001, PostgreSQL introduced a new approach: <strong>concurrent indexing</strong>. Instead of freezing the system while building an index, it constructs it in the background.</p>
 
-      <p>This separates constraint checking from schema changes, significantly reducing downtime by delaying integrity checks until the new schema is fully in place. Specifically, PostgreSQL doesn't need to immediately verify data integrity for new nullable fields or constraints marked as 'NOT VALID', allowing regular database operations to continue without locking the entire table. Integrity checks are subsequently performed in a separate step, further minimizing any disruption. For more detailed insights into delayed constraint validation, see the <a href="https://www.postgresql.org/docs/current/sql-altertable.html#SQL-ALTERTABLE-NOTES" target="_blank">PostgreSQL documentation on alter table</a>.</p>
+    <pre><code class="language-sql">
+-- A safe approach: create a unique index without locking writes
+CREATE UNIQUE INDEX CONCURRENTLY users_email_idx ON users_user(email);
+    </code></pre>
 
-      <h3>3. Decoupling Database and Django State</h3>
-      <p>Use Django's SeparateDatabaseAndState migration strategy to align database schema changes with Django models without disruptive locks. This approach allows executing raw SQL changes while keeping Django's migration state in sync, preventing unnecessary schema modifications that could lead to prolonged locks. For more details, refer to the <a href="https://docs.djangoproject.com/en/5.1/ref/migration-operations/#separatedatabaseandstate" target="_blank">Django documentation on SeparateDatabaseAndState</a>.</p>
+    <p>This method allows us to build the index while the system remains live. Here's how it works:</p>
+    <ul>
+      <li><strong>Snapshot phase:</strong> PostgreSQL takes a static view of existing data.</li>
+      <li><strong>Incremental build:</strong> It constructs the index while tracking new changes.</li>
+      <li><strong>Final validation:</strong> It briefly locks the table to verify consistency before finalizing the index.</li>
+    </ul>
 
-      <h2>Detailed Step-by-Step Implementation Guide</h2>
-      
-      <h3>1. Unique Constraints (Email Example)</h3>
-      <p>Here's the full Django migration code:</p>
+    <p>It is not without cost—this method is slower, requiring twice as much disk space during the process. But it allows the system to breathe.</p>
 
-      <pre><code class="language-python">
+    <h3>Applying This in Django</h3>
+    <p>Since Django’s migration system does not natively support concurrent indexes, we must use a special approach:</p>
+
+    <pre><code class="language-python">
 # migrations/0002_safe_unique_email.py
-from django.db import migrations, models
+from django.db import migrations
 
 operations = [
     migrations.SeparateDatabaseAndState(
         database_operations=[
             migrations.RunSQL(
                 "CREATE UNIQUE INDEX CONCURRENTLY users_email_uniq ON users_user(email);",
-                reverse_sql="DROP INDEX CONCURRENTLY IF EXISTS users_email_uniq;"
-            ),
-            migrations.RunSQL(
-                "ALTER TABLE users_user ADD CONSTRAINT email_unique UNIQUE USING INDEX users_email_uniq;",
-                reverse_sql="ALTER TABLE users_user DROP CONSTRAINT email_unique;"
+                reverse_sql="DROP INDEX CONCURRENTLY users_email_uniq;"
             )
         ],
         state_operations=[
@@ -92,14 +87,49 @@ operations = [
                 field=models.EmailField(unique=True),
             )
         ]
-    )
+    ),
 ]
-      </code></pre>
+    </code></pre>
 
-      <h3>2. Foreign Keys (Team Relationship)</h3>
-      <p>Full migration code:</p>
+    <p>By separating the database operation from Django’s model state, we ensure that the system does not attempt to enforce the constraint in a way that would trigger unnecessary locks.</p>
 
-      <pre><code class="language-python">
+    <h2>Chapter 3: The Challenge of Foreign Keys</h2>
+    <p>Foreign keys are another enforcer of order, ensuring referential integrity. But adding them retroactively to an existing table can be devastating.</p>
+
+    <p>A naive approach:</p>
+
+    <pre><code class="language-sql">
+ALTER TABLE users_user ADD CONSTRAINT fk_user_team FOREIGN KEY (team_id) REFERENCES teams_team(id);
+    </code></pre>
+
+    <p>PostgreSQL, upon encountering this command, will immediately scan the entire table, locking it until it is certain that no orphaned records exist. In an active system, this is unacceptable.</p>
+
+    <h3>The Alternative: Deferred Validation</h3>
+    <p>PostgreSQL allows us to add a foreign key constraint without validating it immediately:</p>
+
+    <pre><code class="language-sql">
+-- Step 1: Add the column without constraints
+ALTER TABLE users_user ADD COLUMN team_id INT NULL;
+
+-- Step 2: Create an index on the column
+CREATE INDEX CONCURRENTLY idx_users_team_id ON users_user(team_id);
+
+-- Step 3: Add the foreign key constraint, but defer validation
+ALTER TABLE users_user 
+ADD CONSTRAINT fk_user_team 
+FOREIGN KEY (team_id) 
+REFERENCES teams_team(id) 
+NOT VALID;
+    </code></pre>
+
+    <p>Later, when the system can afford the validation step:</p>
+
+    <pre><code class="language-sql">
+ALTER TABLE users_user VALIDATE CONSTRAINT fk_user_team;
+    </code></pre>
+
+    <h3>The Django Equivalent</h3>
+    <pre><code class="language-python">
 # migrations/0003_add_team_fk.py
 from django.db import migrations, models
 
@@ -111,11 +141,7 @@ operations = [
                 reverse_sql="ALTER TABLE users_user DROP COLUMN team_id;"
             ),
             migrations.RunSQL(
-                """ALTER TABLE users_user 
-                   ADD CONSTRAINT fk_user_team 
-                   FOREIGN KEY (team_id) 
-                   REFERENCES teams_team(id) 
-                   NOT VALID;""",
+                "ALTER TABLE users_user ADD CONSTRAINT fk_user_team FOREIGN KEY (team_id) REFERENCES teams_team(id) NOT VALID;",
                 reverse_sql="ALTER TABLE users_user DROP CONSTRAINT fk_user_team;"
             )
         ],
@@ -132,100 +158,162 @@ operations = [
         reverse_sql=migrations.RunSQL.noop
     )
 ]
-      </code></pre>
+    </code></pre>
 
-      <h3>3. Table Rewrites with pg_repack</h3>
-      
-      <p>PostgreSQL tables can suffer from performance degradation due to excessive table bloat, schema changes that require rewrites, or constraints that require data validation. A naive approach of altering large tables directly (e.g., ALTER COLUMN TYPE) can result in prolonged locking, impacting application availability. Instead, <a href="https://reorg.github.io/pg_repack/" target="_blank">pg_repack</a> provides a way to perform these operations safely without requiring exclusive locks.</p>
-      
-      <h4>When to Use pg_repack</h4>
-      <ul>
-        <li>Changing column types (e.g., VARCHAR(255) → TEXT)</li>
-        <li>Rebuilding heavily updated or bloated tables</li>
-        <li>Adding NOT NULL constraints to existing columns</li>
-        <li>Cleaning up TOAST tables that have grown inefficient due to frequent updates</li>
-      </ul>
-      
-      <h4>How pg_repack Works</h4>
-      <p>pg_repack creates a duplicate table in the background, copies data in small chunks, and then atomically swaps it with the original table. Since it avoids locking the table for extended periods, it enables seamless schema modifications and optimizations without downtime.</p>
-      
-      <h4>Example Usage</h4>
-      <p>To safely rebuild a large table with minimal impact:</p>
-      
-      <pre><code class="language-bash">
-pg_repack --table users_user --jobs 4 --wait-timeout 300
-      </code></pre>
-      
-      <ul>
-        <li><strong>--table users_user</strong> → Specifies the table to be repacked.</li>
-        <li><strong>--jobs 4</strong> → Runs repack operations in parallel using 4 worker processes.</li>
-        <li><strong>--wait-timeout 300</strong> → Waits for 5 minutes before retrying if locks are encountered.</li>
-      </ul>
-      
-      <h4>Important Considerations</h4>
-      <ul>
-        <li>Ensure that pg_repack is installed and enabled in your database before use (<a href="https://reorg.github.io/pg_repack/" target="_blank">Installation Guide for pg_repack</a>).</li>
-        <li>pg_repack requires a primary key or a unique index to function efficiently.</li>
-        <li>It works best in conjunction with autovacuum settings tuned to minimize bloat over time.</li>
-        <li>Large tables should be monitored for potential performance impact, even if pg_repack avoids exclusive locks.</li>
-      </ul>
-      
-      <p>Using pg_repack as part of your migration strategy ensures your database remains performant and available while implementing schema changes safely.</p>
+    <p>Through this process, we make peace with PostgreSQL, navigating between its demand for integrity and our need for uptime.</p>
 
-      <h2>Lock Monitoring & Emergency Response</h2>
-      <p>Identifying blockers:</p>
+    <h2>Chapter 4: The Burden of Bloat – Using pg_repack</h2>
+<p>Time leaves its mark on a database. It grows, shifts, and accumulates inefficiencies—wasted space from deleted rows, fragmented data pages, indexes that no longer fit neatly within memory. PostgreSQL does not clean up after itself perfectly; it relies on <code>AUTOVACUUM</code>, a background process that tidies up table bloat when the system allows.</p>
 
-      <pre><code class="language-sql">
-SELECT pid,
-       now() - xact_start AS duration,
-       left(query, 50) AS query_snippet,
-       state
+<p>But some problems outgrow <code>AUTOVACUUM</code>. A heavily updated table, rewritten thousands of times per second, accumulates so much overhead that queries slow down, indexes swell beyond reason, and storage consumption spirals upward. The traditional solution? <code>VACUUM FULL</code>. But like many ancient remedies, it comes with a cost—table-wide locks.</p>
+
+<pre><code class="language-sql">
+-- VACUUM FULL rewrites the entire table but locks it for the duration
+VACUUM FULL users_user;
+</code></pre>
+
+<p>To call this method a disruption would be an understatement. The entire table becomes inaccessible until the operation is complete. Reads, writes, and transactions—everything halts. If the table is small, the lock is brief. If the table is large, it is an eternity.</p>
+
+<h3>The Alternative: pg_repack</h3>
+<p>In 2013, PostgreSQL developers introduced <a href="https://reorg.github.io/pg_repack/" target="_blank">pg_repack</a>, a tool designed to clean up tables without blocking operations. Instead of locking the table, it creates a temporary duplicate, repopulates it in the background, and atomically swaps it with the original.</p>
+
+<pre><code class="language-bash">
+# Install pg_repack (if not installed)
+sudo apt install postgresql-14-repack  # Debian-based systems
+brew install pg_repack  # macOS
+
+# Run pg_repack on a bloated table
+pg_repack --table=users_user --jobs=4
+</code></pre>
+
+<h3>How It Works</h3>
+<p>Unlike <code>VACUUM FULL</code>, which locks the table while rewriting it, <code>pg_repack</code> follows a more careful process:</p>
+<ul>
+  <li><strong>Step 1:</strong> Creates a shadow table with an identical schema.</li>
+  <li><strong>Step 2:</strong> Copies rows from the original table into the shadow table.</li>
+  <li><strong>Step 3:</strong> Applies any new changes that happened during the copy.</li>
+  <li><strong>Step 4:</strong> Swaps the tables in a single atomic operation.</li>
+</ul>
+
+<p>The final swap is instantaneous. PostgreSQL never sees an inconsistent state, and queries remain functional throughout the process.</p>
+
+<h3>When to Use pg_repack</h3>
+<p><code>pg_repack</code> is useful when:</p>
+<ul>
+  <li>The table has severe bloat from high write/delete activity.</li>
+  <li>Indexes have grown inefficient due to fragmentation.</li>
+  <li>Disk usage has increased significantly despite removing data.</li>
+  <li>Queries have slowed down, and <code>AUTOVACUUM</code> is insufficient.</li>
+</ul>
+ 
+<h2>Chapter 5: Observing Migrations in Production</h2>
+<p>In the realm of databases, visibility is survival. To migrate a system while it is alive—to change it without stopping its pulse—we must see everything. Every long-running query, every locking transaction, every blocked process: these are the signals, the whispers of PostgreSQL telling us when something is wrong.</p>
+
+<p>Running a migration in production is not an act of blind faith. It is an exercise in watchfulness, in keeping one hand on the system’s pulse while the other reshapes its structure. Without observation, even the most carefully planned migration can become a silent catastrophe.</p>
+
+<h3>Watching for Long-Running Queries</h3>
+<p>Before starting a migration, and certainly while it is in progress, we must monitor queries that take too long. A migration can only proceed smoothly if we understand what else the database is doing.</p>
+
+<pre><code class="language-sql">
+-- Identify queries that have been running for more than 1 minute
+SELECT pid, now() - query_start AS duration, query
 FROM pg_stat_activity
-WHERE (now() - query_start) > '1 minute'::interval
+WHERE state != 'idle' AND now() - query_start > interval '1 minute'
 ORDER BY duration DESC;
-      </code></pre>
+</code></pre>
 
-      <p>Example results:</p>
-      
-      <table>
-        <thead>
-          <tr>
-            <th>pid</th>
-            <th>duration</th>
-            <th>query_snippet</th>
-            <th>state</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>8821</td>
-            <td>00:01:18.45</td>
-            <td>ALTER TABLE users_user ADD COLUMN new_col</td>
-            <td>active</td>
-          </tr>
-        </tbody>
-      </table>
+<p><strong>What this tells us:</strong></p>
+<ul>
+  <li>It exposes long-running queries that may interfere with a migration.</li>
+  <li>If an index creation or schema change is running too long, this will reveal it.</li>
+  <li>It allows us to make a decision: wait, or intervene?</li>
+</ul>
 
-      <p>Termination Protocol:</p>
+<h3>Identifying Blocking Locks</h3>
+<p>PostgreSQL is a patient gatekeeper. If a migration requires a lock, it will wait. And if another query is holding that lock, everything behind it will queue. The longer the queue, the more pressure builds, until finally—timeouts, failures, and rolling errors spread across the application.</p>
 
-      <pre><code class="language-sql">
--- Cancel single blocking process
-SELECT pg_cancel_backend(8821);
+<pre><code class="language-sql">
+-- Identify transactions that are waiting for a lock
+SELECT blocking.pid AS blocking_pid, blocked.pid AS blocked_pid, 
+       blocking.query AS blocking_query, blocked.query AS blocked_query
+FROM pg_stat_activity blocked
+JOIN pg_stat_activity blocking
+ON blocked.wait_event_type = 'Lock' AND blocked.wait_event IS NOT NULL
+AND blocked.wait_event = blocking.wait_event
+ORDER BY blocking_pid;
+</code></pre>
 
--- Force terminate unresponsive process
-SELECT pg_terminate_backend(8821);
+<p><strong>What this tells us:</strong></p>
+<ul>
+  <li>It reveals which queries are blocking others.</li>
+  <li>It helps us determine if a migration is stalled due to an uncommitted transaction.</li>
+  <li>It shows whether user queries (e.g., long-running reports) are affecting migrations.</li>
+</ul>
 
--- Kill all long-running queries (>5 minutes)
-SELECT pg_terminate_backend(pid)
-FROM pg_stat_activity
-WHERE (now() - query_start) > '5 minutes'::interval
-AND pid <> pg_backend_pid();
-      </code></pre>
+<h3>Tracking Index Creation Progress</h3>
+<p>Creating an index <code>CONCURRENTLY</code> allows us to avoid locking writes, but it can still take time. It is important to know how far along an index creation process is.</p>
 
-      <h2>Final Thoughts</h2>
-      <p>Zero-downtime PostgreSQL migrations aren't just about avoiding outages; they're about ensuring a seamless user experience and safeguarding your business reputation. By mastering these patterns, you're equipping yourself to handle migrations confidently, making your deployments robust and reliable.</p>
-    `,
-  },
+<pre><code class="language-sql">
+-- Check the progress of active index creation
+SELECT pid, phase, index_relid::regclass, 
+       now() - query_start AS duration, query
+FROM pg_stat_progress_create_index;
+</code></pre>
+
+<p><strong>What this tells us:</strong></p>
+<ul>
+  <li>It tracks the <code>CREATE INDEX CONCURRENTLY</code> process.</li>
+  <li>It reveals whether an index build is stuck in validation.</li>
+  <li>It helps us estimate how much longer an index creation will take.</li>
+</ul>
+
+<h3>Finding and Terminating Problem Queries</h3>
+<p>Sometimes, a query must die. A migration cannot proceed if a long-running transaction refuses to yield. But we must tread carefully. Killing queries arbitrarily can cause errors, lost work, and rollback storms.</p>
+
+<h4>Canceling a Query (Gentle Approach)</h4>
+<p>First, we attempt to cancel the query gracefully:</p>
+
+<pre><code class="language-sql">
+-- Cancel a long-running query without terminating the backend process
+SELECT pg_cancel_backend(pid) 
+FROM pg_stat_activity 
+WHERE now() - query_start > interval '5 minutes';
+</code></pre>
+
+<p>This sends a soft termination signal. If the query can be safely canceled, it will stop.</p>
+
+<h4>Forcibly Terminating a Query (Last Resort)</h4>
+<p>If cancellation does not work, we must remove the process entirely:</p>
+
+<pre><code class="language-sql">
+-- Kill a query by terminating the backend process
+SELECT pg_terminate_backend(pid) 
+FROM pg_stat_activity 
+WHERE now() - query_start > interval '10 minutes';
+</code></pre>
+
+<p><strong>When to use termination:</strong></p>
+<ul>
+  <li>When a query has been running far beyond an acceptable threshold.</li>
+  <li>When blocking locks are preventing migrations from proceeding.</li>
+  <li>When a migration is failing because a process is stuck in an uncommitted state.</li>
+</ul>
+
+<h3>Keeping Watch During a Migration</h3>
+<p>It is not enough to check once and walk away. Migration observability is an ongoing process. Some habits that ensure smooth transitions:</p>
+<ul>
+  <li>Run <code>pg_stat_activity</code> every few minutes to watch for slow queries.</li>
+  <li>Check <code>pg_stat_progress_create_index</code> when creating large indexes.</li>
+  <li>Use <code>pg_stat_replication</code> to ensure streaming replication isn't lagging due to a migration.</li>
+  <li>Set up an alerting system to notify when queries exceed a reasonable execution time.</li>
+</ul>
+
+    <h2>Final Thoughts</h2>
+    <p>PostgreSQL does not resist change—it resists careless change. By understanding its mechanisms, we find ways to move forward while preserving the system’s integrity. We do not break its rules; we learn to work within them.</p>
+  `,
+},
+
+
   {
     slug: "building-high-performance-ticketing-systems",
     title: "Building High-Performance Ticketing Systems",

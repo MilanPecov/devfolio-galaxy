@@ -4,10 +4,10 @@ import { ArrowRight, Database, Code, Server } from "lucide-react";
 
 const posts = [
   {
-    slug: "zero-downtime-postgresql-migrations",
-    title: "The Essential Guide to Zero-Downtime PostgreSQL Migrations in Production",
+    slug: "evolving-postgresql-without-breaking-things",
+    title: "Evolving PostgreSQL Without Breaking the World",
     excerpt:
-      "Learn how to execute PostgreSQL schema changes without interrupting your service, using concurrent indexes, batched updates, and other battle-tested strategies.",
+      "PostgreSQL is built for integrity, but applications demand agility. How do you evolve a live database without halting the system? This guide explores zero-downtime migration techniques—concurrent indexing, safe foreign keys, and schema changes that preserve uptime.",
     date: "March 15, 2024",
     readTime: "10 min read",
     categories: ["Database", "PostgreSQL", "DevOps", "Django"],
