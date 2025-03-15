@@ -148,7 +148,7 @@ const BlogPost = () => {
               </div>
             )}
 
-            {/* Chapters section */}
+            {/* Chapters list */}
             {hasChapters && (
               <div className="mt-8">
                 <h2 className="text-2xl font-semibold mb-6 text-left">Chapters</h2>
