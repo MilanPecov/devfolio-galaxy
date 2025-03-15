@@ -1,5 +1,5 @@
 
-import blogData from '../data/blogData.json';
+import blogData from '../content/json/blogData.json';
 
 interface BlogDataEntry {
   slug: string;

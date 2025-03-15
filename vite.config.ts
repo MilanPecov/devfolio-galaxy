@@ -9,8 +9,10 @@ import { exec } from 'child_process';
 const isGitHubPages = process.env.GITHUB_ACTIONS === "true";
 const BASE_URL = isGitHubPages ? "/devfolio-galaxy/" : "/";
 
-// Function to generate blog data before build
-function generateBlogData(): Plugin {
+/**
+ * Custom Vite plugin to generate blog data before the build process
+ */
+function generateBlogDataPlugin(): Plugin {
   return {
     name: 'generate-blog-data',
     buildStart() {
@@ -44,7 +46,7 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     mode === "development" ? componentTagger() : false,
-    generateBlogData(),
+    generateBlogDataPlugin(),
   ].filter(Boolean) as Plugin[],
   resolve: {
     alias: {

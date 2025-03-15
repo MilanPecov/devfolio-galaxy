@@ -1,65 +1,84 @@
-
 import fs from 'fs';
 import path from 'path';
-import matter from 'gray-matter';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import { BlogPostFrontmatter } from '../domain/BlogPost';
 
-// Get proper __dirname equivalent for ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// Path configurations
-const CONTENT_DIR = path.join(__dirname, '../content');
-const OUTPUT_FILE = path.join(__dirname, '../data/blogData.json');
-
-// Ensure the data directory exists
-if (!fs.existsSync(path.dirname(OUTPUT_FILE))) {
-  fs.mkdirSync(path.dirname(OUTPUT_FILE), { recursive: true });
+interface BlogDataEntry {
+  slug: string;
+  frontmatter: Record<string, any>;
+  content: string;
 }
 
-// Process each markdown file
-function generateBlogData() {
-  try {
-    const files = fs.readdirSync(CONTENT_DIR);
-    const markdownFiles = files.filter(file => file.endsWith('.md'));
-    
-    const blogData = markdownFiles.map(filename => {
-      const filePath = path.join(CONTENT_DIR, filename);
-      const fileContent = fs.readFileSync(filePath, 'utf-8');
-      
-      // Parse frontmatter using gray-matter (works in Node.js environment)
-      const { data, content } = matter(fileContent);
-      
-      // Extract slug from filename if not provided in frontmatter
-      const slug = data.slug || filename.replace('.md', '');
-      
-      return {
-        slug,
-        frontmatter: data as BlogPostFrontmatter,
-        content
-      };
-    });
-    
-    // Write processed data to JSON file
-    fs.writeFileSync(
-      OUTPUT_FILE, 
-      JSON.stringify(blogData, null, 2)
-    );
-    
-    console.log(`✓ Blog data generated successfully: ${blogData.length} posts processed`);
-    return blogData;
-  } catch (error) {
-    console.error('Error generating blog data:', error);
-    throw error;
+// Define constant for the content directory and blog data file path
+const CONTENT_DIR = path.resolve(__dirname, '..', 'content');
+const BLOG_DATA_PATH = path.join(CONTENT_DIR, 'blogData.json');
+
+// Ensure the content directory exists
+if (!fs.existsSync(CONTENT_DIR)) {
+  fs.mkdirSync(CONTENT_DIR, { recursive: true });
+}
+
+/**
+ * Repository responsible for fetching blog content
+ */
+export class BlogRepository {
+  private blogData: BlogDataEntry[];
+
+  constructor() {
+    // Load pre-processed blog data from JSON at runtime
+    try {
+      const fileContent = fs.readFileSync(BLOG_DATA_PATH, 'utf-8');
+      this.blogData = JSON.parse(fileContent) as BlogDataEntry[];
+    } catch (error) {
+      console.error('Error loading blog data:', error);
+      this.blogData = [];
+    }
   }
-}
 
-// Default export for ES modules
-export default generateBlogData;
+  /**
+   * Get a list of all available blog post slugs
+   */
+  public getBlogSlugs(): string[] {
+    return this.blogData.map(entry => entry.slug);
+  }
 
-// Also provide a way to run directly
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  generateBlogData();
+  /**
+   * Get blog content by slug
+   */
+  public async getBlogContent(slug: string): Promise<{ frontmatter: Record<string, any>, content: string } | null> {
+    const entry = this.blogData.find(entry => entry.slug === slug);
+
+    if (!entry) {
+      console.error(`Blog post with slug: ${slug} not found`);
+      return null;
+    }
+
+    return {
+      frontmatter: entry.frontmatter,
+      content: entry.content
+    };
+  }
+
+  /**
+   * This method remains for backward compatibility but uses the pre-processed data
+   */
+  public async importBlogContent(slug: string): Promise<string> {
+    const entry = await this.getBlogContent(slug);
+
+    if (!entry) {
+      throw new Error(`Blog post with slug: ${slug} not found`);
+    }
+
+    // Recreate a markdown-like string with frontmatter for compatibility
+    const frontmatterStr = '---\n' +
+      Object.entries(entry.frontmatter)
+        .map(([key, value]) => {
+          if (Array.isArray(value)) {
+            return `${key}:\n${value.map(item => `  - ${item}`).join('\n')}`;
+          }
+          return `${key}: ${value}`;
+        })
+        .join('\n') +
+      '\n---\n';
+
+    return frontmatterStr + entry.content;
+  }
 }

@@ -12,7 +12,7 @@ const __dirname = dirname(__filename);
 
 // Path configurations
 const CONTENT_DIR = path.join(__dirname, '../content');
-const OUTPUT_FILE = path.join(__dirname, '../data/blogData.json');
+const OUTPUT_FILE = path.join(__dirname, '../content/json/blogData.json');
 
 // Ensure the data directory exists
 if (!fs.existsSync(path.dirname(OUTPUT_FILE))) {

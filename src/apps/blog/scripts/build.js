@@ -1,5 +1,3 @@
-
-// ES Module version of the build script
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import generateBlogData from './generateBlogData.js';
@@ -7,8 +5,9 @@ import generateBlogData from './generateBlogData.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Run the generator script
-console.log('Generating blog data...');
+// Ensure the script executes in the correct directory
+process.chdir(__dirname);
+
 try {
   generateBlogData();
 } catch (error) {
