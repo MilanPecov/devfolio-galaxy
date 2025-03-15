@@ -1,3 +1,4 @@
+
 import { Database, Server, Code, BookText, Layout, BarChart, Key, RefreshCw, Eye, BookOpen } from 'lucide-react';
 import React from 'react';
 import { marked } from 'marked';
@@ -107,14 +108,30 @@ const getChapters = async (slug: string): Promise<Chapter[]> => {
       const chaptersPromises = chapterFiles.map(async (chapterFile) => {
         try {
           const fileContents = await importChapterContent(slug, chapterFile.id);
-          const { data } = matter(fileContents);
           
-          return {
-            id: chapterFile.id,
-            title: data.title || chapterFile.id,
-            description: data.description || '',
-            order: data.order || 0
-          };
+          // Safely parse frontmatter
+          try {
+            const { data } = matter(fileContents);
+            
+            return {
+              id: chapterFile.id,
+              title: data.title || chapterFile.id,
+              description: data.description || '',
+              order: data.order || 0
+            };
+          } catch (error) {
+            console.error(`Failed to parse frontmatter for chapter ${chapterFile.id}:`, error);
+            // Extract title from first heading if frontmatter fails
+            const titleMatch = fileContents.match(/^#\s+(.*)/m);
+            const title = titleMatch ? titleMatch[1] : chapterFile.id.charAt(0).toUpperCase() + chapterFile.id.slice(1).replace(/-/g, ' ');
+            
+            return {
+              id: chapterFile.id,
+              title: title,
+              description: '',
+              order: 0
+            };
+          }
         } catch (error) {
           console.error(`Failed to load chapter ${chapterFile.id}:`, error);
           return {
@@ -147,6 +164,55 @@ const importChapterContent = async (slug: string, chapterId: string): Promise<st
   }
 };
 
+// Helper function to safely parse markdown frontmatter
+const parseFrontmatter = (content: string) => {
+  try {
+    return matter(content);
+  } catch (error) {
+    console.error('Error parsing frontmatter:', error);
+    
+    // Manual extraction if the parser fails
+    let cleanedContent = content;
+    let extractedData = {};
+    
+    if (content.startsWith('---')) {
+      const secondMarkerIndex = content.indexOf('---', 3);
+      if (secondMarkerIndex !== -1) {
+        const frontmatterSection = content.substring(3, secondMarkerIndex).trim();
+        cleanedContent = content.substring(secondMarkerIndex + 3).trim();
+        
+        // Simple YAML-like parsing
+        const lines = frontmatterSection.split('\n');
+        lines.forEach(line => {
+          const parts = line.split(':');
+          if (parts.length >= 2) {
+            const key = parts[0].trim();
+            const value = parts.slice(1).join(':').trim();
+            // Remove quotes if they exist
+            const cleanValue = value.replace(/^["'](.*)["']$/, '$1');
+            
+            if (key === 'categories') {
+              try {
+                extractedData[key] = JSON.parse(cleanValue);
+              } catch {
+                extractedData[key] = [cleanValue];
+              }
+            } else {
+              extractedData[key] = cleanValue;
+            }
+          }
+        });
+      }
+    }
+    
+    return { 
+      data: extractedData, 
+      content: cleanedContent,
+      isEmpty: Object.keys(extractedData).length === 0
+    };
+  }
+};
+
 export const loadBlogPost = async (slug: string): Promise<{ post: BlogPost | null, chapters: Chapter[] }> => {
   try {
     const chapters = await getChapters(slug);
@@ -154,40 +220,13 @@ export const loadBlogPost = async (slug: string): Promise<{ post: BlogPost | nul
     
     const fileContents = await importBlogContent(slug);
     
-    try {
-      const { data, content } = matter(fileContents);
-      
-      if (!data || Object.keys(data).length === 0) {
-        console.error(`Failed to parse frontmatter for ${slug}`);
-        throw new Error(`Failed to parse frontmatter for ${slug}`);
-      }
-      
-      const blogPost: BlogPost = {
-        slug: data.slug || slug,
-        title: data.title || 'Untitled Post',
-        excerpt: data.excerpt || 'No excerpt available',
-        date: data.date || 'No date',
-        readTime: data.readTime || '5 min read',
-        categories: Array.isArray(data.categories) ? data.categories : [],
-        icon: getIconComponent(data.icon || 'Code', data.iconColor || 'blue'),
-        content: content || '',
-        hasChapters
-      };
-      
-      return { post: blogPost, chapters };
-    } catch (error) {
-      console.error(`Error parsing frontmatter for ${slug}:`, error);
+    // Use our safe parser
+    const { data, content, isEmpty } = parseFrontmatter(fileContents);
+    
+    if (isEmpty) {
+      console.error(`Empty or invalid frontmatter for ${slug}`);
       
       if (slug === 'evolving-postgresql-without-breaking-things') {
-        let cleanedContent = fileContents;
-        
-        if (fileContents.startsWith('---')) {
-          const secondMarkerIndex = fileContents.indexOf('---', 3);
-          if (secondMarkerIndex !== -1) {
-            cleanedContent = fileContents.substring(secondMarkerIndex + 3).trim();
-          }
-        }
-        
         const defaultPost: BlogPost = {
           slug: slug,
           title: 'Evolving PostgreSQL Without Breaking the World',
@@ -196,15 +235,29 @@ export const loadBlogPost = async (slug: string): Promise<{ post: BlogPost | nul
           readTime: '40 min read',
           categories: ['Database', 'PostgreSQL', 'DevOps'],
           icon: getIconComponent('Database', 'blue'),
-          content: cleanedContent,
+          content: content,
           hasChapters
         };
         
         return { post: defaultPost, chapters };
       }
       
-      throw error;
+      throw new Error(`Failed to parse frontmatter for ${slug}`);
     }
+    
+    const blogPost: BlogPost = {
+      slug: data.slug || slug,
+      title: data.title || 'Untitled Post',
+      excerpt: data.excerpt || 'No excerpt available',
+      date: data.date || 'No date',
+      readTime: data.readTime || '5 min read',
+      categories: Array.isArray(data.categories) ? data.categories : [],
+      icon: getIconComponent(data.icon || 'Code', data.iconColor || 'blue'),
+      content: content || '',
+      hasChapters
+    };
+    
+    return { post: blogPost, chapters };
   } catch (error) {
     console.error(`Failed to load blog post with slug: ${slug}`, error);
     return { post: null, chapters: [] };
@@ -226,43 +279,20 @@ export const loadBlogChapter = async (slug: string, chapterId: string): Promise<
     
     const chapterContent = await importChapterContent(slug, chapterId);
     
-    try {
-      const { content } = matter(chapterContent);
-      
-      const chapterInfo: ChapterInfo = {
-        ...chapters[chapterIndex],
-        totalChapters: chapters.length,
-        allChapters: chapters
-      };
-      
-      return {
-        post,
-        content,
-        chapterInfo
-      };
-    } catch (error) {
-      console.error(`Error parsing chapter content for ${slug}/${chapterId}:`, error);
-      
-      let cleanedContent = chapterContent;
-      if (chapterContent.startsWith('---')) {
-        const secondMarkerIndex = chapterContent.indexOf('---', 3);
-        if (secondMarkerIndex !== -1) {
-          cleanedContent = chapterContent.substring(secondMarkerIndex + 3).trim();
-        }
-      }
-      
-      const chapterInfo: ChapterInfo = {
-        ...chapters[chapterIndex],
-        totalChapters: chapters.length,
-        allChapters: chapters
-      };
-      
-      return {
-        post,
-        content: cleanedContent,
-        chapterInfo
-      };
-    }
+    // Use our safe parser for chapter content too
+    const { content } = parseFrontmatter(chapterContent);
+    
+    const chapterInfo: ChapterInfo = {
+      ...chapters[chapterIndex],
+      totalChapters: chapters.length,
+      allChapters: chapters
+    };
+    
+    return {
+      post,
+      content,
+      chapterInfo
+    };
   } catch (error) {
     console.error(`Failed to load chapter ${chapterId} for post ${slug}:`, error);
     return null;
