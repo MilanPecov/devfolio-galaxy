@@ -4,7 +4,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { ExternalLink } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { parseMarkdownToHtml } from '@/services/blogService';
+import { parseMarkdownToHtml } from '@/services/blog';
 
 /**
  * Process blog post content from markdown to React components
