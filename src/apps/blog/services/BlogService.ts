@@ -1,8 +1,8 @@
 import { BlogRepository } from '../repository/BlogRepository';
-import { parseFrontmatter } from '../utils/frontmatterUtils';
 
 import { BlogPost } from "@/apps/blog";
-import { getIconComponent } from "@/apps/blog/utils/iconUtils.tsx";
+import { createBlogPostContent, getIconComponent, parseFrontmatter } from "@/apps/blog/utils";
+
 
 /**
  * Main service for handling blog operations
@@ -38,9 +38,9 @@ export class BlogService {
         readTime: data.readTime || '5 min read',
         categories: Array.isArray(data.categories) ? data.categories : [],
         icon: getIconComponent(data.icon || 'Code', data.iconColor || 'blue'),
-        content: content || ''
+        content: createBlogPostContent(content || '')
       };
-      
+
       return blogPost;
     } catch (error) {
       console.error(`Failed to load blog post with slug: ${slug}`, error);

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { useParams, Link } from "react-router-dom";
-import { createBlogPostContent } from "@/utils/blogUtils";
 import { loadBlogPost, type BlogPost as BlogPostType } from "@/apps/blog";
 import {
   Breadcrumb,
@@ -130,7 +129,7 @@ const BlogPost = () => {
             </div>
 
             <div className="prose prose-slate max-w-none prose-headings:text-left prose-p:text-left prose-strong:text-gray-900 prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-img:rounded-lg">
-              {post.content && createBlogPostContent(post.content)}
+              {post.content}
             </div>
           </div>
         </div>

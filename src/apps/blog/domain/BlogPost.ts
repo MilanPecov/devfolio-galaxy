@@ -9,7 +9,7 @@ export interface BlogPost {
   readTime: string;
   categories: string[];
   icon: ReactNode;
-  content?: string;
+  content?: ReactNode;
 }
 
 export interface BlogPostFrontmatter {
