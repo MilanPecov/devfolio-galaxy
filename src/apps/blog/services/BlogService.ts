@@ -1,5 +1,5 @@
 
-import { BlogRepository } from '../repository/BlogRepository';
+import { BlogRepository } from '@/apps/blog/repository/BlogRepository';
 import { BlogPost } from "@/apps/blog";
 import { createBlogPostContent, getIconComponent } from "@/apps/blog/utils";
 

@@ -22,6 +22,7 @@ if (!fs.existsSync(path.dirname(OUTPUT_FILE))) {
 // Process each markdown file
 function generateBlogData() {
   try {
+    console.log('Generating blog data...');
     const files = fs.readdirSync(CONTENT_DIR);
     const markdownFiles = files.filter(file => file.endsWith('.md'));
     

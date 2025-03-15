@@ -42,28 +42,4 @@ export class BlogRepository {
     };
   }
 
-  /**
-   * This method remains for backward compatibility but uses the pre-processed data
-   */
-  public async importBlogContent(slug: string): Promise<string> {
-    const entry = await this.getBlogContent(slug);
-    
-    if (!entry) {
-      throw new Error(`Blog post with slug: ${slug} not found`);
-    }
-    
-    // Recreate a markdown-like string with frontmatter for compatibility
-    const frontmatterStr = '---\n' + 
-      Object.entries(entry.frontmatter)
-        .map(([key, value]) => {
-          if (Array.isArray(value)) {
-            return `${key}:\n${value.map(item => `  - ${item}`).join('\n')}`;
-          }
-          return `${key}: ${value}`;
-        })
-        .join('\n') + 
-      '\n---\n';
-    
-    return frontmatterStr + entry.content;
-  }
 }

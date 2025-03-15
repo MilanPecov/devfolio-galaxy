@@ -17,7 +17,6 @@ function generateBlogDataPlugin(): Plugin {
     name: 'generate-blog-data',
     buildStart() {
       return new Promise<void>((resolve, reject) => {
-        console.log('Generating blog data...');
         exec('node src/apps/blog/scripts/build.js', (error, stdout, stderr) => {
           if (error) {
             console.error(`Blog data generation error: ${error.message}`);
