@@ -90,9 +90,11 @@ export const loadAllBlogPosts = async (): Promise<BlogPost[]> => {
 };
 
 // Function to parse markdown content to HTML
+// Update the return type to handle the possibility of a Promise<string>
 export const parseMarkdownToHtml = (markdown: string): string => {
+  // Use marked.parse in synchronous mode by explicitly specifying no async options
   return marked.parse(markdown, {
     gfm: true, // GitHub flavored markdown
-    breaks: true // Convert line breaks to <br>
-  });
+    breaks: true, // Convert line breaks to <br>
+  }) as string; // Cast to string since we're using the sync version
 };
