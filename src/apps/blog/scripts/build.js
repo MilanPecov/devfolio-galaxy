@@ -13,5 +13,5 @@ const tsNode = require('ts-node');
 tsNode.register({ transpileOnly: true });
 
 // Import and run the generator script
-import generateBlogData from './generateBlogData.js';
+import generateBlogData from './generateBlogData.ts';
 generateBlogData();

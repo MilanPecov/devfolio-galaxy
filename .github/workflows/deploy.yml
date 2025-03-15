@@ -28,7 +28,7 @@ jobs:
         run: npm install
         
       - name: Generate blog data
-        run: node --experimental-modules src/apps/blog/scripts/build.js
+        run: node --loader ts-node/esm src/apps/blog/scripts/build.js
 
       - name: Build project
         run: npm run build
