@@ -75,7 +75,7 @@ const Blog = () => {
           <div className="flex flex-col space-y-8 max-w-4xl mx-auto">
             {posts.map((post, index) => (
               <article
-                key={post.slug}
+                key={post.slug || index}
                 className="group relative bg-white rounded-xl p-8 hover:shadow-xl transition-all duration-500 animate-fade-up border border-gray-100 hover:border-gray-200"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
@@ -85,9 +85,9 @@ const Blog = () => {
                   </div>
                   <div className="flex-1 text-left">
                     <div className="flex flex-wrap gap-2 mb-3">
-                      {post.categories && post.categories.map((category) => (
+                      {post.categories && post.categories.map((category, catIndex) => (
                         <span
-                          key={category}
+                          key={`${post.slug}-cat-${catIndex}`}
                           className="px-3 py-1 bg-[#1E293B]/5 text-[#1E293B] rounded-full text-xs font-medium"
                         >
                           {category}
@@ -99,10 +99,10 @@ const Blog = () => {
                       <span>{post.readTime}</span>
                     </div>
                     <h3 className="text-xl md:text-2xl font-semibold mb-3 text-[#1E293B] group-hover:text-[#334155] transition-colors text-left">
-                      {post.title || "Untitled Post"}
+                      {post.title}
                     </h3>
                     <p className="text-gray-600 mb-6 text-left">
-                      {post.excerpt || "No excerpt available"}
+                      {post.excerpt}
                     </p>
                     <div className="text-left">
                       <Link

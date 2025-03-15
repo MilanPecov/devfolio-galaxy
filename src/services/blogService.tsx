@@ -29,63 +29,87 @@ const getIconComponent = (iconName: string, colorClass: string = 'blue'): React.
   }
 };
 
-// Manual frontmatter parser since gray-matter is having issues
+// Improved frontmatter parser that handles YAML-style frontmatter more robustly
 const parseMarkdownFrontmatter = (content: string): { data: Record<string, any>; content: string } => {
-  // Check if the content starts with a frontmatter delimiter
-  if (!content.startsWith('---')) {
-    return { data: {}, content };
+  // Check if content exists and starts with frontmatter delimiter
+  if (!content || !content.startsWith('---')) {
+    console.warn('Content missing or no frontmatter delimiter found');
+    return { data: {}, content: content || '' };
   }
 
-  // Find the end of the frontmatter block
+  // Find the end of the frontmatter block (second ---)
   const endOfFrontmatter = content.indexOf('---', 3);
   if (endOfFrontmatter === -1) {
-    return { data: {}, content };
+    console.warn('No closing frontmatter delimiter found');
+    return { data: {}, content: content };
   }
 
   // Extract frontmatter and content
   const frontmatterBlock = content.substring(3, endOfFrontmatter).trim();
   const mainContent = content.substring(endOfFrontmatter + 3).trim();
   
-  // Parse frontmatter
+  // Parse frontmatter using a more robust approach
   const data: Record<string, any> = {};
   const lines = frontmatterBlock.split('\n');
   
   let currentKey: string | null = null;
   let inArray = false;
+  let arrayItems: string[] = [];
   
-  for (const line of lines) {
-    const trimmedLine = line.trim();
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
     
     // Skip empty lines
-    if (!trimmedLine) continue;
+    if (!line) continue;
     
-    // Check if this is a list item
-    if (trimmedLine.startsWith('- ') && currentKey && inArray) {
-      if (!Array.isArray(data[currentKey])) {
-        data[currentKey] = [];
+    // Check if this is a list item (part of an array)
+    if (line.startsWith('- ') && currentKey) {
+      inArray = true;
+      const value = line.substring(2).trim();
+      arrayItems.push(value);
+      
+      // If this is the last line or the next line doesn't start with a dash,
+      // save the accumulated array
+      const nextLine = i < lines.length - 1 ? lines[i + 1].trim() : '';
+      if (i === lines.length - 1 || !nextLine.startsWith('- ')) {
+        data[currentKey] = [...arrayItems];
+        arrayItems = [];
       }
-      data[currentKey].push(trimmedLine.substring(2).trim());
       continue;
     }
     
     // Check if this is a new key-value pair
-    const colonIndex = trimmedLine.indexOf(':');
+    const colonIndex = line.indexOf(':');
     if (colonIndex > 0) {
-      currentKey = trimmedLine.substring(0, colonIndex).trim();
-      const value = trimmedLine.substring(colonIndex + 1).trim();
+      // Save any previous array if we were building one
+      if (inArray && currentKey && arrayItems.length > 0) {
+        data[currentKey] = [...arrayItems];
+        arrayItems = [];
+        inArray = false;
+      }
       
-      // Check if this is potentially the start of an array
+      // Extract new key and value
+      currentKey = line.substring(0, colonIndex).trim();
+      let value = line.substring(colonIndex + 1).trim();
+      
+      // Empty value might indicate the start of an array in the next line
       if (!value) {
         inArray = true;
-        data[currentKey] = [];
+        arrayItems = [];
       } else {
+        // Store simple key-value pair
         inArray = false;
         data[currentKey] = value;
       }
     }
   }
   
-  console.log("Parsed frontmatter:", data); // Debug
+  // Make sure we save any final array that was being built
+  if (inArray && currentKey && arrayItems.length > 0) {
+    data[currentKey] = [...arrayItems];
+  }
+  
+  console.log("Parsed frontmatter:", data); // Debug log
   
   return {
     data,
@@ -116,17 +140,20 @@ export const loadBlogPost = async (slug: string): Promise<BlogPost | null> => {
         return null;
     }
     
-    console.log(`Raw content for ${slug}:`, fileContents.substring(0, 150) + '...');
+    console.log(`Raw content for ${slug} (first 100 chars):`, fileContents.substring(0, 100).replace(/\n/g, '\\n') + '...');
     
-    // Parse frontmatter with our custom parser
+    // Parse frontmatter with our improved parser
     try {
-      // Parse the markdown content
       const { data, content } = parseMarkdownFrontmatter(fileContents);
       
       console.log(`Parsed frontmatter for ${slug}:`, data);
       
+      if (Object.keys(data).length === 0) {
+        console.error(`Failed to parse frontmatter for ${slug}`);
+      }
+      
       // Map the parsed data to our BlogPost interface with validation
-      return {
+      const blogPost: BlogPost = {
         slug: data.slug || slug,
         title: data.title || 'Untitled Post',
         excerpt: data.excerpt || 'No excerpt available',
@@ -136,6 +163,14 @@ export const loadBlogPost = async (slug: string): Promise<BlogPost | null> => {
         icon: getIconComponent(data.icon || 'Code', data.iconColor || 'blue'),
         content: content || ''
       };
+      
+      console.log(`Prepared blog post object for ${slug}:`, {
+        title: blogPost.title,
+        excerpt: blogPost.excerpt.substring(0, 50) + '...',
+        categories: blogPost.categories
+      });
+      
+      return blogPost;
     } catch (parseError) {
       console.error(`Error parsing frontmatter for ${slug}:`, parseError);
       return {
@@ -197,7 +232,8 @@ export const loadAllBlogPosts = async (): Promise<BlogPost[]> => {
     console.log('Successfully loaded blog posts:', validPosts.length);
     console.log('First post sample:', validPosts[0] ? {
       title: validPosts[0].title,
-      excerpt: validPosts[0].excerpt?.substring(0, 50) + '...'
+      excerpt: validPosts[0].excerpt?.substring(0, 50) + '...',
+      categories: validPosts[0].categories
     } : 'No posts');
     
     return validPosts;
