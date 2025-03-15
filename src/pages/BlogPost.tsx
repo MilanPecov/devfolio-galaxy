@@ -153,7 +153,7 @@ const BlogPost = () => {
               <div className="mt-8">
                 <h2 className="text-2xl font-semibold mb-6 text-left">Chapters</h2>
                 <div className="space-y-4">
-                  {chapters.map((chapter, index) => (
+                  {chapters.map((chapter) => (
                     <Link 
                       key={chapter.id}
                       to={`/blog/${slug}/${chapter.id}`}
@@ -161,7 +161,7 @@ const BlogPost = () => {
                     >
                       <div className="flex items-start gap-4">
                         <div className="bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center text-gray-600 font-medium">
-                          {index + 1}
+                          {chapter.order}
                         </div>
                         <div>
                           <h3 className="font-medium text-lg text-left">{chapter.title}</h3>
