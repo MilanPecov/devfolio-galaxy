@@ -13,6 +13,9 @@ const BlogPost = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0);
+    
     const fetchPost = async () => {
       try {
         if (!slug) {
