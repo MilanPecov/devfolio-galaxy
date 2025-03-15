@@ -1,17 +1,17 @@
 
 // ES Module version of the build script
-import { createRequire } from 'module';
 import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
+import { dirname } from 'path';
+import generateBlogData from './generateBlogData.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const require = createRequire(import.meta.url);
 
-// Set up ts-node for TypeScript execution
-const tsNode = require('ts-node');
-tsNode.register({ transpileOnly: true });
-
-// Import and run the generator script
-import generateBlogData from './generateBlogData.ts';
-generateBlogData();
+// Run the generator script
+console.log('Generating blog data...');
+try {
+  generateBlogData();
+} catch (error) {
+  console.error('Error generating blog data:', error);
+  process.exit(1);
+}
