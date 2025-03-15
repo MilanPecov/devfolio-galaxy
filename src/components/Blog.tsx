@@ -1,7 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { loadAllBlogPosts, type BlogPost } from "@/services/blogService";
+import { loadAllBlogPosts, type BlogPost } from "@/services/blog";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import BlogList from "@/components/BlogList";

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import { loadAllBlogPosts, type BlogPost } from "@/services/blogService";
+import { loadAllBlogPosts, type BlogPost } from "@/services/blog";
 import { toast } from "sonner";
 import {
   Breadcrumb,

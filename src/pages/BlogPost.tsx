@@ -1,10 +1,8 @@
-
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 import { createBlogPostContent } from "@/utils/blogUtils";
-import { loadBlogPost, type BlogPost } from "@/services/blogService";
+import { loadBlogPost, type BlogPost as BlogPostType } from "@/services/blog";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -16,7 +14,7 @@ import {
 
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
-  const [post, setPost] = useState<BlogPost | null>(null);
+  const [post, setPost] = useState<BlogPostType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
