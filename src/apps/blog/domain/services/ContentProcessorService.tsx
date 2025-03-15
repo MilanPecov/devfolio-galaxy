@@ -4,12 +4,18 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { ExternalLink } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table.tsx";
-import { parseMarkdownToHtml } from '@/apps/blog';
+import { MarkdownService } from "@/apps/blog/domain/services/MarkdownService.ts";
 
 /**
  * Service responsible for processing blog content and converting it to React components
  */
 export class ContentProcessorService {
+  private markdownService: MarkdownService;
+
+  constructor() {
+    this.markdownService = new MarkdownService();
+  }
+
   /**
    * Main public method to process blog post content from markdown to React components
    */
@@ -17,7 +23,7 @@ export class ContentProcessorService {
     if (!content) return [];
     
     // Convert markdown to HTML
-    const htmlContent = parseMarkdownToHtml(content);
+    const htmlContent = this.markdownService.parseMarkdownToHtml(content);
     
     // Parse HTML to React components
     const parser = new DOMParser();
@@ -223,11 +229,3 @@ export class ContentProcessorService {
     }
   }
 }
-
-// Create and export a singleton instance for easy access
-export const contentProcessorService = new ContentProcessorService();
-
-// Export a convenient function that matches the original API
-export const createBlogPostContent = (content: string): React.ReactNode[] => {
-  return contentProcessorService.processContent(content);
-};

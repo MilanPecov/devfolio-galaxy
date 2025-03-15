@@ -1,7 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { loadAllBlogPosts, type BlogPost } from "@/apps/blog";
+import { blogController, type BlogPost } from "@/apps/blog";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button.tsx";
 import BlogList from "@/apps/blog/ui/BlogList.tsx";
@@ -16,7 +16,7 @@ const Blog = () => {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const allPosts = await loadAllBlogPosts();
+        const allPosts = await blogController.loadAllBlogPosts();
         
         // Check if posts were successfully loaded
         if (allPosts && allPosts.length > 0) {

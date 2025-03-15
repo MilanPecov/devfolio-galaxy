@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
-import { loadAllBlogPosts, type BlogPost } from "@/apps/blog";
+import { blogController, type BlogPost } from "@/apps/blog";
 import { toast } from "sonner";
 import {
   Breadcrumb,
@@ -27,7 +27,7 @@ const BlogListPage = () => {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const allPosts = await loadAllBlogPosts();
+        const allPosts = await blogController.loadAllBlogPosts();
         
         // Check if posts were successfully loaded
         if (allPosts && allPosts.length > 0) {

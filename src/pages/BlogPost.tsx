@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { useParams, Link } from "react-router-dom";
-import { loadBlogPost, type BlogPost as BlogPostType } from "@/apps/blog";
+import { blogController, type BlogPost as BlogPostType } from "@/apps/blog";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -28,7 +28,7 @@ const BlogPost = () => {
           return;
         }
         
-        const postData = await loadBlogPost(slug);
+        const postData = await blogController.loadBlogPost(slug);
         if (postData) {
           setPost(postData);
         } else {

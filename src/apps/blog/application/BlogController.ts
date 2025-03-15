@@ -1,17 +1,18 @@
-
 import { BlogRepository } from '@/apps/blog/repository/BlogRepository';
 import { BlogPost } from "@/apps/blog";
-import { createBlogPostContent } from "@/apps/blog/services/ContentProcessorService";
+import { ContentProcessorService } from "@/apps/blog/domain/services/ContentProcessorService.tsx";
 import { getIconComponent } from "@/apps/blog/utils";
 
 /**
  * Main service for handling blog operations
  */
-export class BlogService {
+export class BlogController {
   private repository: BlogRepository;
+  private contentProcessor: ContentProcessorService;
 
   constructor(repository: BlogRepository) {
     this.repository = repository;
+    this.contentProcessor = new ContentProcessorService();
   }
 
   /**
@@ -21,17 +22,17 @@ export class BlogService {
     try {
       // Get pre-processed blog content from repository
       const blogData = await this.repository.getBlogContent(slug);
-      
+
       if (!blogData) {
         return null;
       }
-      
+
       const { frontmatter, content } = blogData;
-      
+
       if (!frontmatter || Object.keys(frontmatter).length === 0) {
         console.warn(`No frontmatter found for ${slug}`);
       }
-      
+
       // Map the parsed data to our BlogPost interface with validation
       const blogPost: BlogPost = {
         slug: frontmatter.slug || slug,
@@ -41,7 +42,7 @@ export class BlogService {
         readTime: frontmatter.readTime || '5 min read',
         categories: Array.isArray(frontmatter.categories) ? frontmatter.categories : [],
         icon: getIconComponent(frontmatter.icon || 'Code', frontmatter.iconColor || 'blue'),
-        content: createBlogPostContent(content || '')
+        content: this.contentProcessor.processContent(content || '') // Use instance method
       };
 
       return blogPost;
