@@ -1,8 +1,8 @@
-
 import { BlogRepository } from '../repository/BlogRepository';
 import { parseFrontmatter } from '../utils/frontmatterUtils';
-import { getIconComponent } from '../utils/iconUtils';
-import { BlogPost, BlogPostFrontmatter } from '../domain/BlogPost';
+
+import { BlogPost } from "@/services/blog";
+import { getIconComponent } from "@/services/blog/utils/iconUtils.tsx";
 
 /**
  * Main service for handling blog operations
