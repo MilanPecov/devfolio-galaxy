@@ -1,14 +1,7 @@
 
-import matter from 'gray-matter';
-import { marked } from 'marked';
 import { Database, Server, Code } from 'lucide-react';
 import React from 'react';
-import { Buffer } from 'buffer';
-
-// Explicitly set Buffer on window for gray-matter
-if (typeof window !== 'undefined') {
-  window.Buffer = Buffer;
-}
+import { marked } from 'marked';
 
 // Define blog post types
 export interface BlogPost {
@@ -36,6 +29,94 @@ const getIconComponent = (iconName: string, colorClass: string = 'blue'): React.
   }
 };
 
+// Improved frontmatter parser that handles YAML-style frontmatter more robustly
+const parseMarkdownFrontmatter = (content: string): { data: Record<string, any>; content: string } => {
+  // Check if content exists and starts with frontmatter delimiter
+  if (!content || !content.startsWith('---')) {
+    console.warn('Content missing or no frontmatter delimiter found');
+    return { data: {}, content: content || '' };
+  }
+
+  // Find the end of the frontmatter block (second ---)
+  const endOfFrontmatter = content.indexOf('---', 3);
+  if (endOfFrontmatter === -1) {
+    console.warn('No closing frontmatter delimiter found');
+    return { data: {}, content: content };
+  }
+
+  // Extract frontmatter and content
+  const frontmatterBlock = content.substring(3, endOfFrontmatter).trim();
+  const mainContent = content.substring(endOfFrontmatter + 3).trim();
+  
+  // Parse frontmatter using a more robust approach
+  const data: Record<string, any> = {};
+  const lines = frontmatterBlock.split('\n');
+  
+  let currentKey: string | null = null;
+  let inArray = false;
+  let arrayItems: string[] = [];
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    
+    // Skip empty lines
+    if (!line) continue;
+    
+    // Check if this is a list item (part of an array)
+    if (line.startsWith('- ') && currentKey) {
+      inArray = true;
+      const value = line.substring(2).trim();
+      arrayItems.push(value);
+      
+      // If this is the last line or the next line doesn't start with a dash,
+      // save the accumulated array
+      const nextLine = i < lines.length - 1 ? lines[i + 1].trim() : '';
+      if (i === lines.length - 1 || !nextLine.startsWith('- ')) {
+        data[currentKey] = [...arrayItems];
+        arrayItems = [];
+      }
+      continue;
+    }
+    
+    // Check if this is a new key-value pair
+    const colonIndex = line.indexOf(':');
+    if (colonIndex > 0) {
+      // Save any previous array if we were building one
+      if (inArray && currentKey && arrayItems.length > 0) {
+        data[currentKey] = [...arrayItems];
+        arrayItems = [];
+        inArray = false;
+      }
+      
+      // Extract new key and value
+      currentKey = line.substring(0, colonIndex).trim();
+      let value = line.substring(colonIndex + 1).trim();
+      
+      // Empty value might indicate the start of an array in the next line
+      if (!value) {
+        inArray = true;
+        arrayItems = [];
+      } else {
+        // Store simple key-value pair
+        inArray = false;
+        data[currentKey] = value;
+      }
+    }
+  }
+  
+  // Make sure we save any final array that was being built
+  if (inArray && currentKey && arrayItems.length > 0) {
+    data[currentKey] = [...arrayItems];
+  }
+  
+  console.log("Parsed frontmatter:", data); // Debug log
+  
+  return {
+    data,
+    content: mainContent
+  };
+};
+
 // Helper function to load blog post content
 export const loadBlogPost = async (slug: string): Promise<BlogPost | null> => {
   try {
@@ -59,22 +140,20 @@ export const loadBlogPost = async (slug: string): Promise<BlogPost | null> => {
         return null;
     }
     
-    console.log(`Raw content for ${slug}:`, fileContents.substring(0, 200) + '...');
+    console.log(`Raw content for ${slug} (first 100 chars):`, fileContents.substring(0, 100).replace(/\n/g, '\\n') + '...');
     
-    // Parse frontmatter with proper error handling
+    // Parse frontmatter with our improved parser
     try {
-      // Handle Buffer not defined issue
-      if (typeof window !== 'undefined' && !window.Buffer) {
-        window.Buffer = Buffer;
-      }
-      
-      // Parse the markdown content
-      const { data, content } = matter(fileContents);
+      const { data, content } = parseMarkdownFrontmatter(fileContents);
       
       console.log(`Parsed frontmatter for ${slug}:`, data);
       
+      if (Object.keys(data).length === 0) {
+        console.error(`Failed to parse frontmatter for ${slug}`);
+      }
+      
       // Map the parsed data to our BlogPost interface with validation
-      return {
+      const blogPost: BlogPost = {
         slug: data.slug || slug,
         title: data.title || 'Untitled Post',
         excerpt: data.excerpt || 'No excerpt available',
@@ -84,6 +163,14 @@ export const loadBlogPost = async (slug: string): Promise<BlogPost | null> => {
         icon: getIconComponent(data.icon || 'Code', data.iconColor || 'blue'),
         content: content || ''
       };
+      
+      console.log(`Prepared blog post object for ${slug}:`, {
+        title: blogPost.title,
+        excerpt: blogPost.excerpt.substring(0, 50) + '...',
+        categories: blogPost.categories
+      });
+      
+      return blogPost;
     } catch (parseError) {
       console.error(`Error parsing frontmatter for ${slug}:`, parseError);
       return {
@@ -143,7 +230,11 @@ export const loadAllBlogPosts = async (): Promise<BlogPost[]> => {
       });
     
     console.log('Successfully loaded blog posts:', validPosts.length);
-    console.log('First post:', validPosts[0]?.title);
+    console.log('First post sample:', validPosts[0] ? {
+      title: validPosts[0].title,
+      excerpt: validPosts[0].excerpt?.substring(0, 50) + '...',
+      categories: validPosts[0].categories
+    } : 'No posts');
     
     return validPosts;
   } catch (error) {
