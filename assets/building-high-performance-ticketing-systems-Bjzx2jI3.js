@@ -1,5 +1,4 @@
-const e=`
----
+const e=`---
 slug: building-high-performance-ticketing-systems
 title: Building High-Performance Ticketing Systems
 excerpt: Learn how we architected a system capable of handling over 100,000 bookings per minute using modern cloud infrastructure.

@@ -1,5 +1,4 @@
-const e=`
----
+const e=`---
 slug: evolving-postgresql-without-breaking-things
 title: Evolving PostgreSQL Without Breaking the World
 excerpt: PostgreSQL is built for integrity, but applications demand agility. How do you evolve a live database without halting the system? This guide explores zero-downtime migration techniques—concurrent indexing, safe foreign keys, and schema changes that preserve uptime.

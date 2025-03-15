@@ -1,5 +1,4 @@
-const e=`
----
+const e=`---
 slug: event-driven-architecture-in-practice
 title: Event-Driven Architecture in Practice
 excerpt: How we implemented event-driven architecture using RabbitMQ and Kafka to handle high-throughput ticketing operations.
