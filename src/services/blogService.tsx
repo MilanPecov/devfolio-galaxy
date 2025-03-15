@@ -2,6 +2,7 @@
 import { Database, Server, Code } from 'lucide-react';
 import React from 'react';
 import { marked } from 'marked';
+import matter from 'gray-matter';
 
 // Define blog post types
 export interface BlogPost {
@@ -13,6 +14,23 @@ export interface BlogPost {
   categories: string[];
   icon: React.ReactNode;
   content?: string;
+  hasChapters?: boolean;
+}
+
+// Define chapter types
+export interface Chapter {
+  id: string;
+  title: string;
+  description?: string;
+  order: number;
+}
+
+export interface ChapterInfo {
+  id: string;
+  title: string;
+  order: number;
+  totalChapters: number;
+  allChapters: Chapter[];
 }
 
 // Function to get icon component based on name from frontmatter
@@ -29,90 +47,6 @@ const getIconComponent = (iconName: string, colorClass: string = 'blue'): React.
   }
 };
 
-// Improved frontmatter parser that handles YAML-style frontmatter more robustly
-const parseMarkdownFrontmatter = (content: string): { data: Record<string, any>; content: string } => {
-  // Check if content exists and starts with frontmatter delimiter
-  if (!content || !content.startsWith('---')) {
-    return { data: {}, content: content || '' };
-  }
-
-  // Find the end of the frontmatter block (second ---)
-  const endOfFrontmatter = content.indexOf('---', 3);
-  if (endOfFrontmatter === -1) {
-    return { data: {}, content: content };
-  }
-
-  // Extract frontmatter and content
-  const frontmatterBlock = content.substring(3, endOfFrontmatter).trim();
-  const mainContent = content.substring(endOfFrontmatter + 3).trim();
-  
-  // Parse frontmatter using a more robust approach
-  const data: Record<string, any> = {};
-  const lines = frontmatterBlock.split('\n');
-  
-  let currentKey: string | null = null;
-  let inArray = false;
-  let arrayItems: string[] = [];
-  
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
-    
-    // Skip empty lines
-    if (!line) continue;
-    
-    // Check if this is a list item (part of an array)
-    if (line.startsWith('- ') && currentKey) {
-      inArray = true;
-      const value = line.substring(2).trim();
-      arrayItems.push(value);
-      
-      // If this is the last line or the next line doesn't start with a dash,
-      // save the accumulated array
-      const nextLine = i < lines.length - 1 ? lines[i + 1].trim() : '';
-      if (i === lines.length - 1 || !nextLine.startsWith('- ')) {
-        data[currentKey] = [...arrayItems];
-        arrayItems = [];
-      }
-      continue;
-    }
-    
-    // Check if this is a new key-value pair
-    const colonIndex = line.indexOf(':');
-    if (colonIndex > 0) {
-      // Save any previous array if we were building one
-      if (inArray && currentKey && arrayItems.length > 0) {
-        data[currentKey] = [...arrayItems];
-        arrayItems = [];
-        inArray = false;
-      }
-      
-      // Extract new key and value
-      currentKey = line.substring(0, colonIndex).trim();
-      let value = line.substring(colonIndex + 1).trim();
-      
-      // Empty value might indicate the start of an array in the next line
-      if (!value) {
-        inArray = true;
-        arrayItems = [];
-      } else {
-        // Store simple key-value pair
-        inArray = false;
-        data[currentKey] = value;
-      }
-    }
-  }
-  
-  // Make sure we save any final array that was being built
-  if (inArray && currentKey && arrayItems.length > 0) {
-    data[currentKey] = [...arrayItems];
-  }
-  
-  return {
-    data,
-    content: mainContent
-  };
-};
-
 // Get a list of all available blog posts
 const getBlogSlugs = (): string[] => {
   return [
@@ -123,22 +57,57 @@ const getBlogSlugs = (): string[] => {
 };
 
 // Helper function to dynamically import blog post content
-const importBlogContent = async (slug: string): Promise<string> => {
+const importBlogContent = async (slug: string, chapter?: string): Promise<string> => {
   try {
-    return (await import(`../content/blog/${slug}.md?raw`)).default;
+    if (chapter) {
+      // Import specific chapter content
+      return (await import(`../content/blog/${slug}/chapters/${chapter}.md?raw`)).default;
+    } else {
+      // Try to import index content for posts with chapters
+      try {
+        return (await import(`../content/blog/${slug}/index.md?raw`)).default;
+      } catch (e) {
+        // Fallback to traditional single file approach
+        return (await import(`../content/blog/${slug}.md?raw`)).default;
+      }
+    }
   } catch (error) {
-    throw new Error(`Blog post with slug: ${slug} not found`);
+    console.error(`Content import error:`, error);
+    throw new Error(`Blog content not found`);
+  }
+};
+
+// Check if a blog post has chapters
+const checkForChapters = async (slug: string): Promise<Chapter[]> => {
+  try {
+    // This would typically involve checking for a chapters directory
+    // For now, we'll hardcode for the evolving-postgresql example
+    if (slug === 'evolving-postgresql-without-breaking-things') {
+      return [
+        { id: 'schema-migrations', title: 'Schema Migrations', description: 'Safely evolving your database schema', order: 1 },
+        { id: 'zero-downtime', title: 'Zero Downtime Deployments', description: 'Techniques for rolling out changes without interruption', order: 2 },
+        { id: 'data-integrity', title: 'Data Integrity', description: 'Ensuring data consistency during migrations', order: 3 }
+      ];
+    }
+    return [];
+  } catch (error) {
+    console.error('Error checking for chapters:', error);
+    return [];
   }
 };
 
 // Helper function to load blog post content
-export const loadBlogPost = async (slug: string): Promise<BlogPost | null> => {
+export const loadBlogPost = async (slug: string): Promise<{ post: BlogPost | null, chapters: Chapter[] }> => {
   try {
-    // Dynamically import the blog post content
+    // Check if this post has chapters
+    const chapters = await checkForChapters(slug);
+    const hasChapters = chapters.length > 0;
+    
+    // Dynamically import the blog post content (either index.md or the regular file)
     const fileContents = await importBlogContent(slug);
     
-    // Parse frontmatter
-    const { data, content } = parseMarkdownFrontmatter(fileContents);
+    // Parse frontmatter using gray-matter
+    const { data, content } = matter(fileContents);
     
     if (Object.keys(data).length === 0) {
       throw new Error(`Failed to parse frontmatter for ${slug}`);
@@ -153,12 +122,51 @@ export const loadBlogPost = async (slug: string): Promise<BlogPost | null> => {
       readTime: data.readTime || '5 min read',
       categories: Array.isArray(data.categories) ? data.categories : [],
       icon: getIconComponent(data.icon || 'Code', data.iconColor || 'blue'),
-      content: content || ''
+      content: content || '',
+      hasChapters
     };
     
-    return blogPost;
+    return { post: blogPost, chapters };
   } catch (error) {
     console.error(`Failed to load blog post with slug: ${slug}`, error);
+    return { post: null, chapters: [] };
+  }
+};
+
+// Function to load a specific chapter of a blog post
+export const loadBlogChapter = async (slug: string, chapterId: string): Promise<{ post: BlogPost; content: string; chapterInfo: ChapterInfo } | null> => {
+  try {
+    // First, load the main post data
+    const { post, chapters } = await loadBlogPost(slug);
+    
+    if (!post) {
+      throw new Error('Blog post not found');
+    }
+    
+    // Find the chapter info
+    const chapterIndex = chapters.findIndex(ch => ch.id === chapterId);
+    if (chapterIndex === -1) {
+      throw new Error('Chapter not found');
+    }
+    
+    // Load the chapter content
+    const chapterContent = await importBlogContent(slug, chapterId);
+    const { content } = matter(chapterContent);
+    
+    const chapterInfo: ChapterInfo = {
+      ...chapters[chapterIndex],
+      totalChapters: chapters.length,
+      allChapters: chapters
+    };
+    
+    return {
+      post,
+      content,
+      chapterInfo
+    };
+    
+  } catch (error) {
+    console.error(`Failed to load chapter ${chapterId} for post ${slug}:`, error);
     return null;
   }
 };
@@ -170,7 +178,8 @@ export const loadAllBlogPosts = async (): Promise<BlogPost[]> => {
     
     const postsPromises = slugs.map(async (slug) => {
       try {
-        return await loadBlogPost(slug);
+        const { post } = await loadBlogPost(slug);
+        return post;
       } catch (error) {
         console.error(`Error loading post ${slug}:`, error);
         return null;

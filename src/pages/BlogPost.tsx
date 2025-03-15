@@ -2,9 +2,9 @@
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, BookOpen } from "lucide-react";
 import { createBlogPostContent } from "@/utils/blogUtils";
-import { loadBlogPost, type BlogPost } from "@/services/blogService";
+import { loadBlogPost, type BlogPost, type Chapter } from "@/services/blogService";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -17,6 +17,7 @@ import {
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState<BlogPost | null>(null);
+  const [chapters, setChapters] = useState<Chapter[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,9 +32,10 @@ const BlogPost = () => {
           return;
         }
         
-        const postData = await loadBlogPost(slug);
-        if (postData) {
-          setPost(postData);
+        const { post, chapters } = await loadBlogPost(slug);
+        if (post) {
+          setPost(post);
+          setChapters(chapters || []);
         } else {
           setError("Post not found");
         }
@@ -78,6 +80,8 @@ const BlogPost = () => {
       </div>
     );
   }
+
+  const hasChapters = chapters && chapters.length > 0;
 
   return (
     <div className="min-h-screen bg-white">
@@ -129,11 +133,48 @@ const BlogPost = () => {
             <div className="flex items-center gap-4 text-sm text-gray-500 mb-8">
               <span>{post.date}</span>
               <span>{post.readTime}</span>
+              {hasChapters && (
+                <span className="flex items-center gap-1">
+                  <BookOpen size={16} />
+                  {chapters.length} {chapters.length === 1 ? 'Chapter' : 'Chapters'}
+                </span>
+              )}
             </div>
 
-            <div className="prose prose-slate max-w-none prose-headings:text-left prose-p:text-left prose-strong:text-gray-900 prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-img:rounded-lg">
-              {post.content && createBlogPostContent(post.content)}
-            </div>
+            {/* Introduction content */}
+            {post.content && (
+              <div className="prose prose-slate max-w-none prose-headings:text-left prose-p:text-left prose-strong:text-gray-900 prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-img:rounded-lg mb-12">
+                {createBlogPostContent(post.content)}
+              </div>
+            )}
+
+            {/* Chapters section */}
+            {hasChapters && (
+              <div className="mt-8">
+                <h2 className="text-2xl font-semibold mb-6 text-left">Chapters</h2>
+                <div className="space-y-4">
+                  {chapters.map((chapter, index) => (
+                    <Link 
+                      key={chapter.id}
+                      to={`/blog/${slug}/${chapter.id}`}
+                      className="block p-6 border border-gray-100 rounded-lg hover:border-gray-200 hover:shadow-md transition-all duration-300"
+                    >
+                      <div className="flex items-start gap-4">
+                        <div className="bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center text-gray-600 font-medium">
+                          {index + 1}
+                        </div>
+                        <div>
+                          <h3 className="font-medium text-lg text-left">{chapter.title}</h3>
+                          {chapter.description && (
+                            <p className="text-gray-600 mt-1 text-left">{chapter.description}</p>
+                          )}
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </article>
