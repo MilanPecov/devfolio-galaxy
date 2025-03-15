@@ -1,4 +1,3 @@
-
 import { Database, Server, Code, BookText, Layout, BarChart, Key, RefreshCw, Eye, BookOpen } from 'lucide-react';
 import React from 'react';
 import { marked } from 'marked';
@@ -72,20 +71,17 @@ const getBlogSlugs = (): string[] => {
 
 const importBlogContent = async (slug: string): Promise<string> => {
   try {
-    // For posts with chapters, try to load the index file first
     if (slug === 'evolving-postgresql-without-breaking-things') {
       try {
         const content = (await import(`../content/blog/${slug}/index.md?raw`)).default;
         return content;
       } catch (error) {
         console.error(`Failed to import ${slug}/index.md:`, error);
-        // Fall back to the single file
         const content = (await import(`../content/blog/${slug}.md?raw`)).default;
         return content;
       }
     }
     
-    // For regular blog posts (single file)
     const content = (await import(`../content/blog/${slug}.md?raw`)).default;
     return content;
   } catch (error) {
@@ -156,11 +152,9 @@ export const loadBlogPost = async (slug: string): Promise<{ post: BlogPost | nul
     const chapters = await getChapters(slug);
     const hasChapters = chapters.length > 0;
     
-    // Load the blog post content
     const fileContents = await importBlogContent(slug);
     
     try {
-      // Parse frontmatter and content
       const { data, content } = matter(fileContents);
       
       if (!data || Object.keys(data).length === 0) {
@@ -184,8 +178,16 @@ export const loadBlogPost = async (slug: string): Promise<{ post: BlogPost | nul
     } catch (error) {
       console.error(`Error parsing frontmatter for ${slug}:`, error);
       
-      // Fallback to a default post if frontmatter parsing fails
       if (slug === 'evolving-postgresql-without-breaking-things') {
+        let cleanedContent = fileContents;
+        
+        if (fileContents.startsWith('---')) {
+          const secondMarkerIndex = fileContents.indexOf('---', 3);
+          if (secondMarkerIndex !== -1) {
+            cleanedContent = fileContents.substring(secondMarkerIndex + 3).trim();
+          }
+        }
+        
         const defaultPost: BlogPost = {
           slug: slug,
           title: 'Evolving PostgreSQL Without Breaking the World',
@@ -194,7 +196,7 @@ export const loadBlogPost = async (slug: string): Promise<{ post: BlogPost | nul
           readTime: '40 min read',
           categories: ['Database', 'PostgreSQL', 'DevOps'],
           icon: getIconComponent('Database', 'blue'),
-          content: fileContents,
+          content: cleanedContent,
           hasChapters
         };
         
@@ -223,19 +225,44 @@ export const loadBlogChapter = async (slug: string, chapterId: string): Promise<
     }
     
     const chapterContent = await importChapterContent(slug, chapterId);
-    const { content } = matter(chapterContent);
     
-    const chapterInfo: ChapterInfo = {
-      ...chapters[chapterIndex],
-      totalChapters: chapters.length,
-      allChapters: chapters
-    };
-    
-    return {
-      post,
-      content,
-      chapterInfo
-    };
+    try {
+      const { content } = matter(chapterContent);
+      
+      const chapterInfo: ChapterInfo = {
+        ...chapters[chapterIndex],
+        totalChapters: chapters.length,
+        allChapters: chapters
+      };
+      
+      return {
+        post,
+        content,
+        chapterInfo
+      };
+    } catch (error) {
+      console.error(`Error parsing chapter content for ${slug}/${chapterId}:`, error);
+      
+      let cleanedContent = chapterContent;
+      if (chapterContent.startsWith('---')) {
+        const secondMarkerIndex = chapterContent.indexOf('---', 3);
+        if (secondMarkerIndex !== -1) {
+          cleanedContent = chapterContent.substring(secondMarkerIndex + 3).trim();
+        }
+      }
+      
+      const chapterInfo: ChapterInfo = {
+        ...chapters[chapterIndex],
+        totalChapters: chapters.length,
+        allChapters: chapters
+      };
+      
+      return {
+        post,
+        content: cleanedContent,
+        chapterInfo
+      };
+    }
   } catch (error) {
     console.error(`Failed to load chapter ${chapterId} for post ${slug}:`, error);
     return null;
