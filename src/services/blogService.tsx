@@ -2,7 +2,7 @@
 import { Database, Server, Code, BookText, Layout, BarChart, Key, RefreshCw, Eye, BookOpen } from 'lucide-react';
 import React from 'react';
 import { marked } from 'marked';
-import matter from 'gray-matter';
+import matter, { GrayMatterFile } from 'gray-matter';
 import { Buffer } from 'buffer';
 
 // Make Buffer available globally for gray-matter
@@ -33,6 +33,13 @@ export interface ChapterInfo {
   order: number;
   totalChapters: number;
   allChapters: Chapter[];
+}
+
+// Define a type for our custom frontmatter result
+interface ParsedFrontmatter {
+  data: Record<string, any>;
+  content: string;
+  isEmpty: boolean;
 }
 
 const getIconComponent = (iconName: string, colorClass: string = 'blue'): React.ReactNode => {
@@ -164,16 +171,21 @@ const importChapterContent = async (slug: string, chapterId: string): Promise<st
   }
 };
 
-// Helper function to safely parse markdown frontmatter
-const parseFrontmatter = (content: string) => {
+// Helper function to safely parse markdown frontmatter with proper typing
+const parseFrontmatter = (content: string): ParsedFrontmatter => {
   try {
-    return matter(content);
+    const result = matter(content);
+    return { 
+      data: result.data, 
+      content: result.content,
+      isEmpty: Object.keys(result.data).length === 0
+    };
   } catch (error) {
     console.error('Error parsing frontmatter:', error);
     
     // Manual extraction if the parser fails
     let cleanedContent = content;
-    let extractedData = {};
+    let extractedData: Record<string, any> = {};
     
     if (content.startsWith('---')) {
       const secondMarkerIndex = content.indexOf('---', 3);
@@ -220,7 +232,7 @@ export const loadBlogPost = async (slug: string): Promise<{ post: BlogPost | nul
     
     const fileContents = await importBlogContent(slug);
     
-    // Use our safe parser
+    // Use our safe parser with proper type
     const { data, content, isEmpty } = parseFrontmatter(fileContents);
     
     if (isEmpty) {
