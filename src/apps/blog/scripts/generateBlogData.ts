@@ -2,7 +2,13 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import { BlogPostFrontmatter } from '../domain/BlogPost';
+
+// Get proper __dirname equivalent for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Path configurations
 const CONTENT_DIR = path.join(__dirname, '../content');
@@ -50,9 +56,10 @@ function generateBlogData() {
   }
 }
 
-// Only run directly when script is executed, not when imported
-if (require.main === module) {
+// Default export for ES modules
+export default generateBlogData;
+
+// Also provide a way to run directly
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   generateBlogData();
 }
-
-export default generateBlogData;
