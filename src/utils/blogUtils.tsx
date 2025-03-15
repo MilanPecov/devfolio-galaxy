@@ -4,14 +4,21 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { ExternalLink } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { parseMarkdownToHtml } from '@/services/blogService';
 
 /**
- * Process blog post content from HTML string to React components
+ * Process blog post content from markdown to React components
  * including proper syntax highlighting for code blocks
  */
 export const createBlogPostContent = (content: string): React.ReactNode[] => {
+  if (!content) return [];
+  
+  // Convert markdown to HTML
+  const htmlContent = parseMarkdownToHtml(content);
+  
+  // Parse HTML to React components
   const parser = new DOMParser();
-  const doc = parser.parseFromString(content, 'text/html');
+  const doc = parser.parseFromString(htmlContent, 'text/html');
   const elements: React.ReactNode[] = [];
 
   const processNode = (node: Node, index: number): React.ReactNode => {
@@ -21,7 +28,9 @@ export const createBlogPostContent = (content: string): React.ReactNode[] => {
       // Handle code blocks
       if (element.tagName === 'PRE' && element.querySelector('code')) {
         const codeElement = element.querySelector('code');
-        const language = codeElement?.className.replace('language-', '') || '';
+        // Extract language from class (language-xxx)
+        const languageMatch = codeElement?.className.match(/language-(\w+)/);
+        const language = languageMatch ? languageMatch[1] : '';
         const code = codeElement?.textContent || '';
 
         return (
@@ -37,12 +46,6 @@ export const createBlogPostContent = (content: string): React.ReactNode[] => {
             showLineNumbers={false}
             wrapLines={true}
             wrapLongLines={false}
-            preserveWhitespace={true}
-            codeTagProps={{
-              style: {
-                backgroundColor: "#1e2130",
-              }
-            }}
           >
             {code.trim()}
           </SyntaxHighlighter>
