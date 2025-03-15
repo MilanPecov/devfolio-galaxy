@@ -1,2 +1,3 @@
-export * from "./blogContentProcessor";
+
 export * from "./iconUtils";
+export { createBlogPostContent } from "../services/ContentProcessorService";

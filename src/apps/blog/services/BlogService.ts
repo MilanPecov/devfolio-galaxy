@@ -1,7 +1,8 @@
 
 import { BlogRepository } from '@/apps/blog/repository/BlogRepository';
 import { BlogPost } from "@/apps/blog";
-import { createBlogPostContent, getIconComponent } from "@/apps/blog/utils";
+import { createBlogPostContent } from "@/apps/blog/services/ContentProcessorService";
+import { getIconComponent } from "@/apps/blog/utils";
 
 /**
  * Main service for handling blog operations
