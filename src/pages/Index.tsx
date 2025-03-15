@@ -1,6 +1,6 @@
 import Hero from "@/components/Hero";
 import Skills from "@/components/Skills";
-import Blog from "@/components/Blog";
+import Blog from "@/apps/blog/ui/Blog.tsx";
 import Contact from "@/components/Contact";
 import Navbar from "@/components/Navbar";
 

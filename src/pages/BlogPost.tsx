@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { useParams, Link } from "react-router-dom";
 import { createBlogPostContent } from "@/utils/blogUtils";
-import { loadBlogPost, type BlogPost as BlogPostType } from "@/services/blog";
+import { loadBlogPost, type BlogPost as BlogPostType } from "@/apps/blog";
 import {
   Breadcrumb,
   BreadcrumbItem,

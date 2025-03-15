@@ -4,7 +4,7 @@ import { BlogService } from './services/BlogService';
 import { MarkdownService } from './services/MarkdownService';
 import { BlogPost, BlogPostFrontmatter } from './domain/BlogPost';
 
-// Create instances of our services
+// Create instances of our apps
 const blogRepository = new BlogRepository();
 const blogService = new BlogService(blogRepository);
 const markdownService = new MarkdownService();

@@ -19,7 +19,7 @@ export class BlogRepository {
    */
   public async importBlogContent(slug: string): Promise<string> {
     try {
-      return (await import(`../../../content/blog/${slug}.md?raw`)).default;
+      return (await import(`../content/${slug}.md?raw`)).default;
     } catch (error) {
       console.error(`Failed to import blog content for slug: ${slug}`, error);
       throw new Error(`Blog post with slug: ${slug} not found`);

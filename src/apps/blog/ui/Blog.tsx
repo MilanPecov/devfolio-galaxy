@@ -1,10 +1,10 @@
 
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { loadAllBlogPosts, type BlogPost } from "@/services/blog";
+import { loadAllBlogPosts, type BlogPost } from "@/apps/blog";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import BlogList from "@/components/BlogList";
+import { Button } from "@/components/ui/button.tsx";
+import BlogList from "@/apps/blog/ui/BlogList.tsx";
 
 const Blog = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);

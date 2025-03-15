@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import { type BlogPost } from "@/services/blog";
+import { type BlogPost } from "@/apps/blog";
 
 interface BlogListProps {
   posts: BlogPost[];

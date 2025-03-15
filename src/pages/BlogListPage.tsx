@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
-import { loadAllBlogPosts, type BlogPost } from "@/services/blog";
+import { loadAllBlogPosts, type BlogPost } from "@/apps/blog";
 import { toast } from "sonner";
 import {
   Breadcrumb,
@@ -12,7 +12,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import BlogList from "@/components/BlogList";
+import BlogList from "@/apps/blog/ui/BlogList.tsx";
 
 const BlogListPage = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
