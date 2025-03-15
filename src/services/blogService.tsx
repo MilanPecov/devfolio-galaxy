@@ -1,9 +1,11 @@
+
 import { Database, Server, Code, BookText, Layout, BarChart, Key, RefreshCw, Eye, BookOpen } from 'lucide-react';
 import React from 'react';
 import { marked } from 'marked';
 import matter from 'gray-matter';
 import { Buffer } from 'buffer';
 
+// Make Buffer available globally for gray-matter
 window.Buffer = Buffer;
 
 export interface BlogPost {
@@ -70,15 +72,18 @@ const getBlogSlugs = (): string[] => {
 
 const importBlogContent = async (slug: string): Promise<string> => {
   try {
+    // First, try to import from the directory structure (for posts with chapters)
     if (slug === 'evolving-postgresql-without-breaking-things') {
       try {
         return (await import(`../content/blog/${slug}/index.md?raw`)).default;
       } catch (error) {
         console.error(`Failed to import ${slug}/index.md:`, error);
+        // Fall back to trying the single file
         return (await import(`../content/blog/${slug}.md?raw`)).default;
       }
     }
     
+    // For regular blog posts (single file)
     try {
       return (await import(`../content/blog/${slug}.md?raw`)).default;
     } catch (e) {
@@ -153,11 +158,14 @@ export const loadBlogPost = async (slug: string): Promise<{ post: BlogPost | nul
     const chapters = await getChapters(slug);
     const hasChapters = chapters.length > 0;
     
+    // Load the blog post content
     const fileContents = await importBlogContent(slug);
     
+    // Parse frontmatter and content
     const { data, content } = matter(fileContents);
     
-    if (Object.keys(data).length === 0) {
+    if (!data || Object.keys(data).length === 0) {
+      console.error(`Failed to parse frontmatter for ${slug}`);
       throw new Error(`Failed to parse frontmatter for ${slug}`);
     }
     
