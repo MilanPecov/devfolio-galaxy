@@ -7,6 +7,7 @@ import { loadAllBlogPosts, type BlogPost } from "@/services/blogService";
 const Blog = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -15,6 +16,9 @@ const Blog = () => {
         setPosts(allPosts);
       } catch (error) {
         console.error("Failed to load blog posts:", error);
+        setError("Failed to load blog posts. Please try again later.");
+        // Ensure posts is at least an empty array to prevent mapping errors
+        setPosts([]);
       } finally {
         setLoading(false);
       }
@@ -50,7 +54,13 @@ const Blog = () => {
               <p className="text-gray-500">Loading blog posts...</p>
             </div>
           </div>
-        ) : (
+        ) : error ? (
+          <div className="flex justify-center py-12">
+            <div className="text-center">
+              <p className="text-red-500">{error}</p>
+            </div>
+          </div>
+        ) : posts && posts.length > 0 ? (
           <div className="flex flex-col space-y-8 max-w-4xl mx-auto">
             {posts.map((post, index) => (
               <article
@@ -64,7 +74,7 @@ const Blog = () => {
                   </div>
                   <div className="flex-1 text-left">
                     <div className="flex flex-wrap gap-2 mb-3">
-                      {post.categories.map((category) => (
+                      {post.categories && post.categories.map((category) => (
                         <span
                           key={category}
                           className="px-3 py-1 bg-[#1E293B]/5 text-[#1E293B] rounded-full text-xs font-medium"
@@ -96,6 +106,12 @@ const Blog = () => {
                 </div>
               </article>
             ))}
+          </div>
+        ) : (
+          <div className="flex justify-center py-12">
+            <div className="text-center">
+              <p className="text-gray-500">No blog posts available.</p>
+            </div>
           </div>
         )}
       </div>
