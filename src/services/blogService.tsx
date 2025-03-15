@@ -21,7 +21,7 @@ export interface BlogPost {
 }
 
 // Function to get icon component based on name from frontmatter
-const getIconComponent = (iconName: string, colorClass: string): React.ReactNode => {
+const getIconComponent = (iconName: string, colorClass: string = 'blue'): React.ReactNode => {
   switch (iconName) {
     case 'Database':
       return <Database className={`w-6 h-6 text-${colorClass}-600`} />;
@@ -39,23 +39,43 @@ export const loadBlogPost = async (slug: string): Promise<BlogPost | null> => {
   try {
     // In a real application, this would fetch from an API or file system
     // For this demo, we're importing directly
-    const module = await import(`../content/blog/${slug}.md?raw`);
-    const fileContents = module.default;
+    let fileContents;
     
-    // Parse frontmatter
-    const { data, content } = matter(fileContents);
+    // Use a switch statement to manually handle each blog post file
+    switch (slug) {
+      case 'evolving-postgresql-without-breaking-things':
+        fileContents = (await import('../content/blog/evolving-postgresql-without-breaking-things.md?raw')).default;
+        break;
+      case 'building-high-performance-ticketing-systems':
+        fileContents = (await import('../content/blog/building-high-performance-ticketing-systems.md?raw')).default;
+        break;
+      case 'event-driven-architecture-in-practice':
+        fileContents = (await import('../content/blog/event-driven-architecture-in-practice.md?raw')).default;
+        break;
+      default:
+        console.error(`Blog post with slug: ${slug} not found`);
+        return null;
+    }
     
-    // Map the parsed data to our BlogPost interface
-    return {
-      slug: data.slug,
-      title: data.title,
-      excerpt: data.excerpt,
-      date: data.date,
-      readTime: data.readTime,
-      categories: data.categories,
-      icon: getIconComponent(data.icon, data.iconColor),
-      content
-    };
+    // Parse frontmatter with proper error handling
+    try {
+      const { data, content } = matter(fileContents);
+      
+      // Map the parsed data to our BlogPost interface with validation
+      return {
+        slug: data.slug || slug,
+        title: data.title || 'Untitled Post',
+        excerpt: data.excerpt || 'No excerpt available',
+        date: data.date || 'No date',
+        readTime: data.readTime || '5 min read',
+        categories: Array.isArray(data.categories) ? data.categories : [],
+        icon: getIconComponent(data.icon || 'Code', data.iconColor),
+        content: content || ''
+      };
+    } catch (parseError) {
+      console.error(`Error parsing frontmatter for ${slug}:`, parseError);
+      return null;
+    }
   } catch (error) {
     console.error(`Failed to load blog post with slug: ${slug}`, error);
     return null;
@@ -73,19 +93,30 @@ export const loadAllBlogPosts = async (): Promise<BlogPost[]> => {
       'event-driven-architecture-in-practice'
     ];
     
-    const posts = await Promise.all(
-      slugs.map(async (slug) => {
-        const post = await loadBlogPost(slug);
-        return post;
-      })
-    );
+    const postsPromises = slugs.map(async (slug) => {
+      try {
+        return await loadBlogPost(slug);
+      } catch (error) {
+        console.error(`Error loading post ${slug}:`, error);
+        return null;
+      }
+    });
+    
+    const posts = await Promise.all(postsPromises);
     
     // Filter out any null results and sort by date (newest first)
     return posts
       .filter((post): post is BlogPost => post !== null)
       .sort((a, b) => {
-        // Simple date string comparison (assumes format is consistent)
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
+        // Use a safer date comparison approach
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        
+        // Handle invalid dates by using timestamp comparison
+        const timeA = isNaN(dateA.getTime()) ? 0 : dateA.getTime();
+        const timeB = isNaN(dateB.getTime()) ? 0 : dateB.getTime();
+        
+        return timeB - timeA;
       });
   } catch (error) {
     console.error('Failed to load all blog posts', error);
@@ -94,11 +125,15 @@ export const loadAllBlogPosts = async (): Promise<BlogPost[]> => {
 };
 
 // Function to parse markdown content to HTML
-// Update the return type to handle the possibility of a Promise<string>
 export const parseMarkdownToHtml = (markdown: string): string => {
-  // Use marked.parse in synchronous mode by explicitly specifying no async options
-  return marked.parse(markdown, {
-    gfm: true, // GitHub flavored markdown
-    breaks: true, // Convert line breaks to <br>
-  }) as string; // Cast to string since we're using the sync version
+  try {
+    // Use marked.parse in synchronous mode
+    return marked.parse(markdown, {
+      gfm: true, // GitHub flavored markdown
+      breaks: true, // Convert line breaks to <br>
+    }) as string; // Cast to string since we're using the sync version
+  } catch (error) {
+    console.error('Error parsing markdown:', error);
+    return '<p>Error parsing content</p>';
+  }
 };

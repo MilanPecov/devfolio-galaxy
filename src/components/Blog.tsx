@@ -13,6 +13,7 @@ const Blog = () => {
     const fetchPosts = async () => {
       try {
         const allPosts = await loadAllBlogPosts();
+        console.log('Loaded blog posts:', allPosts); // Debug log
         setPosts(allPosts);
       } catch (error) {
         console.error("Failed to load blog posts:", error);
