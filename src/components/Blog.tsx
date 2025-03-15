@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Database, Code, Server } from "lucide-react";
 
+// Reorder posts to put PostgreSQL post at the top
 const posts = [
   {
     slug: "evolving-postgresql-without-breaking-things",
@@ -57,16 +58,20 @@ const Blog = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        {/* Changed from grid to flex column layout */}
+        <div className="flex flex-col space-y-8 max-w-4xl mx-auto">
           {posts.map((post, index) => (
             <article
               key={index}
               className="group relative bg-white rounded-xl p-8 hover:shadow-xl transition-all duration-500 animate-fade-up border border-gray-100 hover:border-gray-200"
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              <div>
-                <div className="flex justify-between items-start mb-6">
-                  <div className="flex flex-wrap gap-2">
+              <div className="flex flex-col md:flex-row gap-6">
+                <div className="p-3 rounded-full bg-[#F8FAFC] md:self-start">
+                  {post.icon}
+                </div>
+                <div className="flex-1">
+                  <div className="flex flex-wrap gap-2 mb-3">
                     {post.categories.map((category) => (
                       <span
                         key={category}
@@ -76,27 +81,24 @@ const Blog = () => {
                       </span>
                     ))}
                   </div>
-                  <div className="p-2 rounded-full bg-[#F8FAFC]">
-                    {post.icon}
+                  <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
+                    <span>{post.date}</span>
+                    <span>{post.readTime}</span>
                   </div>
+                  {/* Text alignment */}
+                  <h3 className="text-xl md:text-2xl font-semibold mb-3 text-[#1E293B] group-hover:text-[#334155] transition-colors">
+                    {post.title}
+                  </h3>
+                  <p className="text-gray-600 mb-6">{post.excerpt}</p>
+                  <Link
+                    to={`/blog/${post.slug}`}
+                    className="inline-flex items-center gap-2 text-[#1E293B] font-medium group-hover:text-[#475569] transition-colors"
+                  >
+                    Read More 
+                    <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                  </Link>
                 </div>
-                <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-                  <span>{post.date}</span>
-                  <span>{post.readTime}</span>
-                </div>
-                {/* Align title and description to left */}
-                <h3 className="text-xl font-semibold mb-3 text-[#1E293B] group-hover:text-[#334155] transition-colors text-left">
-                  {post.title}
-                </h3>
-                <p className="text-gray-600 mb-6 text-left">{post.excerpt}</p>
               </div>
-              <Link
-                to={`/blog/${post.slug}`}
-                className="inline-flex items-center gap-2 text-[#1E293B] font-medium group-hover:text-[#475569] transition-colors"
-              >
-                Read More 
-                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-              </Link>
             </article>
           ))}
         </div>
