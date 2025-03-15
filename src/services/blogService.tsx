@@ -3,6 +3,10 @@ import matter from 'gray-matter';
 import { marked } from 'marked';
 import { Database, Server, Code } from 'lucide-react';
 import React from 'react';
+import { Buffer } from 'buffer';
+
+// Ensure Buffer is available globally for gray-matter
+window.Buffer = Buffer;
 
 // Define blog post types
 export interface BlogPost {
