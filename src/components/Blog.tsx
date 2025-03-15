@@ -70,7 +70,7 @@ const Blog = () => {
                 <div className="p-3 rounded-full bg-[#F8FAFC] md:self-start">
                   {post.icon}
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 text-left">
                   <div className="flex flex-wrap gap-2 mb-3">
                     {post.categories.map((category) => (
                       <span
@@ -85,18 +85,21 @@ const Blog = () => {
                     <span>{post.date}</span>
                     <span>{post.readTime}</span>
                   </div>
-                  {/* Text alignment */}
-                  <h3 className="text-xl md:text-2xl font-semibold mb-3 text-[#1E293B] group-hover:text-[#334155] transition-colors">
+                  <h3 className="text-xl md:text-2xl font-semibold mb-3 text-[#1E293B] group-hover:text-[#334155] transition-colors text-left">
                     {post.title}
                   </h3>
-                  <p className="text-gray-600 mb-6">{post.excerpt}</p>
-                  <Link
-                    to={`/blog/${post.slug}`}
-                    className="inline-flex items-center gap-2 text-[#1E293B] font-medium group-hover:text-[#475569] transition-colors"
-                  >
-                    Read More 
-                    <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                  </Link>
+                  <p className="text-gray-600 mb-6 text-left">
+                    {post.excerpt}
+                  </p>
+                  <div className="text-left">
+                    <Link
+                      to={`/blog/${post.slug}`}
+                      className="inline-flex items-center gap-2 text-[#1E293B] font-medium group-hover:text-[#475569] transition-colors"
+                    >
+                      Read More 
+                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             </article>
