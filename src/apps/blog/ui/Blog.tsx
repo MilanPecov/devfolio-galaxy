@@ -92,7 +92,7 @@ const Blog = () => {
           {/* Regular Blog Posts */}
           {posts.length > 0 && (
             <div className="mt-12">
-              <h3 className="text-xl font-semibold text-slate-800 mb-6">Latest Articles</h3>
+              <h3 className="text-xl font-semibold text-slate-800 mb-6">Latest Article</h3>
               <BlogList
                 posts={posts}
                 loading={loading}
@@ -118,14 +118,7 @@ const Blog = () => {
             </div>
           )}
           
-          {/* Link to blog page if there are posts */}
-          {(posts.length > 0 || featuredSeries.length > 0) && (
-            <div className="mt-12 text-center">
-              <Button asChild variant="outline">
-                <Link to="/blog">View All Articles</Link>
-              </Button>
-            </div>
-          )}
+          {/* Removed redundant button at the bottom since we have "View all articles" in the FeaturedSeries component */}
         </div>
       </div>
     </section>

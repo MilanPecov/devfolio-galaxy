@@ -42,8 +42,8 @@ export const FeaturedSeries = ({ series = [] }: FeaturedSeriesProps) => {
         className="w-full"
       >
         <div className="mb-6 relative">
-          <ScrollArea className="w-full pb-2 overflow-hidden">
-            <TabsList className="bg-slate-100 p-1 overflow-visible flex w-max min-w-full">
+          <ScrollArea className="w-full pb-2" type="scroll" scrollHideDelay={100}>
+            <TabsList className="bg-slate-100 p-1 flex w-max min-w-full">
               {series.map((item, index) => (
                 <TabsTrigger
                   key={item.main.slug}
