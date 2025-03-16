@@ -31,7 +31,17 @@ function generateBlogData() {
       const fileContent = fs.readFileSync(filePath, 'utf-8');
 
       // Parse frontmatter using gray-matter
-      const { data, content } = matter(fileContent);
+      // The key fix: Remove leading whitespace/newlines to ensure
+      // the frontmatter is correctly recognized
+      const cleanedContent = fileContent.trimStart();
+      const { data, content } = matter(cleanedContent);
+
+      // Debug info to help diagnose parsing issues
+      console.log(`Parsed ${filename}:`, { 
+        frontmatterKeys: Object.keys(data),
+        hasContent: !!content,
+        frontmatterSize: JSON.stringify(data).length
+      });
 
       // Extract slug from filename if not provided in frontmatter
       const slug = data.slug || filename.replace('.md', '');
