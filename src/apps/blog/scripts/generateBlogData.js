@@ -30,62 +30,79 @@ function generateBlogData() {
     const blogData = markdownFiles.map(filename => {
       const filePath = path.join(CONTENT_DIR, filename);
       const fileContent = fs.readFileSync(filePath, 'utf-8');
+      
+      try {
+        // First, identify the frontmatter section (between the first two '---' lines)
+        const frontmatterMatch = fileContent.match(/^---\n([\s\S]*?)\n---/);
+        
+        if (!frontmatterMatch) {
+          console.error(`No frontmatter found in ${filename}`);
+          return {
+            slug: filename.replace('.md', ''),
+            frontmatter: {},
+            content: fileContent
+          };
+        }
 
-      // Parse frontmatter using gray-matter
-      // Use custom delimiters to handle YAML parsing issues with special characters like colons in titles
-      const { data, content } = matter(fileContent, {
-        engines: {
-          yaml: {
-            parse: (str) => {
-              // Custom YAML parser that wraps values containing colons in quotes
-              // Simple preprocessing for YAML
-              const processed = str
-                .split('\n')
-                .map(line => {
-                  if (line.includes(':') && !line.includes('"') && !line.includes("'")) {
-                    // Find the first colon which should separate key and value
-                    const colonIndex = line.indexOf(':');
-                    if (colonIndex > 0) {
-                      const key = line.substring(0, colonIndex).trim();
-                      const value = line.substring(colonIndex + 1).trim();
-                      
-                      // If the value contains a colon, wrap it in quotes
-                      if (value.includes(':')) {
-                        return `${key}: "${value.replace(/"/g, '\\"')}"`;
-                      }
-                    }
-                  }
-                  return line;
-                })
-                .join('\n');
+        // Extract the frontmatter text
+        const frontmatterText = frontmatterMatch[1];
+        
+        // Process the frontmatter text to escape colons in values
+        const processedFrontmatter = frontmatterText
+          .split('\n')
+          .map(line => {
+            // Skip lines that are indented (part of lists) or empty
+            if (line.trim() === '' || line.startsWith('  ')) {
+              return line;
+            }
+            
+            // Find the first colon which separates key and value
+            const colonIndex = line.indexOf(':');
+            if (colonIndex > 0) {
+              const key = line.substring(0, colonIndex).trim();
+              let value = line.substring(colonIndex + 1).trim();
               
-              try {
-                return yaml.load(processed);  // Using yaml.load instead of safeLoad
-              } catch (err) {
-                console.error(`YAML parsing error for ${filename}:`, err);
-                // Fallback to treating the entire frontmatter as a string
-                return {};
+              // If value contains a colon and is not already quoted, wrap it in quotes
+              if (value.includes(':') && !value.startsWith('"') && !value.startsWith("'")) {
+                value = `"${value.replace(/"/g, '\\"')}"`;
+                return `${key}: ${value}`;
               }
             }
-          }
+            return line;
+          })
+          .join('\n');
+        
+        // Parse the processed frontmatter
+        let frontmatterData;
+        try {
+          frontmatterData = yaml.load(processedFrontmatter);
+        } catch (err) {
+          console.error(`YAML parsing error for ${filename}:`, err.message);
+          frontmatterData = {};
         }
-      });
-
-      // Debug info to help diagnose parsing issues
-      console.log(`Parsed ${filename}:`, { 
-        frontmatterKeys: Object.keys(data),
-        hasContent: !!content,
-        frontmatterSize: JSON.stringify(data).length
-      });
-
-      // Extract slug from filename if not provided in frontmatter
-      const slug = data.slug || filename.replace('.md', '');
-
-      return {
-        slug,
-        frontmatter: data,
-        content
-      };
+        
+        // Get content without frontmatter
+        const content = fileContent.replace(frontmatterMatch[0], '').trim();
+        
+        // Extract slug from filename if not provided in frontmatter
+        const slug = frontmatterData?.slug || filename.replace('.md', '');
+        
+        console.log(`Processed ${filename} - frontmatter keys:`, 
+          frontmatterData ? Object.keys(frontmatterData) : 'none');
+        
+        return {
+          slug,
+          frontmatter: frontmatterData || {},
+          content
+        };
+      } catch (err) {
+        console.error(`Error processing ${filename}:`, err);
+        return {
+          slug: filename.replace('.md', ''),
+          frontmatter: {},
+          content: fileContent
+        };
+      }
     });
 
     // Process series relationships
@@ -128,8 +145,8 @@ function generateBlogData() {
 
     // Sort posts by date (newest first)
     blogData.sort((a, b) => {
-      const dateA = new Date(a.frontmatter.date).getTime();
-      const dateB = new Date(b.frontmatter.date).getTime();
+      const dateA = new Date(a.frontmatter.date || '2000-01-01').getTime();
+      const dateB = new Date(b.frontmatter.date || '2000-01-01').getTime();
 
       return dateB - dateA; // Descending order (latest posts first)
     });
