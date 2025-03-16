@@ -1,6 +1,7 @@
+
 ---
 slug: evolving-postgresql-prologue
-title: Prologue: The Immutable and the Changing
+title: "Prologue: The Immutable and the Changing"
 excerpt: The introduction to our PostgreSQL evolution journey begins with a seemingly simple change that reveals the fundamental tension between database integrity and application agility.
 date: March 15, 2024
 readTime: 10 min read
@@ -12,11 +13,11 @@ icon: Database
 iconColor: blue
 isSeriesEntry: true
 seriesSlug: evolving-postgresql-without-breaking-things
-seriesTitle: Evolving PostgreSQL Without Breaking the World
-chapterTitle: Prologue: The Immutable and the Changing
+seriesTitle: "Evolving PostgreSQL Without Breaking the World"
+chapterTitle: "Prologue: The Immutable and the Changing"
 chapterNumber: 0
 nextChapter: evolving-postgresql-chapter-1
-nextChapterTitle: Chapter 1: The Price of Order
+nextChapterTitle: "Chapter 1: The Price of Order"
 ---
 
 ## Prologue: The Immutable and the Changing

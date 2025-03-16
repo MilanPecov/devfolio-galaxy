@@ -36,19 +36,9 @@ export class BlogController {
         console.warn(`No frontmatter found for ${slug}`);
       }
 
-      // Debug frontmatter
-      console.log(`Processing frontmatter for ${slug}:`, { 
-        isSeries: frontmatter.isSeries, 
-        seriesSlug: frontmatter.seriesSlug,
-        raw: JSON.stringify(frontmatter)
-      });
-
       // Convert string "true"/"false" to actual boolean values
-      // We need to handle multiple formats as the values might come as strings or booleans
       const isSeries = frontmatter.isSeries === true || frontmatter.isSeries === "true";
       const isSeriesEntry = frontmatter.isSeriesEntry === true || frontmatter.isSeriesEntry === "true";
-
-      console.log(`After conversion: isSeries=${isSeries}, isSeriesEntry=${isSeriesEntry}`);
 
       // Map the parsed data to our BlogPost interface with validation
       const blogPost: BlogPost = {
@@ -69,13 +59,6 @@ export class BlogController {
         chapterTitle: frontmatter.chapterTitle,
         chapterNumber: frontmatter.chapterNumber,
       };
-
-      // Log the final BlogPost object
-      console.log(`Final BlogPost object for ${slug}:`, {
-        isSeries: blogPost.isSeries,
-        isSeriesEntry: blogPost.isSeriesEntry,
-        seriesSlug: blogPost.seriesSlug
-      });
 
       // Add navigation for series entries
       if (blogPost.isSeriesEntry && (frontmatter.previousChapter || frontmatter.nextChapter)) {

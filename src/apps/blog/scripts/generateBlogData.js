@@ -20,7 +20,7 @@ if (!fs.existsSync(path.dirname(OUTPUT_FILE))) {
   fs.mkdirSync(path.dirname(OUTPUT_FILE), { recursive: true });
 }
 
-// Process each markdown file
+// Process each markdown file and build the blog data
 function generateBlogData() {
   try {
     console.log('Generating blog data...');
@@ -32,7 +32,7 @@ function generateBlogData() {
       const fileContent = fs.readFileSync(filePath, 'utf-8');
       
       try {
-        // Extract frontmatter and content
+        // Extract frontmatter and content from markdown
         const { frontmatter, content } = extractFrontmatterAndContent(fileContent);
         
         // Extract slug from filename if not provided in frontmatter
@@ -59,7 +59,7 @@ function generateBlogData() {
       }
     });
 
-    // Process series relationships
+    // Process series relationships for chapter navigation
     const seriesMap = new Map();
     
     // Group posts by series
