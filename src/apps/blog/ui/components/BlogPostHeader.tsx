@@ -75,7 +75,6 @@ export const BlogPostHeader = ({ post }: BlogPostHeaderProps) => {
         {/* Series introduction when viewing the main series page */}
         {post.isSeries && (
           <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
-            <p className="text-sm font-medium text-blue-800">This is a multi-part series</p>
             <p className="text-sm text-blue-600">
               This series contains multiple chapters. Navigate through them using the links below.
             </p>

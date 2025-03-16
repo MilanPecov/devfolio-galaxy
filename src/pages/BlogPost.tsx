@@ -105,7 +105,6 @@ const BlogPost = () => {
           <BlogPostContent 
             post={post} 
             seriesChapters={seriesChapters}
-            loadingChapters={loadingChapters}
           />
           
           {/* Only show chapter navigation for series entries, not series main posts */}
