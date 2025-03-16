@@ -10,6 +10,22 @@ export interface BlogPost {
   categories: string[];
   icon: ReactNode;
   content?: ReactNode;
+  
+  // Series-related properties
+  isSeries?: boolean;
+  isSeriesEntry?: boolean;
+  seriesSlug?: string;
+  seriesTitle?: string;
+  chapterTitle?: string;
+  chapterNumber?: number;
+  previousChapter?: {
+    slug: string;
+    title: string;
+  };
+  nextChapter?: {
+    slug: string;
+    title: string;
+  };
 }
 
 export interface BlogPostFrontmatter {
@@ -21,5 +37,17 @@ export interface BlogPostFrontmatter {
   categories?: string[];
   icon?: string;
   iconColor?: string;
+  
+  // Series-related frontmatter
+  isSeries?: boolean;
+  isSeriesEntry?: boolean;
+  seriesSlug?: string;
+  seriesTitle?: string;
+  chapterTitle?: string;
+  chapterNumber?: number;
+  previousChapter?: string;
+  previousChapterTitle?: string;
+  nextChapter?: string;
+  nextChapterTitle?: string;
   [key: string]: any;
 }

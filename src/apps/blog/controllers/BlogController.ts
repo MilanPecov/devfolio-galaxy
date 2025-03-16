@@ -1,3 +1,4 @@
+
 import { BlogRepository } from '@/apps/blog/domain/repositories/BlogRepository';
 import { BlogPost } from "@/apps/blog";
 import { ContentProcessorService } from "@/apps/blog/domain/services/ContentProcessorService.tsx";
@@ -44,8 +45,33 @@ export class BlogController {
         readTime: frontmatter.readTime || '5 min read',
         categories: Array.isArray(frontmatter.categories) ? frontmatter.categories : [],
         icon: this.iconService.getIcon(frontmatter.icon || 'Code', frontmatter.iconColor || 'blue'),
-        content: this.contentProcessor.processContent(content || '') // Use instance method
+        content: this.contentProcessor.processContent(content || ''),
+        
+        // Series-related properties
+        isSeries: frontmatter.isSeries || false,
+        isSeriesEntry: frontmatter.isSeriesEntry || false,
+        seriesSlug: frontmatter.seriesSlug,
+        seriesTitle: frontmatter.seriesTitle,
+        chapterTitle: frontmatter.chapterTitle,
+        chapterNumber: frontmatter.chapterNumber,
       };
+
+      // Add navigation for series entries
+      if (blogPost.isSeriesEntry && (frontmatter.previousChapter || frontmatter.nextChapter)) {
+        if (frontmatter.previousChapter) {
+          blogPost.previousChapter = {
+            slug: frontmatter.previousChapter,
+            title: frontmatter.previousChapterTitle || 'Previous Chapter',
+          };
+        }
+
+        if (frontmatter.nextChapter) {
+          blogPost.nextChapter = {
+            slug: frontmatter.nextChapter,
+            title: frontmatter.nextChapterTitle || 'Next Chapter',
+          };
+        }
+      }
 
       return blogPost;
     } catch (error) {
@@ -71,10 +97,39 @@ export class BlogController {
       });
       
       const posts = await Promise.all(postsPromises);
-
-      return posts;
+      
+      // Filter out null values and sort
+      const validPosts = posts.filter(Boolean) as BlogPost[];
+      
+      return validPosts;
     } catch (error) {
       console.error('Failed to load all blog posts', error);
+      return [];
+    }
+  }
+
+  /**
+   * Get all chapters in a series by seriesSlug
+   */
+  public async getSeriesChapters(seriesSlug: string): Promise<BlogPost[]> {
+    try {
+      const allPosts = await this.loadAllBlogPosts();
+      
+      // Filter posts that belong to the specified series
+      const seriesChapters = allPosts.filter(post => 
+        post.isSeriesEntry && post.seriesSlug === seriesSlug
+      );
+      
+      // Sort chapters by chapter number
+      seriesChapters.sort((a, b) => {
+        const aNum = a.chapterNumber ?? 999;
+        const bNum = b.chapterNumber ?? 999;
+        return aNum - bNum;
+      });
+      
+      return seriesChapters;
+    } catch (error) {
+      console.error(`Failed to load chapters for series: ${seriesSlug}`, error);
       return [];
     }
   }
