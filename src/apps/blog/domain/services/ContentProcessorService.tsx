@@ -221,9 +221,17 @@ export class ContentProcessorService {
       case 'H4':
         return <h4 key={index} className="text-lg font-medium mt-4 mb-2 text-left">{children}</h4>;
       case 'P':
-        return <p key={index} className="mb-4 text-left">{children}</p>;
+        return <p key={index} className="mb-4 text-left" >{children}</p>;
       case 'STRONG':
         return <strong key={index}>{children}</strong>;
+      case 'EM':
+        return <em key={index} className="italic">{children}</em>;
+      case 'BLOCKQUOTE': // ✅ Handle blockquotes explicitly
+        return (
+          <blockquote key={index} className="border-l-4 border-gray-500 pl-4 italic text-gray-600">
+            {children}
+          </blockquote>
+        );
       default:
         return children;
     }
