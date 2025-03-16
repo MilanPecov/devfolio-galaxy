@@ -162,7 +162,7 @@ const About = () => {
 
           <div className="mt-12 text-center">
             <Button 
-              className="bg-indigo-600 hover:bg-indigo-700"
+              className="bg-indigo-400 hover:bg-indigo-500"
               onClick={scrollToContact}
             >
               Discuss Your Project
