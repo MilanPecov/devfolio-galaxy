@@ -2,6 +2,7 @@
 import { Hero } from "@/apps/landing";
 import Blog from "@/apps/blog/ui/Blog.tsx";
 import Navbar from "@/shared/components/Navbar";
+import Contact from "@/shared/components/Contact";
 
 const Index = () => {
   return (
@@ -9,6 +10,7 @@ const Index = () => {
       <Navbar />
       <Hero />
       <Blog />
+      <Contact />
     </div>
   );
 };
