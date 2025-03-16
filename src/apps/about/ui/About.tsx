@@ -66,8 +66,9 @@ const About = () => {
             </div>
             
             <p className="text-lg text-gray-600 leading-relaxed mb-8">
-              I'm an Engineering Leader who builds bridges — between teams, technologies, and business goals. 
-              I've spent years crafting elegant solutions to complex problems while growing teams that thrive on innovation.
+              I'm an Engineering Leader who builds bridges — between teams, technologies, and business goals.
+              Currently serving as Director of Engineering at Showpass, I've spent years crafting elegant solutions 
+              to complex problems while growing teams that thrive on innovation.
             </p>
 
             <div className="flex flex-col md:flex-row gap-4 justify-center mb-8">
@@ -93,6 +94,9 @@ const About = () => {
           </div>
         </div>
       </section>
+
+      {/* Clear separation between About Me and Services */}
+      <div className="w-full h-16 bg-white"></div>
 
       {/* Technical Consulting & Mentoring Section */}
       <section className="py-20 bg-indigo-50/50">
