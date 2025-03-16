@@ -45,7 +45,6 @@ const BlogPost = () => {
             isSeries: postData.isSeries, 
             seriesSlug: postData.seriesSlug,
             seriesTitle: postData.seriesTitle,
-            fullData: JSON.stringify(postData),
           });
           
           // If this is a series main post, fetch all chapters
@@ -54,7 +53,7 @@ const BlogPost = () => {
             console.log("Loading chapters for series:", postData.seriesSlug);
             try {
               const chapters = await blogController.getSeriesChapters(postData.seriesSlug);
-              console.log(`Loaded ${chapters.length} chapters`);
+              console.log(`Loaded ${chapters.length} chapters:`, chapters);
               setSeriesChapters(chapters);
             } catch (chapterErr) {
               console.error("Error loading chapters:", chapterErr);
