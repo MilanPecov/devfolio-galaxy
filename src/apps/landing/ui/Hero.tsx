@@ -88,7 +88,7 @@ const Hero = () => {
               <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </a>
             <a
-              href="#contact"
+              href="/about#contact"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-gray-900 px-8 py-4 rounded-lg transition-all duration-300 shadow-lg shadow-indigo-500/5 hover:shadow-xl hover:shadow-indigo-500/10 border border-gray-200"
             >
               Contact Me

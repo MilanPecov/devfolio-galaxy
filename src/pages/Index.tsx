@@ -1,5 +1,5 @@
 
-import { Hero, Contact } from "@/apps/landing";
+import { Hero } from "@/apps/landing";
 import Blog from "@/apps/blog/ui/Blog.tsx";
 import Navbar from "@/shared/components/Navbar";
 
@@ -9,7 +9,6 @@ const Index = () => {
       <Navbar />
       <Hero />
       <Blog />
-      <Contact />
     </div>
   );
 };
