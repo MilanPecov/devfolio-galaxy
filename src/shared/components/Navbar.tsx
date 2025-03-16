@@ -9,8 +9,8 @@ const Navbar = () => {
   const isHomePage = location.pathname === "/";
 
   const menuItems = [
-    { name: "About", href: "/about" },
-    { name: "Blog", href: isHomePage ? "#blog" : "/blog" },
+    { name: "about", href: "/about" },
+    { name: "blog", href: isHomePage ? "#blog" : "/blog" },
   ];
 
   return (
