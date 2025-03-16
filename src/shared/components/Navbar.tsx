@@ -1,25 +1,19 @@
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
   const navigate = useNavigate();
-  const isHomePage = location.pathname === "/";
 
   const menuItems = [
     { name: "about", href: "/about" },
-    { name: "blog", href: isHomePage ? "#blog" : "/blog" },
+    { name: "blog", href: "/blog" },
   ];
 
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    
-    if (!isHomePage) {
-      navigate('/');
-    }
-    
+    navigate('/');
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
