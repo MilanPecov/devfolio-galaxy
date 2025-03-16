@@ -13,12 +13,23 @@ const Navbar = () => {
     { name: "blog", href: isHomePage ? "#blog" : "/blog" },
   ];
 
+  const handleLogoClick = (e: React.MouseEvent) => {
+    if (isHomePage) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50">
       <div className="absolute inset-0 bg-white/70 backdrop-blur-xl border-b border-gray-100"></div>
       <div className="container mx-auto px-6 py-4 relative">
         <div className="flex items-center justify-between">
-          <Link to="/" className="text-xl font-semibold text-[#1E293B]">
+          <Link 
+            to="/" 
+            className="text-xl font-semibold text-[#1E293B]"
+            onClick={handleLogoClick}
+          >
             ~/milan
           </Link>
 
