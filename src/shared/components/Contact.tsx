@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Mail, Send } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/shared/hooks/use-toast";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
