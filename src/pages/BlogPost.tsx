@@ -7,7 +7,6 @@ import {
   BlogPostHeader,
   BlogPostContent,
   ChapterNavigation,
-  SeriesChapterList
 } from "@/apps/blog/ui/components";
 import { LoadingState } from "@/apps/blog/ui/components/LoadingState";
 import { ErrorState } from "@/apps/blog/ui/components/ErrorState";
@@ -47,8 +46,8 @@ const BlogPost = () => {
             seriesTitle: postData.seriesTitle,
           });
           
-          // If this is a series main post, fetch all chapters
-          if (postData.isSeries && postData.seriesSlug) {
+          // If this is a series main post or a series entry, fetch all chapters
+          if ((postData.isSeries || postData.isSeriesEntry) && postData.seriesSlug) {
             setLoadingChapters(true);
             console.log("Loading chapters for series:", postData.seriesSlug);
             try {
@@ -61,7 +60,7 @@ const BlogPost = () => {
               setLoadingChapters(false);
             }
           } else {
-            console.log("This post is not a series main post, not loading chapters");
+            console.log("This post is not a series post, not loading chapters");
           }
         } else {
           setError("Post not found");
@@ -105,20 +104,12 @@ const BlogPost = () => {
           <BlogPostHeader post={post} />
           <BlogPostContent 
             post={post} 
-            seriesChapters={post.isSeries ? seriesChapters : []} 
+            seriesChapters={seriesChapters}
+            loadingChapters={loadingChapters}
           />
           
           {/* Only show chapter navigation for series entries, not series main posts */}
           {post.isSeriesEntry && <ChapterNavigation post={post} />}
-          
-          {/* Only show series chapter list for series main posts */}
-          {post.isSeries && (
-            <SeriesChapterList 
-              post={post} 
-              seriesChapters={seriesChapters} 
-              loading={loadingChapters} 
-            />
-          )}
         </div>
       </article>
     </div>
