@@ -2,7 +2,6 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { blogController, type BlogPost } from "@/apps/blog";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button.tsx";
 import BlogList from "@/apps/blog/ui/BlogList.tsx";
 
@@ -29,7 +28,6 @@ const Blog = () => {
       } catch (error) {
         // Handle any errors that occur during fetching
         setError("Failed to load blog posts. Please try again later.");
-        toast.error("Failed to load blog posts");
         // Ensure posts is at least an empty array to prevent mapping errors
         setPosts([]);
       } finally {

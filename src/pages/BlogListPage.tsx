@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { blogController, type BlogPost } from "@/apps/blog";
-import { toast } from "sonner";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -40,7 +39,6 @@ const BlogListPage = () => {
       } catch (error) {
         // Handle any errors that occur during fetching
         setError("Failed to load blog posts. Please try again later.");
-        toast.error("Failed to load blog posts");
         // Ensure posts is at least an empty array to prevent mapping errors
         setPosts([]);
       } finally {
