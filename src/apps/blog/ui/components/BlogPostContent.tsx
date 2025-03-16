@@ -31,7 +31,7 @@ export const BlogPostContent = ({ post, seriesChapters = [], loadingChapters = f
             
             <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
               <CollapsibleTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-1">
+                <Button variant="ghost" size="sm" className="gap-1 ml-auto">
                   {isOpen ? "Hide chapters" : "View all chapters"}
                   <ChevronDown 
                     className={`h-4 w-4 text-slate-500 transition-transform duration-200 ${
@@ -41,7 +41,7 @@ export const BlogPostContent = ({ post, seriesChapters = [], loadingChapters = f
                 </Button>
               </CollapsibleTrigger>
               
-              <CollapsibleContent className="mt-4 data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up overflow-hidden">
+              <CollapsibleContent className="mt-4 overflow-hidden">
                 <TableOfContents seriesChapters={seriesChapters} />
               </CollapsibleContent>
             </Collapsible>

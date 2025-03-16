@@ -11,6 +11,7 @@ import {
 } from "@/shared/components/ui/accordion";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { Button } from "@/shared/components/ui/button";
+import { cn } from "@/shared/lib/utils";
 
 interface GroupedBlogListProps {
   regularPosts: BlogPost[];
@@ -73,7 +74,7 @@ const GroupedBlogList = ({
       {/* Series Posts Group */}
       {seriesWithEntries.length > 0 && (
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-slate-800 mb-4 flex items-center gap-2 text-left">
             <BookOpen className="h-5 w-5 text-blue-500" />
             Series
           </h2>
@@ -107,12 +108,12 @@ const GroupedBlogList = ({
                       <div className="flex items-center justify-between">
                         <Link 
                           to={`/blog/${series.main.slug}`}
-                          className="text-xl md:text-2xl font-semibold text-slate-800 hover:text-blue-600 transition-colors"
+                          className="text-xl md:text-2xl font-semibold text-slate-800 hover:text-blue-600 transition-colors text-left"
                         >
                           {series.main.seriesTitle || series.main.title}
                         </Link>
                         
-                        <AccordionTrigger className="!no-underline">
+                        <AccordionTrigger className="!no-underline flex-shrink-0">
                           <Button 
                             variant="ghost" 
                             size="sm"
@@ -124,11 +125,11 @@ const GroupedBlogList = ({
                         </AccordionTrigger>
                       </div>
                       
-                      <p className="text-gray-600 mt-3">
+                      <p className="text-gray-600 mt-3 text-left">
                         {series.main.excerpt}
                       </p>
                       
-                      <div className="mt-4">
+                      <div className="mt-4 text-left">
                         <Link
                           to={`/blog/${series.main.slug}`}
                           className="inline-flex items-center gap-2 text-blue-600 font-medium hover:text-blue-700 transition-colors group"
@@ -148,7 +149,7 @@ const GroupedBlogList = ({
                                 to={`/blog/${entry.slug}`}
                                 className="flex items-center justify-between p-3 rounded-lg bg-white border border-slate-100 hover:border-blue-100 hover:bg-blue-50/30 transition-colors group"
                               >
-                                <div>
+                                <div className="text-left">
                                   <p className="font-medium text-slate-800 group-hover:text-blue-700">
                                     {entry.chapterNumber === 0 ? 'Prologue' : `Chapter ${entry.chapterNumber}`}: {entry.chapterTitle || entry.title}
                                   </p>
@@ -157,7 +158,7 @@ const GroupedBlogList = ({
                                     <span>{entry.readTime}</span>
                                   </div>
                                 </div>
-                                <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
+                                <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
                               </Link>
                             </li>
                           ))}
@@ -175,7 +176,7 @@ const GroupedBlogList = ({
       {/* Regular Posts Group */}
       {regularPosts.length > 0 && (
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-slate-800 mb-4">
+          <h2 className="text-2xl font-bold text-slate-800 mb-4 text-left">
             Articles
           </h2>
           
@@ -189,7 +190,7 @@ const GroupedBlogList = ({
                   <div className="p-3 rounded-full bg-[#F8FAFC] md:self-start">
                     {post.icon}
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 text-left">
                     <div className="flex flex-wrap gap-2 mb-3">
                       {post.categories && post.categories.map((category, catIndex) => (
                         <span
@@ -204,7 +205,7 @@ const GroupedBlogList = ({
                       <span>{post.date}</span>
                       <span>{post.readTime}</span>
                     </div>
-                    <h3 className="text-xl md:text-2xl font-semibold mb-3 text-[#1E293B] group-hover:text-[#334155] transition-colors">
+                    <h3 className="text-xl md:text-2xl font-semibold mb-3 text-slate-800 group-hover:text-slate-700 transition-colors">
                       {post.title}
                     </h3>
                     <p className="text-gray-600 mb-4">
@@ -212,7 +213,7 @@ const GroupedBlogList = ({
                     </p>
                     <Link
                       to={`/blog/${post.slug}`}
-                      className="inline-flex items-center gap-2 text-[#1E293B] font-medium group-hover:text-[#475569] transition-colors"
+                      className="inline-flex items-center gap-2 text-blue-600 font-medium hover:text-blue-700 transition-colors group"
                     >
                       Read More 
                       <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
