@@ -1,5 +1,5 @@
 
-import { Github, Linkedin, Mail, Twitter } from "lucide-react";
+import { Code, BriefcaseBusiness, Mail, X } from "lucide-react";
 import { Separator } from "./ui/separator";
 
 const Contact = () => {
@@ -41,7 +41,7 @@ const Contact = () => {
               className="flex items-center gap-3 p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-indigo-100 hover:border-indigo-300 group"
             >
               <div className="p-2 rounded-full bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
-                <Linkedin className="h-5 w-5 text-indigo-600" />
+                <BriefcaseBusiness className="h-5 w-5 text-indigo-600" />
               </div>
               <span className="font-medium">LinkedIn</span>
             </a>
@@ -53,21 +53,21 @@ const Contact = () => {
               className="flex items-center gap-3 p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-indigo-100 hover:border-indigo-300 group"
             >
               <div className="p-2 rounded-full bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
-                <Github className="h-5 w-5 text-indigo-600" />
+                <Code className="h-5 w-5 text-indigo-600" />
               </div>
               <span className="font-medium">GitHub</span>
             </a>
 
             <a
-              href="https://twitter.com/milanpecov"
+              href="https://x.com/milanpecov"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-indigo-100 hover:border-indigo-300 group"
             >
               <div className="p-2 rounded-full bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
-                <Twitter className="h-5 w-5 text-indigo-600" />
+                <X className="h-5 w-5 text-indigo-600" />
               </div>
-              <span className="font-medium">Twitter</span>
+              <span className="font-medium">X</span>
             </a>
           </div>
         </div>

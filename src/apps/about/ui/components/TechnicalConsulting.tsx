@@ -1,7 +1,7 @@
 
-import { Button } from "@/shared/components/ui/button";
-import { Card, CardContent } from "@/shared/components/ui/card";
-import { Separator } from "@/shared/components/ui/separator";
+import { Button } from "@/shared/components/ui/button.tsx";
+import { Card, CardContent } from "@/shared/components/ui/card.tsx";
+import { Separator } from "@/shared/components/ui/separator.tsx";
 import { Users } from "lucide-react";
 
 export const TechnicalConsulting = () => {

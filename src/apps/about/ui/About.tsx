@@ -1,11 +1,7 @@
 
-import { Skills } from "@/apps/about";
-import { AboutHero } from "./AboutHero";
-import { CurrentStatus } from "./CurrentStatus";
-import { CoreStrengths } from "./CoreStrengths";
-import { TechnicalConsulting } from "./TechnicalConsulting";
+import { AboutHero, CoreStrengths, CurrentStatus, Skills, TechnicalConsulting } from "@/apps/about/ui/components";
+
 import Contact from "@/shared/components/Contact";
-import { useEffect } from "react";
 
 const About = () => {
   return (

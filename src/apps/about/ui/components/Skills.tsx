@@ -15,7 +15,7 @@ import {
   Network,
   Plug
 } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs.tsx";
 
 // Group skills by higher-level categories
 const skillGroups = [
