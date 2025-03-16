@@ -11,7 +11,6 @@ const Navbar = () => {
   const menuItems = [
     { name: "about", href: "/about" },
     { name: "blog", href: isHomePage ? "#blog" : "/blog" },
-    { name: "contact", href: "/about#contact" },
   ];
 
   return (
