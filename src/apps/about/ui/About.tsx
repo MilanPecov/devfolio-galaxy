@@ -1,6 +1,5 @@
-
 import { Skills } from "@/apps/about";
-import { Github, Linkedin, Mail, X } from "lucide-react";
+import { Github, Linkedin, Mail, X, GraduationCap, Users, UserRound } from "lucide-react";
 import { Separator } from "@/shared/components/ui/separator";
 import { useState, useEffect } from "react";
 import { Button } from "@/shared/components/ui/button";
@@ -38,6 +37,14 @@ const About = () => {
     const randomIndex = Math.floor(Math.random() * quotes.length);
     setQuote(quotes[randomIndex]);
   }, []);
+
+  // Function to scroll to the contact section
+  const scrollToContact = () => {
+    const contactSection = document.getElementById("contact");
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -141,7 +148,7 @@ const About = () => {
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-600">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                     <circle cx="9" cy="7" r="4"></circle>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M23 21v-2a4 4 0 0 1 0 7.75"></path>
                     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                   </svg>
                 </div>
@@ -154,10 +161,76 @@ const About = () => {
           </div>
 
           <div className="mt-12 text-center">
-            <Button className="bg-indigo-600 hover:bg-indigo-700">
-              <a href="mailto:milan.pecov91@gmail.com" className="text-white">
-                Discuss Your Project
-              </a>
+            <Button 
+              className="bg-indigo-600 hover:bg-indigo-700"
+              onClick={scrollToContact}
+            >
+              Discuss Your Project
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Mentoring Section */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-6">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <span className="inline-block px-4 py-2 bg-indigo-100 text-indigo-800 rounded-full text-sm font-medium mb-4">
+              Mentoring
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Personalized Growth
+            </h2>
+            <p className="text-gray-600 mb-8">
+              Whether you're a team looking to level up or an individual seeking to accelerate your career, I offer tailored mentoring programs to help you reach your goals.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
+            <Card className="bg-white border-indigo-100 hover:shadow-md transition-shadow">
+              <CardContent className="pt-6">
+                <div className="mb-4 p-3 bg-[#E5DEFF] rounded-full w-fit">
+                  <Users className="h-6 w-6 text-indigo-600" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Team Mentoring</h3>
+                <p className="text-gray-600 mb-4">
+                  Comprehensive programs for engineering teams looking to adopt best practices, improve collaboration, and deliver better software together.
+                </p>
+                <ul className="text-gray-600 list-disc list-inside space-y-2">
+                  <li>Customized learning paths</li>
+                  <li>Group workshops and pair programming</li>
+                  <li>Code review sessions</li>
+                  <li>Technical debt reduction strategies</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white border-indigo-100 hover:shadow-md transition-shadow">
+              <CardContent className="pt-6">
+                <div className="mb-4 p-3 bg-[#D3E4FD] rounded-full w-fit">
+                  <UserRound className="h-6 w-6 text-indigo-600" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Individual Coaching</h3>
+                <p className="text-gray-600 mb-4">
+                  One-on-one guidance for developers, tech leads, and engineering managers looking to advance their skills and career.
+                </p>
+                <ul className="text-gray-600 list-disc list-inside space-y-2">
+                  <li>Career path planning</li>
+                  <li>Technical skill development</li>
+                  <li>Leadership coaching</li>
+                  <li>Personal projects guidance</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center">
+            <Button 
+              variant="outline" 
+              className="border-indigo-300 text-indigo-700 hover:bg-indigo-50"
+              onClick={scrollToContact}
+            >
+              Explore Mentoring Options
             </Button>
           </div>
         </div>
