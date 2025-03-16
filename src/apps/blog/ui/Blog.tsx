@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { blogController, type BlogPost } from "@/apps/blog";
@@ -14,21 +13,15 @@ const Blog = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Function to fetch all blog posts and organize series
     const fetchPosts = async () => {
       try {
         setLoading(true);
         const allPosts = await blogController.loadAllBlogPosts();
         
-        // Check if posts were successfully loaded
         if (allPosts && allPosts.length > 0) {
-          // Filter out series main posts
           const regularPosts = allPosts.filter(post => !post.isSeries && !post.isSeriesEntry);
-          
-          // Get series main posts
           const seriesMainPosts = allPosts.filter(post => post.isSeries);
           
-          // Organize series with their entries
           const seriesWithEntries = await Promise.all(
             seriesMainPosts.map(async (mainPost) => {
               if (mainPost.seriesSlug) {
@@ -40,20 +33,15 @@ const Blog = () => {
           );
           
           setFeaturedSeries(seriesWithEntries);
-          // Only set the first post from regularPosts
           setPosts(regularPosts.slice(0, 1));
         } else {
-          // Handle case where no posts are returned
           setPosts([]);
           setError("No blog posts available.");
         }
       } catch (error) {
-        // Handle any errors that occur during fetching
         setError("Failed to load blog posts. Please try again later.");
-        // Ensure posts is at least an empty array to prevent mapping errors
         setPosts([]);
       } finally {
-        // Always set loading to false when done
         setLoading(false);
       }
     };
@@ -63,14 +51,12 @@ const Blog = () => {
 
   return (
     <section id="blog" className="py-20 relative overflow-hidden">
-      {/* Abstract background with gradient and grid pattern */}
       <div className="absolute inset-0 bg-[#F8FAFC]">
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(238,238,238,0.6)_1px,transparent_1px),linear-gradient(rgba(238,238,238,0.6)_1px,transparent_1px)] bg-[size:24px_24px]"></div>
         <div className="absolute inset-0 bg-gradient-to-b from-[#F8FAFC] via-white/90 to-[#F8FAFC]"></div>
       </div>
 
       <div className="container mx-auto px-6 relative">
-        {/* Section header */}
         <div className="max-w-3xl mx-auto text-center mb-16 animate-fade-up">
           <span className="inline-block px-4 py-2 bg-[#1E293B]/5 text-[#1E293B] rounded-full text-sm font-medium mb-4 backdrop-blur-sm border border-[#1E293B]/10">
             Technical Insights
@@ -83,14 +69,11 @@ const Blog = () => {
           </p>
         </div>
 
-        {/* Blog content */}
         <div className="max-w-4xl mx-auto">
-          {/* Featured Series component */}
           {featuredSeries.length > 0 && (
             <FeaturedSeries series={featuredSeries} />
           )}
           
-          {/* Regular Blog Posts */}
           {posts.length > 0 && (
             <div className="mt-12">
               <h3 className="text-xl font-semibold text-slate-800 mb-6">Latest Article</h3>
@@ -99,10 +82,21 @@ const Blog = () => {
                 loading={loading}
                 error={error}
               />
+              
+              <div className="mt-8 text-center">
+                <Link to="/blog">
+                  <Button 
+                    variant="outline" 
+                    className="group border-slate-200 hover:border-slate-300 px-6"
+                  >
+                    View all articles
+                    <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+              </div>
             </div>
           )}
           
-          {/* Loading and error states */}
           {loading && !posts.length && !featuredSeries.length && (
             <div className="flex justify-center py-12">
               <div className="animate-pulse text-center">
@@ -118,8 +112,6 @@ const Blog = () => {
               </div>
             </div>
           )}
-          
-          {/* Removed redundant button at the bottom since we have "View all articles" in the FeaturedSeries component */}
         </div>
       </div>
     </section>
