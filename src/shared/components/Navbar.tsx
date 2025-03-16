@@ -1,11 +1,11 @@
-
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const isHomePage = location.pathname === "/";
 
   const menuItems = [
@@ -15,6 +15,11 @@ const Navbar = () => {
 
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    
+    if (!isHomePage) {
+      navigate('/');
+    }
+    
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -31,7 +36,6 @@ const Navbar = () => {
             ~/milan
           </Link>
 
-          {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-12">
             {menuItems.map((item) => (
               item.href.startsWith("/") ? (
@@ -54,7 +58,6 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Mobile Menu Button */}
           <button
             className="md:hidden"
             onClick={() => setIsOpen(!isOpen)}
@@ -64,7 +67,6 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Mobile Menu */}
         {isOpen && (
           <div className="md:hidden absolute top-full left-0 right-0 bg-white/80 backdrop-blur-xl border-b border-gray-100 animate-fade-in">
             <div className="container mx-auto px-6 py-4">
