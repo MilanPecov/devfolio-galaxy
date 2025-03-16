@@ -10,8 +10,7 @@ const Navbar = () => {
 
   const menuItems = [
     { name: "About", href: "/about" },
-    { name: "Insights", href: isHomePage ? "#blog" : "/blog" },
-    { name: "Contact", href: isHomePage ? "#contact" : "/#contact" },
+    { name: "Blog", href: isHomePage ? "#blog" : "/blog" },
   ];
 
   return (
