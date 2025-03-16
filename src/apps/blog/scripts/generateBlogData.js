@@ -5,7 +5,6 @@ import path from 'path';
 import matter from 'gray-matter';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import yaml from 'js-yaml';  // Import yaml properly as ES module
 
 // Get proper __dirname equivalent for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -32,8 +31,8 @@ function generateBlogData() {
       const fileContent = fs.readFileSync(filePath, 'utf-8');
       
       try {
-        // Extract frontmatter and content from markdown
-        const { frontmatter, content } = extractFrontmatterAndContent(fileContent);
+        // Parse markdown with gray-matter
+        const { data: frontmatter, content } = matter(fileContent);
         
         // Extract slug from filename if not provided in frontmatter
         const slug = frontmatter?.slug || filename.replace('.md', '');
@@ -116,56 +115,6 @@ function generateBlogData() {
   } catch (error) {
     console.error('Error generating blog data:', error);
     throw error;
-  }
-}
-
-// Helper function to extract frontmatter and content
-function extractFrontmatterAndContent(fileContent) {
-  // Check if the file starts with a frontmatter section
-  if (!fileContent.startsWith('---\n')) {
-    return { frontmatter: {}, content: fileContent };
-  }
-
-  // Find the end of the frontmatter section
-  const endOfFrontmatter = fileContent.indexOf('---\n', 4);
-  if (endOfFrontmatter === -1) {
-    return { frontmatter: {}, content: fileContent };
-  }
-
-  // Extract frontmatter string
-  const frontmatterStr = fileContent.substring(4, endOfFrontmatter);
-  
-  // Extract content
-  const content = fileContent.substring(endOfFrontmatter + 4).trim();
-
-  // Parse frontmatter
-  try {
-    // Process the frontmatter to handle colons in titles
-    const processed = frontmatterStr
-      .split('\n')
-      .map(line => {
-        const colonIndex = line.indexOf(':');
-        if (colonIndex > 0) {
-          const key = line.substring(0, colonIndex).trim();
-          let value = line.substring(colonIndex + 1).trim();
-          
-          // If value contains a colon and is not already quoted, wrap it in quotes
-          if (value.includes(':') && !value.startsWith('"') && !value.startsWith("'")) {
-            // Replace any existing double quotes first
-            value = value.replace(/"/g, '\\"');
-            return `${key}: "${value}"`;
-          }
-        }
-        return line;
-      })
-      .join('\n');
-      
-    // Now parse with yaml
-    const frontmatter = yaml.load(processed) || {};
-    return { frontmatter, content };
-  } catch (error) {
-    console.error('Error parsing frontmatter:', error);
-    return { frontmatter: {}, content };
   }
 }
 
