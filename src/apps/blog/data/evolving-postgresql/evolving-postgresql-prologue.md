@@ -17,7 +17,7 @@ seriesTitle: "Evolving PostgreSQL Without Breaking the World"
 chapterTitle: "Prologue: The Weight of Unwritten Laws"
 chapterNumber: 0
 nextChapter: evolving-postgresql-chapter-1
-nextChapterTitle: "Chapter 1: The Price of Order"
+nextChapterTitle: "Chapter 1: Whispers to the Machine"
 ---
 
 Kairo Analytics never truly slept. Even at midnight, a low hum persisted—a quiet chorus of servers whispering their secrets beneath gently flickering monitors. It was a place where order struggled perpetually against chaos, a new startup navigating the swift currents of AI, innovating at a pace that could easily blur the lines between diligence and recklessness. Mistakes were expected, inevitable even, but they carried their own quiet weight.
