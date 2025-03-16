@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui
 const skillGroups = [
   {
     name: "Leadership & Architecture",
-    categories: ["Engineering Leadership", "System Design", "Domain Knowledge"],
+    categories: ["Engineering Leadership", "Software Design", "Domain Knowledge"],
     icon: <Layers className="h-5 w-5 text-indigo-600" />,
   },
   {
@@ -33,8 +33,8 @@ const skills = [
     category: "Engineering Leadership",
     icon: <Users className="h-5 w-5 text-indigo-500" />,
     items: [
-      "Team Leadership",
       "Technical Vision",
+      "Team Leadership",
       "Mentoring & Coaching",
       "Agile Methodologies",
       "Security & Compliance (PCI)",
@@ -42,7 +42,7 @@ const skills = [
     ],
   },
   {
-    category: "System Design",
+    category: "Software Design",
     icon: <Network className="h-5 w-5 text-indigo-500" />,
     items: [
       "Clean Code",
@@ -50,20 +50,23 @@ const skills = [
       "Design Patterns",
       "Event-Driven Architectures",
       "Service-Oriented Architecture",
+      "Multi-Tenancy Architecture",
       "Modular Monolith Design",
       "Test-Driven Development",
-      "Architecture Design",
     ],
   },
   {
     category: "Domain Knowledge",
     icon: <MessageSquareCode className="h-5 w-5 text-indigo-500" />,
     items: [
-      "Booking Systems",
+      "Enterprise Systems",
       "E-commerce Platforms",
-      "Payment Processing",
-      "Inventory Management",
-      "High-Performance Ticketing",
+      "Booking Systems",
+      "Payments & Financial Systems",
+      "Data Pipelines & ETL Workflows",
+      "Geospatial Data & PostGIS",
+      "High-Performance Caching Strategies",
+      "Real-Time Data Processing",
     ],
   },
   {
@@ -113,10 +116,11 @@ const skills = [
     category: "AI & Data",
     icon: <BrainCircuit className="h-5 w-5 text-indigo-500" />,
     items: [
+      "Agent Design",
+      "RAG",
       "LangChain",
       "Pinecone",
-      "LLM Prompt Engineering",
-      "RAG Approach",
+      "Prompt Engineering",
     ],
   },
   {
