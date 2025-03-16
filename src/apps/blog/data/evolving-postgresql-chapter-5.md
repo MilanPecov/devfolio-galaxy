@@ -1,6 +1,6 @@
 ---
 slug: evolving-postgresql-chapter-5
-title: Chapter 5: Observing Migrations in Production
+title: "Chapter 5: Observing Migrations in Production"
 excerpt: Even with the best techniques, database migrations need careful monitoring. Learn how to track progress and identify problems before they affect users.
 date: March 15, 2024
 readTime: 16 min read
@@ -13,10 +13,10 @@ iconColor: blue
 isSeriesEntry: true
 seriesSlug: evolving-postgresql-without-breaking-things
 seriesTitle: Evolving PostgreSQL Without Breaking the World
-chapterTitle: Chapter 5: Observing Migrations in Production
+chapterTitle: "Chapter 5: Observing Migrations in Production"
 chapterNumber: 5
 previousChapter: evolving-postgresql-chapter-4
-previousChapterTitle: Chapter 4: The Burden of Bloat – Using pg_repack
+previousChapterTitle: "Chapter 4: The Burden of Bloat – Using pg_repack"
 ---
 
 ## Chapter 5: Observing Migrations in Production

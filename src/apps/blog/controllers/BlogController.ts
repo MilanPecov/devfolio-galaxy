@@ -133,17 +133,4 @@ export class BlogController {
       return [];
     }
   }
-  
-  /**
-   * Check if a post is the main series post
-   */
-  public async isSeriesMainPost(slug: string): Promise<boolean> {
-    try {
-      const post = await this.loadBlogPost(slug);
-      return post?.isSeries || false;
-    } catch (error) {
-      console.error(`Failed to check if ${slug} is a series main post:`, error);
-      return false;
-    }
-  }
 }

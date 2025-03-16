@@ -1,6 +1,6 @@
 ---
 slug: evolving-postgresql-chapter-3
-title: Chapter 3: The Challenge of Foreign Keys
+title: "Chapter 3: The Challenge of Foreign Keys"
 excerpt: Foreign keys enforce relationships but can be troublesome to add to existing tables. Learn how to safely implement them without disrupting your system.
 date: March 15, 2024
 readTime: 12 min read
@@ -13,12 +13,12 @@ iconColor: blue
 isSeriesEntry: true
 seriesSlug: evolving-postgresql-without-breaking-things
 seriesTitle: Evolving PostgreSQL Without Breaking the World
-chapterTitle: Chapter 3: The Challenge of Foreign Keys
+chapterTitle: "Chapter 3: The Challenge of Foreign Keys"
 chapterNumber: 3
 previousChapter: evolving-postgresql-chapter-2
-previousChapterTitle: Chapter 2: Parallel Evolution – Creating Indexes Concurrently
+previousChapterTitle: "Chapter 2: Parallel Evolution – Creating Indexes Concurrently"
 nextChapter: evolving-postgresql-chapter-4
-nextChapterTitle: Chapter 4: The Burden of Bloat – Using pg_repack
+nextChapterTitle: "Chapter 4: The Burden of Bloat – Using pg_repack"
 ---
 
 ## Chapter 3: The Challenge of Foreign Keys

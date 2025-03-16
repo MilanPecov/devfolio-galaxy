@@ -1,6 +1,6 @@
 ---
 slug: evolving-postgresql-chapter-2
-title: Chapter 2: Parallel Evolution – Creating Indexes Concurrently
+title: "Chapter 2: Parallel Evolution – Creating Indexes Concurrently"
 excerpt: Discover how to create indexes without locking your database, allowing reads and writes to continue while your constraints are built.
 date: March 15, 2024
 readTime: 15 min read
@@ -13,12 +13,12 @@ iconColor: blue
 isSeriesEntry: true
 seriesSlug: evolving-postgresql-without-breaking-things
 seriesTitle: Evolving PostgreSQL Without Breaking the World
-chapterTitle: Chapter 2: Parallel Evolution – Creating Indexes Concurrently
+chapterTitle: "Chapter 2: Parallel Evolution – Creating Indexes Concurrently"
 chapterNumber: 2
 previousChapter: evolving-postgresql-chapter-1
-previousChapterTitle: Chapter 1: The Price of Order
+previousChapterTitle: "Chapter 1: The Price of Order"
 nextChapter: evolving-postgresql-chapter-3
-nextChapterTitle: Chapter 3: The Challenge of Foreign Keys
+nextChapterTitle: "Chapter 3: The Challenge of Foreign Keys"
 ---
 
 ## Chapter 2: Parallel Evolution – Creating Indexes Concurrently

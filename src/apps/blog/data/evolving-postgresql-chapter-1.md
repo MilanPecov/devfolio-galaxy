@@ -1,6 +1,6 @@
 ---
 slug: evolving-postgresql-chapter-1
-title: Chapter 1: The Price of Order
+title: "Chapter 1: The Price of Order"
 excerpt: Learn about PostgreSQL's locking mechanisms and why naively applying constraints can bring your application to a halt.
 date: March 15, 2024
 readTime: 12 min read
@@ -13,12 +13,12 @@ iconColor: blue
 isSeriesEntry: true
 seriesSlug: evolving-postgresql-without-breaking-things
 seriesTitle: Evolving PostgreSQL Without Breaking the World
-chapterTitle: Chapter 1: The Price of Order
+chapterTitle: "Chapter 1: The Price of Order"
 chapterNumber: 1
 previousChapter: evolving-postgresql-prologue
-previousChapterTitle: Prologue: The Immutable and the Changing
+previousChapterTitle: "Prologue: The Immutable and the Changing"
 nextChapter: evolving-postgresql-chapter-2
-nextChapterTitle: Chapter 2: Parallel Evolution – Creating Indexes Concurrently
+nextChapterTitle: "Chapter 2: Parallel Evolution – Creating Indexes Concurrently"
 ---
 
 ## Chapter 1: The Price of Order
