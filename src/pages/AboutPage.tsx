@@ -1,4 +1,5 @@
-import { About } from "@/apps/about";
+
+import { About, Skills } from "@/apps/about";
 import Navbar from "@/shared/components/Navbar";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
@@ -23,6 +24,7 @@ const AboutPage = () => {
     <div className="bg-white min-h-screen">
       <Navbar />
       <About />
+      <Skills />
     </div>
   );
 };
