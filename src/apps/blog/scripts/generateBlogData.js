@@ -20,6 +20,58 @@ if (!fs.existsSync(path.dirname(OUTPUT_FILE))) {
   fs.mkdirSync(path.dirname(OUTPUT_FILE), { recursive: true });
 }
 
+// Custom YAML parser that wraps values with colons in quotes
+const customYamlParser = (source) => {
+  // Detect the frontmatter section (between --- markers)
+  const frontmatterMatch = source.match(/^---\n([\s\S]*?)\n---/);
+  
+  if (!frontmatterMatch) {
+    return { data: {}, content: source };
+  }
+
+  try {
+    // Extract and preprocess the frontmatter text
+    const frontmatterText = frontmatterMatch[1];
+    
+    // Process the frontmatter text to wrap values containing colons in quotes
+    const processedFrontmatter = frontmatterText
+      .split('\n')
+      .map(line => {
+        if (line.trim() === '' || line.startsWith('  ')) {
+          return line;
+        }
+        
+        const colonIndex = line.indexOf(':');
+        if (colonIndex > 0) {
+          const key = line.substring(0, colonIndex).trim();
+          let value = line.substring(colonIndex + 1).trim();
+          
+          // If value contains a colon and is not already quoted, wrap it in quotes
+          if (value.includes(':') && !value.startsWith('"') && !value.startsWith("'")) {
+            value = `"${value.replace(/"/g, '\\"')}"`;
+            return `${key}: ${value}`;
+          }
+        }
+        return line;
+      })
+      .join('\n');
+    
+    // Parse the processed frontmatter
+    const frontmatterData = yaml.load(processedFrontmatter) || {};
+    
+    // Get content without frontmatter
+    const content = source.replace(frontmatterMatch[0], '').trim();
+    
+    return {
+      data: frontmatterData,
+      content
+    };
+  } catch (err) {
+    console.error('Error in custom YAML parser:', err.message);
+    return { data: {}, content: source };
+  }
+};
+
 // Process each markdown file
 function generateBlogData() {
   try {
@@ -32,63 +84,18 @@ function generateBlogData() {
       const fileContent = fs.readFileSync(filePath, 'utf-8');
       
       try {
-        // First, identify the frontmatter section (between the first two '---' lines)
-        const frontmatterMatch = fileContent.match(/^---\n([\s\S]*?)\n---/);
-        
-        if (!frontmatterMatch) {
-          console.error(`No frontmatter found in ${filename}`);
-          return {
-            slug: filename.replace('.md', ''),
-            frontmatter: {},
-            content: fileContent
-          };
-        }
-
-        // Extract the frontmatter text
-        const frontmatterText = frontmatterMatch[1];
-        
-        // Process the frontmatter text to escape colons in values
-        const processedFrontmatter = frontmatterText
-          .split('\n')
-          .map(line => {
-            // Skip lines that are indented (part of lists) or empty
-            if (line.trim() === '' || line.startsWith('  ')) {
-              return line;
-            }
-            
-            // Find the first colon which separates key and value
-            const colonIndex = line.indexOf(':');
-            if (colonIndex > 0) {
-              const key = line.substring(0, colonIndex).trim();
-              let value = line.substring(colonIndex + 1).trim();
-              
-              // If value contains a colon and is not already quoted, wrap it in quotes
-              if (value.includes(':') && !value.startsWith('"') && !value.startsWith("'")) {
-                value = `"${value.replace(/"/g, '\\"')}"`;
-                return `${key}: ${value}`;
-              }
-            }
-            return line;
-          })
-          .join('\n');
-        
-        // Parse the processed frontmatter
-        let frontmatterData;
-        try {
-          frontmatterData = yaml.load(processedFrontmatter);
-        } catch (err) {
-          console.error(`YAML parsing error for ${filename}:`, err.message);
-          frontmatterData = {};
-        }
-        
-        // Get content without frontmatter
-        const content = fileContent.replace(frontmatterMatch[0], '').trim();
+        // Use our custom parser instead of gray-matter's default parser
+        const { data: frontmatterData, content } = customYamlParser(fileContent);
         
         // Extract slug from filename if not provided in frontmatter
         const slug = frontmatterData?.slug || filename.replace('.md', '');
         
         console.log(`Processed ${filename} - frontmatter keys:`, 
           frontmatterData ? Object.keys(frontmatterData) : 'none');
+        
+        // Convert string boolean values to actual booleans
+        if (frontmatterData.isSeries === 'true') frontmatterData.isSeries = true;
+        if (frontmatterData.isSeriesEntry === 'true') frontmatterData.isSeriesEntry = true;
         
         return {
           slug,
