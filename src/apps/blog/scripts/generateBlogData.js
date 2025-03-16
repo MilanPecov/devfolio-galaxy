@@ -19,41 +19,58 @@ if (!fs.existsSync(path.dirname(OUTPUT_FILE))) {
   fs.mkdirSync(path.dirname(OUTPUT_FILE), { recursive: true });
 }
 
-// Process each markdown file and build the blog data
+/**
+ * Process markdown files and generate blog data
+ */
 function generateBlogData() {
   try {
     console.log('Generating blog data...');
-    const files = fs.readdirSync(CONTENT_DIR);
-    const markdownFiles = files.filter(file => file.endsWith('.md'));
-
-    const blogData = markdownFiles.map(filename => {
-      const filePath = path.join(CONTENT_DIR, filename);
-      const fileContent = fs.readFileSync(filePath, 'utf-8');
+    const blogData = [];
+    
+    // Helper function to process files in a directory
+    const processDirectory = (dirPath) => {
+      const items = fs.readdirSync(dirPath);
       
-      try {
-        // Parse markdown with gray-matter
-        const { data: frontmatter, content } = matter(fileContent);
+      for (const item of items) {
+        const itemPath = path.join(dirPath, item);
+        const stats = fs.statSync(itemPath);
         
-        // Extract slug from filename if not provided in frontmatter
-        const slug = frontmatter?.slug || filename.replace('.md', '');
-        
-        console.log(`Processed ${filename} - frontmatter keys:`, 
-          frontmatter ? Object.keys(frontmatter) : 'none');
-        
-        return {
-          slug,
-          frontmatter: frontmatter || {},
-          content
-        };
-      } catch (err) {
-        console.error(`Error processing ${filename}:`, err);
-        return {
-          slug: filename.replace('.md', ''),
-          frontmatter: {},
-          content: fileContent
-        };
+        if (stats.isDirectory()) {
+          // If it's a directory, process it recursively
+          processDirectory(itemPath);
+        } else if (item.endsWith('.md')) {
+          // Process markdown files
+          const fileContent = fs.readFileSync(itemPath, 'utf-8');
+          
+          try {
+            // Parse markdown with gray-matter
+            const { data: frontmatter, content } = matter(fileContent);
+            
+            // Extract slug from frontmatter or filename
+            const slug = frontmatter?.slug || item.replace('.md', '');
+            
+            console.log(`Processed ${item} - frontmatter keys:`, 
+              frontmatter ? Object.keys(frontmatter) : 'none');
+            
+            blogData.push({
+              slug,
+              frontmatter: frontmatter || {},
+              content
+            });
+          } catch (err) {
+            console.error(`Error processing ${item}:`, err);
+            blogData.push({
+              slug: item.replace('.md', ''),
+              frontmatter: {},
+              content: fileContent
+            });
+          }
+        }
       }
-    });
+    };
+    
+    // Start processing from the content directory
+    processDirectory(CONTENT_DIR);
 
     // Process series relationships for chapter navigation
     const seriesMap = new Map();

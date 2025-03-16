@@ -1,3 +1,4 @@
+
 ---
 slug: evolving-postgresql-prologue
 title: "Prologue: The Immutable and the Changing"
