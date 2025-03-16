@@ -1,8 +1,33 @@
 
 import { useEffect, useState } from "react";
-import { CheckCircle, Code, Database, Server, BrainCircuit, Users, Layout, Cloud, LineChart } from "lucide-react";
+import { CheckCircle, Code, Database, Server, BrainCircuit, Users, Layout, Cloud, LineChart, Layers } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
 
+// Group skills by higher-level categories
+const skillGroups = [
+  {
+    name: "Leadership & Design",
+    categories: ["Engineering Leadership", "Software Design"],
+    icon: <Layers className="h-5 w-5 text-indigo-600" />,
+  },
+  {
+    name: "Development",
+    categories: ["Backend", "Frontend", "Other Technologies"],
+    icon: <Code className="h-5 w-5 text-indigo-600" />,
+  },
+  {
+    name: "Infrastructure",
+    categories: ["Databases & Cache", "Cloud Services", "Observability & Monitoring"],
+    icon: <Server className="h-5 w-5 text-indigo-600" />,
+  },
+  {
+    name: "AI & Emerging",
+    categories: ["AI & Data"],
+    icon: <BrainCircuit className="h-5 w-5 text-indigo-600" />,
+  },
+];
+
+// Skills data structure
 const skills = [
   {
     category: "Engineering Leadership",
@@ -109,6 +134,7 @@ const skills = [
 ];
 
 const Skills = () => {
+  const [activeGroup, setActiveGroup] = useState("all");
   const [activeCategory, setActiveCategory] = useState("all");
   const [visibleItems, setVisibleItems] = useState<{ [key: string]: number }>({});
   const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
@@ -137,6 +163,15 @@ const Skills = () => {
   };
 
   const categories = ["all", ...skills.map(s => s.category)];
+  const groups = ["all", ...skillGroups.map(g => g.name)];
+
+  // Filter skills based on active group
+  const filteredSkills = activeGroup === "all" 
+    ? skills 
+    : skills.filter(skill => {
+        const group = skillGroups.find(g => g.name === activeGroup);
+        return group ? group.categories.includes(skill.category) : false;
+      });
 
   return (
     <section id="skills" className="py-20 bg-gradient-to-b from-white to-gray-50">
@@ -154,77 +189,115 @@ const Skills = () => {
         </div>
 
         <div className="mb-10">
+          {/* Main tabs for skill groups */}
           <Tabs defaultValue="all" className="w-full">
             <TabsList className="flex flex-wrap justify-center mb-8 bg-transparent h-auto">
-              {categories.map((category) => (
+              {groups.map((group) => (
                 <TabsTrigger
-                  key={category}
-                  value={category}
-                  onClick={() => setActiveCategory(category)}
+                  key={group}
+                  value={group}
+                  onClick={() => {
+                    setActiveGroup(group);
+                    setActiveCategory("all");
+                  }}
                   className="data-[state=active]:bg-primary data-[state=active]:text-white m-1 rounded-full px-5 py-2 text-sm transition-all duration-200 hover:opacity-90"
                 >
-                  {category === "all" ? "All Skills" : category}
+                  {group === "all" ? "All Skills" : group}
                 </TabsTrigger>
               ))}
             </TabsList>
 
-            <TabsContent value="all" className="mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {skills.map((skill, index) => (
-                  <div
-                    key={index}
-                    className="p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 animate-fade-up"
-                    style={{ animationDelay: `${index * 100}ms` }}
+            {/* Secondary tabs for individual categories, only shown when not in "all" group view */}
+            {activeGroup !== "all" && (
+              <div className="flex flex-wrap justify-center mb-8 gap-2">
+                <button
+                  onClick={() => setActiveCategory("all")}
+                  className={`px-4 py-1.5 text-sm rounded-full transition-all ${
+                    activeCategory === "all" 
+                      ? "bg-indigo-100 text-indigo-700 font-medium" 
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  All {activeGroup} Skills
+                </button>
+                
+                {skillGroups.find(g => g.name === activeGroup)?.categories.map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveCategory(cat)}
+                    className={`px-4 py-1.5 text-sm rounded-full transition-all ${
+                      activeCategory === cat 
+                        ? "bg-indigo-100 text-indigo-700 font-medium" 
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
                   >
-                    <div className="flex items-center mb-4">
-                      <div className="p-3 rounded-full bg-indigo-50 mr-3">
-                        {skill.icon}
-                      </div>
-                      <h3 className="text-xl font-semibold">{skill.category}</h3>
-                    </div>
-                    
-                    <div className="flex flex-wrap gap-2 min-h-[160px]">
-                      {skill.items.slice(0, visibleItems[skill.category] || 5).map((item) => (
-                        <span
-                          key={item}
-                          className={`px-4 py-2 rounded-lg text-sm transition-all duration-200 ${
-                            hoveredSkill === item 
-                              ? "bg-primary text-white scale-105" 
-                              : "bg-secondary hover:bg-indigo-100"
-                          }`}
-                          onMouseEnter={() => setHoveredSkill(item)}
-                          onMouseLeave={() => setHoveredSkill(null)}
-                        >
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-                    
-                    {skill.items.length > 5 && (
-                      <div className="mt-4 text-right">
-                        {visibleItems[skill.category] === 5 ? (
-                          <button 
-                            onClick={() => handleShowMore(skill.category)}
-                            className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
-                          >
-                            Show all ({skill.items.length})
-                          </button>
-                        ) : (
-                          <button 
-                            onClick={() => handleShowLess(skill.category)}
-                            className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
-                          >
-                            Show less
-                          </button>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                    {cat}
+                  </button>
                 ))}
+              </div>
+            )}
+
+            {/* Content tab for "all" group or group + "all" category */}
+            <TabsContent value={activeGroup} className="mt-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredSkills
+                  .filter(skill => activeCategory === "all" || skill.category === activeCategory)
+                  .map((skill, index) => (
+                    <div
+                      key={index}
+                      className="p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 animate-fade-up"
+                      style={{ animationDelay: `${index * 100}ms` }}
+                    >
+                      <div className="flex items-center mb-4">
+                        <div className="p-3 rounded-full bg-indigo-50 mr-3">
+                          {skill.icon}
+                        </div>
+                        <h3 className="text-xl font-semibold">{skill.category}</h3>
+                      </div>
+                      
+                      <div className="flex flex-wrap gap-2">
+                        {skill.items.slice(0, visibleItems[skill.category] || 5).map((item) => (
+                          <span
+                            key={item}
+                            className={`px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${
+                              hoveredSkill === item 
+                                ? "bg-primary text-white scale-105" 
+                                : "bg-secondary hover:bg-indigo-100"
+                            }`}
+                            onMouseEnter={() => setHoveredSkill(item)}
+                            onMouseLeave={() => setHoveredSkill(null)}
+                          >
+                            {item}
+                          </span>
+                        ))}
+                      </div>
+                      
+                      {skill.items.length > 5 && (
+                        <div className="mt-4 text-right">
+                          {visibleItems[skill.category] === 5 ? (
+                            <button 
+                              onClick={() => handleShowMore(skill.category)}
+                              className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
+                            >
+                              Show all ({skill.items.length})
+                            </button>
+                          ) : (
+                            <button 
+                              onClick={() => handleShowLess(skill.category)}
+                              className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
+                            >
+                              Show less
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
               </div>
             </TabsContent>
 
-            {skills.map((skill) => (
+            {/* Individual category view - only rendered when directly selecting a category from the main tabs */}
+            {activeGroup === "all" && skills.map((skill) => (
               <TabsContent key={skill.category} value={skill.category} className="mt-6">
                 <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-sm p-8">
                   <div className="flex items-center mb-6">
@@ -240,8 +313,8 @@ const Skills = () => {
                         key={item}
                         className="flex items-center p-3 rounded-lg hover:bg-indigo-50 transition-all duration-200"
                       >
-                        <CheckCircle className="h-4 w-4 text-indigo-500 mr-2" />
-                        <span>{item}</span>
+                        <CheckCircle className="h-4 w-4 text-indigo-500 mr-2 flex-shrink-0" />
+                        <span className="text-left">{item}</span>
                       </div>
                     ))}
                   </div>
