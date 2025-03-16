@@ -16,6 +16,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState<BlogPostType | null>(null);
+  const [seriesChapters, setSeriesChapters] = useState<BlogPostType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,6 +34,12 @@ const BlogPost = () => {
         const postData = await blogController.loadBlogPost(slug);
         if (postData) {
           setPost(postData);
+          
+          // If this is a series main post, fetch all chapters
+          if (postData.isSeries && postData.seriesSlug) {
+            const chapters = await blogController.getSeriesChapters(postData.seriesSlug);
+            setSeriesChapters(chapters);
+          }
         } else {
           setError("Post not found");
         }
@@ -125,7 +132,7 @@ const BlogPost = () => {
               <div className="mb-6 p-4 bg-slate-50 rounded-lg border border-slate-100">
                 <p className="text-sm text-slate-500">Series</p>
                 <h3 className="text-lg font-medium text-slate-800">{post.seriesTitle}</h3>
-                {post.chapterNumber && (
+                {post.chapterNumber !== undefined && (
                   <p className="text-sm text-slate-600">
                     {post.chapterNumber === 0 ? 'Prologue' : `Chapter ${post.chapterNumber}`}
                   </p>
@@ -209,14 +216,28 @@ const BlogPost = () => {
             )}
 
             {/* Series Chapter List - only on the main series page */}
-            {post.isSeries && (
+            {post.isSeries && seriesChapters.length > 0 && (
               <div className="mt-8 pt-6 border-t border-slate-200">
                 <h3 className="text-xl font-semibold mb-4">Chapters in this Series</h3>
                 <div className="flex flex-col gap-3 mt-4">
-                  {/* This would be populated by a function in the BlogController that returns all chapters */}
-                  <p className="text-sm text-slate-500">
-                    Loading chapters... (To be implemented in the next step)
-                  </p>
+                  {seriesChapters.map((chapter, index) => (
+                    <Link 
+                      key={chapter.slug}
+                      to={`/blog/${chapter.slug}`} 
+                      className="p-4 rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-colors flex justify-between items-center"
+                    >
+                      <div>
+                        <p className="font-medium text-slate-800">
+                          {chapter.chapterNumber === 0 
+                            ? 'Prologue' 
+                            : `Chapter ${chapter.chapterNumber}`}
+                          : {chapter.chapterTitle || chapter.title}
+                        </p>
+                        <p className="text-sm text-slate-500">{chapter.readTime}</p>
+                      </div>
+                      <ChevronRight className="h-5 w-5 text-slate-400" />
+                    </Link>
+                  ))}
                 </div>
               </div>
             )}

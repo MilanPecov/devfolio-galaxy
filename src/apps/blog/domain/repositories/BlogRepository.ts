@@ -72,4 +72,41 @@ export class BlogRepository {
       entry.frontmatter.seriesSlug === seriesSlug
     ) || null;
   }
+
+  /**
+   * Check if a post is part of a series
+   */
+  public isPartOfSeries(slug: string): boolean {
+    const entry = this.blogData.find(entry => entry.slug === slug);
+    return entry ? 
+      (entry.frontmatter.isSeries || entry.frontmatter.isSeriesEntry) : 
+      false;
+  }
+
+  /**
+   * Get the series slug for a post (if it's part of a series)
+   */
+  public getSeriesSlugForPost(slug: string): string | null {
+    const entry = this.blogData.find(entry => entry.slug === slug);
+    return entry ? entry.frontmatter.seriesSlug || null : null;
+  }
+
+  /**
+   * Get all series in the blog (main series posts only)
+   */
+  public getAllSeries(): { slug: string, frontmatter: Record<string, any> }[] {
+    return this.blogData
+      .filter(entry => entry.frontmatter.isSeries)
+      .map(entry => ({
+        slug: entry.slug,
+        frontmatter: entry.frontmatter
+      }));
+  }
+
+  /**
+   * Get the total number of chapters in a series
+   */
+  public getSeriesChapterCount(seriesSlug: string): number {
+    return this.getSeriesEntries(seriesSlug).length;
+  }
 }
