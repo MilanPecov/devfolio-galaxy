@@ -11,10 +11,11 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/shared/components/ui/breadcrumb";
-import BlogList from "@/apps/blog/ui/BlogList.tsx";
+import GroupedBlogList from "@/apps/blog/ui/components/GroupedBlogList";
 
 const BlogListPage = () => {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [regularPosts, setRegularPosts] = useState<BlogPost[]>([]);
+  const [seriesWithEntries, setSeriesWithEntries] = useState<{main: BlogPost, entries: BlogPost[]}[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,19 +31,33 @@ const BlogListPage = () => {
         
         // Check if posts were successfully loaded
         if (allPosts && allPosts.length > 0) {
-          setPosts(allPosts);
+          // Separate regular posts from series posts
+          const regularPostsList = allPosts.filter(post => !post.isSeries && !post.isSeriesEntry);
+          const seriesMainPosts = allPosts.filter(post => post.isSeries);
+          
+          // For each series, get its entries
+          const seriesWithEntriesList = await Promise.all(
+            seriesMainPosts.map(async (mainPost) => {
+              if (mainPost.seriesSlug) {
+                const entries = await blogController.getSeriesChapters(mainPost.seriesSlug);
+                return { main: mainPost, entries };
+              }
+              return { main: mainPost, entries: [] };
+            })
+          );
+          
+          setRegularPosts(regularPostsList);
+          setSeriesWithEntries(seriesWithEntriesList);
         } else {
-          // Handle case where no posts are returned
-          setPosts([]);
+          setRegularPosts([]);
+          setSeriesWithEntries([]);
           setError("No blog posts available.");
         }
       } catch (error) {
-        // Handle any errors that occur during fetching
         setError("Failed to load blog posts. Please try again later.");
-        // Ensure posts is at least an empty array to prevent mapping errors
-        setPosts([]);
+        setRegularPosts([]);
+        setSeriesWithEntries([]);
       } finally {
-        // Always set loading to false when done
         setLoading(false);
       }
     };
@@ -80,9 +95,10 @@ const BlogListPage = () => {
             </p>
           </div>
 
-          {/* Blog Posts */}
-          <BlogList
-            posts={posts}
+          {/* Grouped Blog Posts */}
+          <GroupedBlogList
+            regularPosts={regularPosts}
+            seriesWithEntries={seriesWithEntries}
             loading={loading}
             error={error}
           />
