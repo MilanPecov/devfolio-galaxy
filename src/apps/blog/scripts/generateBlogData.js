@@ -40,12 +40,9 @@ function generateBlogData() {
         console.log(`Processed ${filename} - frontmatter keys:`, 
           frontmatter ? Object.keys(frontmatter) : 'none');
         
-        // Ensure boolean types are correctly parsed
-        const processedFrontmatter = processFrontmatterBooleans(frontmatter || {});
-        
         return {
           slug,
-          frontmatter: processedFrontmatter,
+          frontmatter: frontmatter || {},
           content
         };
       } catch (err) {
@@ -116,20 +113,6 @@ function generateBlogData() {
     console.error('Error generating blog data:', error);
     throw error;
   }
-}
-
-// Helper function to process boolean values in frontmatter
-function processFrontmatterBooleans(frontmatter) {
-  const result = { ...frontmatter };
-  
-  // Convert string booleans to actual booleans
-  if (result.isSeries === 'true') result.isSeries = true;
-  else if (result.isSeries === 'false') result.isSeries = false;
-  
-  if (result.isSeriesEntry === 'true') result.isSeriesEntry = true;
-  else if (result.isSeriesEntry === 'false') result.isSeriesEntry = false;
-  
-  return result;
 }
 
 // Default export for ES modules
