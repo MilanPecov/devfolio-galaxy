@@ -1,4 +1,3 @@
-
 // JavaScript version of generateBlogData
 import fs from 'fs';
 import path from 'path';
@@ -25,30 +24,38 @@ function generateBlogData() {
     console.log('Generating blog data...');
     const files = fs.readdirSync(CONTENT_DIR);
     const markdownFiles = files.filter(file => file.endsWith('.md'));
-    
+
     const blogData = markdownFiles.map(filename => {
       const filePath = path.join(CONTENT_DIR, filename);
       const fileContent = fs.readFileSync(filePath, 'utf-8');
-      
+
       // Parse frontmatter using gray-matter
       const { data, content } = matter(fileContent);
-      
+
       // Extract slug from filename if not provided in frontmatter
       const slug = data.slug || filename.replace('.md', '');
-      
+
       return {
         slug,
         frontmatter: data,
         content
       };
     });
-    
+
+    // Sort posts by date (newest first)
+    blogData.sort((a, b) => {
+      const dateA = new Date(a.frontmatter.date).getTime();
+      const dateB = new Date(b.frontmatter.date).getTime();
+
+      return dateB - dateA; // Descending order (latest posts first)
+    });
+
     // Write processed data to JSON file
     fs.writeFileSync(
-      OUTPUT_FILE, 
+      OUTPUT_FILE,
       JSON.stringify(blogData, null, 2)
     );
-    
+
     console.log(`✓ Blog data generated successfully: ${blogData.length} posts processed`);
     return blogData;
   } catch (error) {

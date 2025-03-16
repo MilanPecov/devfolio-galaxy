@@ -1,7 +1,7 @@
 import { BlogRepository } from '@/apps/blog/repository/BlogRepository';
 import { BlogPost } from "@/apps/blog";
 import { ContentProcessorService } from "@/apps/blog/domain/services/ContentProcessorService.tsx";
-import { getIconComponent } from "@/apps/blog/utils";
+import { IconService } from "@/apps/blog/domain/services/IconService.ts";
 
 /**
  * Main service for handling blog operations
@@ -9,10 +9,12 @@ import { getIconComponent } from "@/apps/blog/utils";
 export class BlogController {
   private repository: BlogRepository;
   private contentProcessor: ContentProcessorService;
+  private iconService: IconService;
 
   constructor(repository: BlogRepository) {
     this.repository = repository;
     this.contentProcessor = new ContentProcessorService();
+    this.iconService = new IconService()
   }
 
   /**
@@ -41,7 +43,7 @@ export class BlogController {
         date: frontmatter.date || 'No date',
         readTime: frontmatter.readTime || '5 min read',
         categories: Array.isArray(frontmatter.categories) ? frontmatter.categories : [],
-        icon: getIconComponent(frontmatter.icon || 'Code', frontmatter.iconColor || 'blue'),
+        icon: this.iconService.getIcon(frontmatter.icon || 'Code', frontmatter.iconColor || 'blue'),
         content: this.contentProcessor.processContent(content || '') // Use instance method
       };
 
@@ -69,23 +71,8 @@ export class BlogController {
       });
       
       const posts = await Promise.all(postsPromises);
-      
-      // Filter out any null results and sort by date (newest first)
-      const validPosts = posts
-        .filter((post): post is BlogPost => post !== null)
-        .sort((a, b) => {
-          // Use a safer date comparison approach
-          const dateA = new Date(a.date);
-          const dateB = new Date(b.date);
-          
-          // Handle invalid dates by using timestamp comparison
-          const timeA = isNaN(dateA.getTime()) ? 0 : dateA.getTime();
-          const timeB = isNaN(dateB.getTime()) ? 0 : dateB.getTime();
-          
-          return timeB - timeA;
-        });
-      
-      return validPosts;
+
+      return posts;
     } catch (error) {
       console.error('Failed to load all blog posts', error);
       return [];
