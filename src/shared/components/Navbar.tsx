@@ -14,10 +14,8 @@ const Navbar = () => {
   ];
 
   const handleLogoClick = (e: React.MouseEvent) => {
-    if (isHomePage) {
-      e.preventDefault();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
