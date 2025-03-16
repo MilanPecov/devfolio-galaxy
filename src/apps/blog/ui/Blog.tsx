@@ -40,7 +40,8 @@ const Blog = () => {
           );
           
           setFeaturedSeries(seriesWithEntries);
-          setPosts(regularPosts);
+          // Only set the first post from regularPosts
+          setPosts(regularPosts.slice(0, 1));
         } else {
           // Handle case where no posts are returned
           setPosts([]);
