@@ -113,24 +113,33 @@ export class BlogController {
    */
   public async getSeriesChapters(seriesSlug: string): Promise<BlogPost[]> {
     try {
-      const allPosts = await this.loadAllBlogPosts();
+      const seriesEntries = this.repository.getSeriesEntries(seriesSlug);
       
-      // Filter posts that belong to the specified series
-      const seriesChapters = allPosts.filter(post => 
-        post.isSeriesEntry && post.seriesSlug === seriesSlug
-      );
-      
-      // Sort chapters by chapter number
-      seriesChapters.sort((a, b) => {
-        const aNum = a.chapterNumber ?? 999;
-        const bNum = b.chapterNumber ?? 999;
-        return aNum - bNum;
+      // Convert each entry to a BlogPost
+      const chaptersPromises = seriesEntries.map(async entry => {
+        return this.loadBlogPost(entry.slug);
       });
       
-      return seriesChapters;
+      const chapters = await Promise.all(chaptersPromises);
+      
+      // Filter out null values
+      return chapters.filter(Boolean) as BlogPost[];
     } catch (error) {
       console.error(`Failed to load chapters for series: ${seriesSlug}`, error);
       return [];
+    }
+  }
+  
+  /**
+   * Check if a post is the main series post
+   */
+  public async isSeriesMainPost(slug: string): Promise<boolean> {
+    try {
+      const post = await this.loadBlogPost(slug);
+      return post?.isSeries || false;
+    } catch (error) {
+      console.error(`Failed to check if ${slug} is a series main post:`, error);
+      return false;
     }
   }
 }

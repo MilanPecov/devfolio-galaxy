@@ -42,4 +42,34 @@ export class BlogRepository {
     };
   }
 
+  /**
+   * Get all entries in a series by series slug
+   */
+  public getSeriesEntries(seriesSlug: string): { frontmatter: Record<string, any>, content: string, slug: string }[] {
+    return this.blogData
+      .filter(entry => 
+        entry.frontmatter.isSeriesEntry && 
+        entry.frontmatter.seriesSlug === seriesSlug
+      )
+      .map(entry => ({
+        slug: entry.slug,
+        frontmatter: entry.frontmatter,
+        content: entry.content
+      }))
+      .sort((a, b) => {
+        const aNum = a.frontmatter.chapterNumber ?? 999;
+        const bNum = b.frontmatter.chapterNumber ?? 999;
+        return aNum - bNum;
+      });
+  }
+
+  /**
+   * Get the main series post (the one with isSeries: true)
+   */
+  public getSeriesMainPost(seriesSlug: string): { frontmatter: Record<string, any>, content: string, slug: string } | null {
+    return this.blogData.find(entry => 
+      entry.frontmatter.isSeries && 
+      entry.frontmatter.seriesSlug === seriesSlug
+    ) || null;
+  }
 }

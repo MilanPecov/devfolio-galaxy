@@ -1,3 +1,4 @@
+
 ---
 slug: evolving-postgresql-without-breaking-things
 title: Evolving PostgreSQL Without Breaking the World
@@ -11,6 +12,9 @@ categories:
   - Django
 icon: Database
 iconColor: blue
+isSeries: true
+seriesSlug: evolving-postgresql-without-breaking-things
+seriesTitle: Evolving PostgreSQL Without Breaking the World
 ---
 
 To change a database is to change the world in miniature. It is an act of transformation, of restructuring something vast and interconnected while it continues to pulse with life. The database does not pause for us; it does not yield easily to our aspirations. Its architecture is built on the principles of order, consistency, and unbreakable rules. And yet, we must change it, we must move forward—without halting time itself.

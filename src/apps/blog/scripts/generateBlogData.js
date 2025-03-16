@@ -1,3 +1,4 @@
+
 // JavaScript version of generateBlogData
 import fs from 'fs';
 import path from 'path';
@@ -40,6 +41,44 @@ function generateBlogData() {
         frontmatter: data,
         content
       };
+    });
+
+    // Process series relationships
+    const seriesMap = new Map();
+    
+    // Group posts by series
+    blogData.forEach(post => {
+      if (post.frontmatter.isSeriesEntry && post.frontmatter.seriesSlug) {
+        if (!seriesMap.has(post.frontmatter.seriesSlug)) {
+          seriesMap.set(post.frontmatter.seriesSlug, []);
+        }
+        seriesMap.get(post.frontmatter.seriesSlug).push(post);
+      }
+    });
+    
+    // Process each series to set up prev/next links
+    seriesMap.forEach(seriesEntries => {
+      // Sort by chapter number
+      seriesEntries.sort((a, b) => {
+        const aNum = a.frontmatter.chapterNumber ?? 999;
+        const bNum = b.frontmatter.chapterNumber ?? 999;
+        return aNum - bNum;
+      });
+      
+      // Add prev/next chapter links
+      seriesEntries.forEach((post, index) => {
+        if (index > 0) {
+          post.frontmatter.previousChapter = seriesEntries[index - 1].slug;
+          post.frontmatter.previousChapterTitle = seriesEntries[index - 1].frontmatter.chapterTitle 
+            || seriesEntries[index - 1].frontmatter.title;
+        }
+        
+        if (index < seriesEntries.length - 1) {
+          post.frontmatter.nextChapter = seriesEntries[index + 1].slug;
+          post.frontmatter.nextChapterTitle = seriesEntries[index + 1].frontmatter.chapterTitle 
+            || seriesEntries[index + 1].frontmatter.title;
+        }
+      });
     });
 
     // Sort posts by date (newest first)
