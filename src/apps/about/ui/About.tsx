@@ -1,4 +1,3 @@
-
 import { Skills } from "@/apps/about";
 import { Github, Linkedin, Mail, X, Users, } from "lucide-react";
 import { Separator } from "@/shared/components/ui/separator";
@@ -291,7 +290,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* Skills Section */}
+      {/* Skills Section - Already included in the About component */}
       <Skills />
 
       {/* Contact Section */}
