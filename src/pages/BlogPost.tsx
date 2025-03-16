@@ -43,7 +43,9 @@ const BlogPost = () => {
           console.log("Post loaded:", { 
             title: postData.title, 
             isSeries: postData.isSeries, 
-            seriesSlug: postData.seriesSlug 
+            seriesSlug: postData.seriesSlug,
+            seriesTitle: postData.seriesTitle,
+            fullData: JSON.stringify(postData),
           });
           
           // If this is a series main post, fetch all chapters
@@ -59,6 +61,8 @@ const BlogPost = () => {
             } finally {
               setLoadingChapters(false);
             }
+          } else {
+            console.log("This post is not a series main post, not loading chapters");
           }
         } else {
           setError("Post not found");

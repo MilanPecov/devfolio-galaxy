@@ -36,6 +36,13 @@ export class BlogController {
         console.warn(`No frontmatter found for ${slug}`);
       }
 
+      // Debug frontmatter
+      console.log(`Processing frontmatter for ${slug}:`, { 
+        isSeries: frontmatter.isSeries, 
+        seriesSlug: frontmatter.seriesSlug,
+        raw: JSON.stringify(frontmatter)
+      });
+
       // Map the parsed data to our BlogPost interface with validation
       const blogPost: BlogPost = {
         slug: frontmatter.slug || slug,
@@ -47,9 +54,9 @@ export class BlogController {
         icon: this.iconService.getIcon(frontmatter.icon || 'Code', frontmatter.iconColor || 'blue'),
         content: this.contentProcessor.processContent(content || ''),
         
-        // Series-related properties
-        isSeries: frontmatter.isSeries || false,
-        isSeriesEntry: frontmatter.isSeriesEntry || false,
+        // Series-related properties - ensure proper type conversion from string to boolean
+        isSeries: frontmatter.isSeries === true,
+        isSeriesEntry: frontmatter.isSeriesEntry === true,
         seriesSlug: frontmatter.seriesSlug,
         seriesTitle: frontmatter.seriesTitle,
         chapterTitle: frontmatter.chapterTitle,
