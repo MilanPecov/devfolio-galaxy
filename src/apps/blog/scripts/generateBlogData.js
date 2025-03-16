@@ -31,10 +31,45 @@ function generateBlogData() {
       const fileContent = fs.readFileSync(filePath, 'utf-8');
 
       // Parse frontmatter using gray-matter
-      // The key fix: Remove leading whitespace/newlines to ensure
-      // the frontmatter is correctly recognized
-      const cleanedContent = fileContent.trimStart();
-      const { data, content } = matter(cleanedContent);
+      // Use custom delimiters to handle YAML parsing issues with special characters like colons in titles
+      const { data, content } = matter(fileContent, {
+        engines: {
+          yaml: {
+            parse: (str) => {
+              // Custom YAML parser that wraps values containing colons in quotes
+              const yaml = require('js-yaml');
+              // Simple preprocessing for YAML
+              const processed = str
+                .split('\n')
+                .map(line => {
+                  if (line.includes(':') && !line.includes('"') && !line.includes("'")) {
+                    // Find the first colon which should separate key and value
+                    const colonIndex = line.indexOf(':');
+                    if (colonIndex > 0) {
+                      const key = line.substring(0, colonIndex).trim();
+                      const value = line.substring(colonIndex + 1).trim();
+                      
+                      // If the value contains a colon, wrap it in quotes
+                      if (value.includes(':')) {
+                        return `${key}: "${value.replace(/"/g, '\\"')}"`;
+                      }
+                    }
+                  }
+                  return line;
+                })
+                .join('\n');
+              
+              try {
+                return yaml.safeLoad(processed);
+              } catch (err) {
+                console.error(`YAML parsing error for ${filename}:`, err);
+                // Fallback to treating the entire frontmatter as a string
+                return {};
+              }
+            }
+          }
+        }
+      });
 
       // Debug info to help diagnose parsing issues
       console.log(`Parsed ${filename}:`, { 
