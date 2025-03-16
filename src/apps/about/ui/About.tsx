@@ -1,6 +1,6 @@
 
 import { Skills } from "@/apps/about";
-import { Github, Linkedin, Mail, X, GraduationCap, Users, UserRound } from "lucide-react";
+import { Github, Linkedin, Mail, X, Users, } from "lucide-react";
 import { Separator } from "@/shared/components/ui/separator";
 import { useState, useEffect } from "react";
 import { Button } from "@/shared/components/ui/button";
@@ -13,17 +13,17 @@ const quotes = [
     author: "Cory House"
   },
   {
-    text: "Programming isn't about what you know; it's about what you can figure out.",
-    author: "Chris Pine"
-  },
-  {
     text: "The best error message is the one that never shows up.",
     author: "Thomas Fuchs"
   },
   {
     text: "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
     author: "Martin Fowler"
-  }
+  },
+  {
+    text: "The only way to go fast, is to go well.",
+    author: "Robert C. Martin (Uncle Bob)"
+  },
 ];
 
 const About = () => {
