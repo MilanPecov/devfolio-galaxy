@@ -21,10 +21,6 @@ const quotes = [
     author: "Thomas Fuchs"
   },
   {
-    text: "Sometimes it pays to stay in bed on Monday, rather than spending the rest of the week debugging Monday's code.",
-    author: "Dan Salomon"
-  },
-  {
     text: "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
     author: "Martin Fowler"
   }
@@ -73,7 +69,7 @@ const About = () => {
               I'm an Engineering Leader who builds bridges — between teams, technologies, and business goals. 
               I've spent years crafting elegant solutions to complex problems while growing teams that thrive on innovation.
             </p>
-            
+
             <div className="flex flex-col md:flex-row gap-4 justify-center mb-8">
               <div className="p-4 bg-[#E5DEFF] rounded-lg flex-1">
                 <h3 className="font-semibold mb-2">Technical Vision</h3>
@@ -81,16 +77,16 @@ const About = () => {
                   Driving architecture decisions that balance innovation with stability
                 </p>
               </div>
-              <div className="p-4 bg-[#D3E4FD] rounded-lg flex-1">
-                <h3 className="font-semibold mb-2">Team Growth</h3>
-                <p className="text-sm text-gray-600">
-                  Mentoring engineers and building collaborative cultures
-                </p>
-              </div>
               <div className="p-4 bg-[#FDE1D3] rounded-lg flex-1">
                 <h3 className="font-semibold mb-2">Product Delivery</h3>
                 <p className="text-sm text-gray-600">
                   Turning complex requirements into exceptional experiences
+                </p>
+              </div>
+              <div className="p-4 bg-[#D3E4FD] rounded-lg flex-1">
+                <h3 className="font-semibold mb-2">Team Growth</h3>
+                <p className="text-sm text-gray-600">
+                  Mentoring engineers and building collaborative cultures
                 </p>
               </div>
             </div>
@@ -118,12 +114,13 @@ const About = () => {
               <CardContent className="pt-6">
                 <div className="mb-4 p-3 bg-indigo-100 rounded-full w-fit">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-600">
-                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Legacy Codebase Resurrection</h3>
+                <h3 className="text-xl font-semibold mb-2">Architectural Strategy</h3>
                 <p className="text-gray-600">
-                  I specialize in excavating business logic from legacy codebases, making them maintainable and extensible again through incremental refactoring strategies.
+                  Develop a coherent technical vision that aligns with business objectives, whether you're a startup planning for growth or an enterprise modernizing systems.
                 </p>
               </CardContent>
             </Card>
@@ -132,13 +129,12 @@ const About = () => {
               <CardContent className="pt-6">
                 <div className="mb-4 p-3 bg-indigo-100 rounded-full w-fit">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-600">
-                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Architectural Strategy</h3>
+                <h3 className="text-xl font-semibold mb-2">Legacy Codebase Resurrection</h3>
                 <p className="text-gray-600">
-                  Develop a coherent technical vision that aligns with business objectives, whether you're a startup planning for growth or an enterprise modernizing systems.
+                  I specialize in excavating business logic from legacy codebases, making them maintainable and extensible again through incremental refactoring strategies.
                 </p>
               </CardContent>
             </Card>
