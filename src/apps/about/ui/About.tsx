@@ -18,20 +18,39 @@ const About = () => {
             <h1 className="text-4xl md:text-5xl font-bold text-[#1E293B] mb-6">
               About Me
             </h1>
+            
+            <div className="p-6 bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl shadow-sm mb-8">
+              <p className="text-lg text-gray-700 leading-relaxed italic">
+                "Code is like humor. When you have to explain it, it's bad."
+              </p>
+              <p className="text-sm text-gray-500 mt-2">— Cory House</p>
+            </div>
+            
             <p className="text-lg text-gray-600 leading-relaxed mb-8">
-              I'm a seasoned Engineering Leader with experience building high-performance
-              teams and scalable software systems. With a focus on clean architecture
-              and sustainable engineering practices, I help organizations deliver
-              exceptional products while fostering a culture of technical excellence.
+              I'm an Engineering Leader who builds bridges — between teams, technologies, and business goals. 
+              I've spent years crafting elegant solutions to complex problems while growing teams that thrive on innovation.
             </p>
-
-            {/* Link to Contact Section */}
-            <a
-              href="#contact"
-              className="inline-block text-indigo-600 font-medium hover:underline transition-colors"
-            >
-              Get in Touch
-            </a>
+            
+            <div className="flex flex-col md:flex-row gap-4 justify-center mb-8">
+              <div className="p-4 bg-[#E5DEFF] rounded-lg flex-1">
+                <h3 className="font-semibold mb-2">Technical Vision</h3>
+                <p className="text-sm text-gray-600">
+                  Driving architecture decisions that balance innovation with stability
+                </p>
+              </div>
+              <div className="p-4 bg-[#D3E4FD] rounded-lg flex-1">
+                <h3 className="font-semibold mb-2">Team Growth</h3>
+                <p className="text-sm text-gray-600">
+                  Mentoring engineers and building collaborative cultures
+                </p>
+              </div>
+              <div className="p-4 bg-[#FDE1D3] rounded-lg flex-1">
+                <h3 className="font-semibold mb-2">Product Delivery</h3>
+                <p className="text-sm text-gray-600">
+                  Turning complex requirements into exceptional experiences
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
