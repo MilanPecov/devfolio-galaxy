@@ -20,58 +20,6 @@ if (!fs.existsSync(path.dirname(OUTPUT_FILE))) {
   fs.mkdirSync(path.dirname(OUTPUT_FILE), { recursive: true });
 }
 
-// Custom YAML parser that wraps values with colons in quotes
-const customYamlParser = (source) => {
-  // Detect the frontmatter section (between --- markers)
-  const frontmatterMatch = source.match(/^---\n([\s\S]*?)\n---/);
-  
-  if (!frontmatterMatch) {
-    return { data: {}, content: source };
-  }
-
-  try {
-    // Extract and preprocess the frontmatter text
-    const frontmatterText = frontmatterMatch[1];
-    
-    // Process the frontmatter text to wrap values containing colons in quotes
-    const processedFrontmatter = frontmatterText
-      .split('\n')
-      .map(line => {
-        if (line.trim() === '' || line.startsWith('  ')) {
-          return line;
-        }
-        
-        const colonIndex = line.indexOf(':');
-        if (colonIndex > 0) {
-          const key = line.substring(0, colonIndex).trim();
-          let value = line.substring(colonIndex + 1).trim();
-          
-          // If value contains a colon and is not already quoted, wrap it in quotes
-          if (value.includes(':') && !value.startsWith('"') && !value.startsWith("'")) {
-            value = `"${value.replace(/"/g, '\\"')}"`;
-            return `${key}: ${value}`;
-          }
-        }
-        return line;
-      })
-      .join('\n');
-    
-    // Parse the processed frontmatter
-    const frontmatterData = yaml.load(processedFrontmatter) || {};
-    
-    // Get content without frontmatter
-    const content = source.replace(frontmatterMatch[0], '').trim();
-    
-    return {
-      data: frontmatterData,
-      content
-    };
-  } catch (err) {
-    console.error('Error in custom YAML parser:', err.message);
-    return { data: {}, content: source };
-  }
-};
-
 // Process each markdown file
 function generateBlogData() {
   try {
@@ -84,22 +32,21 @@ function generateBlogData() {
       const fileContent = fs.readFileSync(filePath, 'utf-8');
       
       try {
-        // Use our custom parser instead of gray-matter's default parser
-        const { data: frontmatterData, content } = customYamlParser(fileContent);
+        // Extract frontmatter and content
+        const { frontmatter, content } = extractFrontmatterAndContent(fileContent);
         
         // Extract slug from filename if not provided in frontmatter
-        const slug = frontmatterData?.slug || filename.replace('.md', '');
+        const slug = frontmatter?.slug || filename.replace('.md', '');
         
         console.log(`Processed ${filename} - frontmatter keys:`, 
-          frontmatterData ? Object.keys(frontmatterData) : 'none');
+          frontmatter ? Object.keys(frontmatter) : 'none');
         
-        // Convert string boolean values to actual booleans
-        if (frontmatterData.isSeries === 'true') frontmatterData.isSeries = true;
-        if (frontmatterData.isSeriesEntry === 'true') frontmatterData.isSeriesEntry = true;
+        // Ensure boolean types are correctly parsed
+        const processedFrontmatter = processFrontmatterBooleans(frontmatter || {});
         
         return {
           slug,
-          frontmatter: frontmatterData || {},
+          frontmatter: processedFrontmatter,
           content
         };
       } catch (err) {
@@ -170,6 +117,70 @@ function generateBlogData() {
     console.error('Error generating blog data:', error);
     throw error;
   }
+}
+
+// Helper function to extract frontmatter and content
+function extractFrontmatterAndContent(fileContent) {
+  // Check if the file starts with a frontmatter section
+  if (!fileContent.startsWith('---\n')) {
+    return { frontmatter: {}, content: fileContent };
+  }
+
+  // Find the end of the frontmatter section
+  const endOfFrontmatter = fileContent.indexOf('---\n', 4);
+  if (endOfFrontmatter === -1) {
+    return { frontmatter: {}, content: fileContent };
+  }
+
+  // Extract frontmatter string
+  const frontmatterStr = fileContent.substring(4, endOfFrontmatter);
+  
+  // Extract content
+  const content = fileContent.substring(endOfFrontmatter + 4).trim();
+
+  // Parse frontmatter
+  try {
+    // Process the frontmatter to handle colons in titles
+    const processed = frontmatterStr
+      .split('\n')
+      .map(line => {
+        const colonIndex = line.indexOf(':');
+        if (colonIndex > 0) {
+          const key = line.substring(0, colonIndex).trim();
+          let value = line.substring(colonIndex + 1).trim();
+          
+          // If value contains a colon and is not already quoted, wrap it in quotes
+          if (value.includes(':') && !value.startsWith('"') && !value.startsWith("'")) {
+            // Replace any existing double quotes first
+            value = value.replace(/"/g, '\\"');
+            return `${key}: "${value}"`;
+          }
+        }
+        return line;
+      })
+      .join('\n');
+      
+    // Now parse with yaml
+    const frontmatter = yaml.load(processed) || {};
+    return { frontmatter, content };
+  } catch (error) {
+    console.error('Error parsing frontmatter:', error);
+    return { frontmatter: {}, content };
+  }
+}
+
+// Helper function to process boolean values in frontmatter
+function processFrontmatterBooleans(frontmatter) {
+  const result = { ...frontmatter };
+  
+  // Convert string booleans to actual booleans
+  if (result.isSeries === 'true') result.isSeries = true;
+  else if (result.isSeries === 'false') result.isSeries = false;
+  
+  if (result.isSeriesEntry === 'true') result.isSeriesEntry = true;
+  else if (result.isSeriesEntry === 'false') result.isSeriesEntry = false;
+  
+  return result;
 }
 
 // Default export for ES modules
