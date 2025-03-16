@@ -2,8 +2,43 @@
 import { Skills } from "@/apps/about";
 import { Github, Linkedin, Mail, X } from "lucide-react";
 import { Separator } from "@/shared/components/ui/separator";
+import { useState, useEffect } from "react";
+import { Button } from "@/shared/components/ui/button";
+import { Card, CardContent } from "@/shared/components/ui/card";
+
+// Collection of programmer quotes
+const quotes = [
+  {
+    text: "Code is like humor. When you have to explain it, it's bad.",
+    author: "Cory House"
+  },
+  {
+    text: "Programming isn't about what you know; it's about what you can figure out.",
+    author: "Chris Pine"
+  },
+  {
+    text: "The best error message is the one that never shows up.",
+    author: "Thomas Fuchs"
+  },
+  {
+    text: "Sometimes it pays to stay in bed on Monday, rather than spending the rest of the week debugging Monday's code.",
+    author: "Dan Salomon"
+  },
+  {
+    text: "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
+    author: "Martin Fowler"
+  }
+];
 
 const About = () => {
+  const [quote, setQuote] = useState(quotes[0]);
+
+  // Set a random quote on component mount
+  useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * quotes.length);
+    setQuote(quotes[randomIndex]);
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       {/* About Me Hero Section */}
@@ -21,9 +56,9 @@ const About = () => {
             
             <div className="p-6 bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl shadow-sm mb-8">
               <p className="text-lg text-gray-700 leading-relaxed italic">
-                "Code is like humor. When you have to explain it, it's bad."
+                "{quote.text}"
               </p>
-              <p className="text-sm text-gray-500 mt-2">— Cory House</p>
+              <p className="text-sm text-gray-500 mt-2">— {quote.author}</p>
             </div>
             
             <p className="text-lg text-gray-600 leading-relaxed mb-8">
@@ -51,6 +86,79 @@ const About = () => {
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Consulting Services Section */}
+      <section className="py-20 bg-indigo-50/50">
+        <div className="container mx-auto px-6">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <span className="inline-block px-4 py-2 bg-indigo-100 text-indigo-800 rounded-full text-sm font-medium mb-4">
+              Services
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Technical Consulting
+            </h2>
+            <p className="text-gray-600 mb-8">
+              I help organizations unlock the potential in their technical teams and systems.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <Card className="bg-white border-indigo-100 hover:shadow-md transition-shadow">
+              <CardContent className="pt-6">
+                <div className="mb-4 p-3 bg-indigo-100 rounded-full w-fit">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-600">
+                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Legacy Codebase Resurrection</h3>
+                <p className="text-gray-600">
+                  I specialize in excavating business logic from legacy codebases, making them maintainable and extensible again through incremental refactoring strategies.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white border-indigo-100 hover:shadow-md transition-shadow">
+              <CardContent className="pt-6">
+                <div className="mb-4 p-3 bg-indigo-100 rounded-full w-fit">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-600">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Architectural Strategy</h3>
+                <p className="text-gray-600">
+                  Develop a coherent technical vision that aligns with business objectives, whether you're a startup planning for growth or an enterprise modernizing systems.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white border-indigo-100 hover:shadow-md transition-shadow">
+              <CardContent className="pt-6">
+                <div className="mb-4 p-3 bg-indigo-100 rounded-full w-fit">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-600">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Team Mentoring</h3>
+                <p className="text-gray-600">
+                  Long-term support to help engineering teams tackle complex technical challenges, implement best practices, and level up their skills through hands-on guidance.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="mt-12 text-center">
+            <Button className="bg-indigo-600 hover:bg-indigo-700">
+              <a href="mailto:milan.pecov91@gmail.com" className="text-white">
+                Discuss Your Project
+              </a>
+            </Button>
           </div>
         </div>
       </section>
