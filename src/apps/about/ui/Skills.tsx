@@ -1,13 +1,13 @@
 
 import { useEffect, useState } from "react";
-import { CheckCircle, Code, Database, Server, BrainCircuit, Users, Layout, Cloud, LineChart, Layers, MessageSquareCode, Share, Network } from "lucide-react";
+import { CheckCircle, Code, Database, Server, BrainCircuit, Users, Layout, Cloud, LineChart, Layers, MessageSquareCode, Share, Network, GitBranch, Zap } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
 
 // Group skills by higher-level categories
 const skillGroups = [
   {
     name: "Leadership & Architecture",
-    categories: ["Engineering Leadership", "Software Design", "Domain Knowledge"],
+    categories: ["Engineering Leadership", "Software Design", "System Design", "Domain Knowledge"],
     icon: <Layers className="h-5 w-5 text-indigo-600" />,
   },
   {
@@ -50,9 +50,22 @@ const skills = [
       "Design Patterns",
       "Event-Driven Architectures",
       "Service-Oriented Architecture",
-      "Multi-Tenancy Architecture",
       "Modular Monolith Design",
       "Test-Driven Development",
+    ],
+  },
+  {
+    category: "System Design",
+    icon: <Share className="h-5 w-5 text-indigo-500" />,
+    items: [
+      "Distributed Systems",
+      "High Scalability Architecture",
+      "Horizontal & Vertical Scaling",
+      "Load Balancing Strategies",
+      "Multi-Tenancy Architecture",
+      "Caching Strategies",
+      "API Gateway Patterns",
+      "Microservices Architecture",
     ],
   },
   {
