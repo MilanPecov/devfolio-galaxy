@@ -21,18 +21,11 @@ export const FeaturedSeries = ({ series = [] }: FeaturedSeriesProps) => {
 
   return (
     <div className="my-10 animate-fade-up">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex items-center mb-6">
         <div className="flex items-center gap-2">
           <BookText className="h-5 w-5 text-blue-600" />
           <h3 className="text-xl font-semibold text-slate-800">Featured Series</h3>
         </div>
-        <Link
-          to="/blog"
-          className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center group"
-        >
-          View all articles
-          <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
-        </Link>
       </div>
 
       <Tabs
@@ -118,15 +111,13 @@ export const FeaturedSeries = ({ series = [] }: FeaturedSeriesProps) => {
                       ))}
                       
                       {item.entries.length > 3 && (
-                        <div className="text-center mt-4">
-                          <Link
-                            to={`/blog/${item.main.slug}`}
-                            className="text-sm font-medium text-blue-600 hover:text-blue-700 inline-flex items-center"
-                          >
-                            View all {item.entries.length} chapters
-                            <ArrowRight className="h-3 w-3 ml-1" />
-                          </Link>
-                        </div>
+                        <Link
+                          to={`/blog/${item.main.slug}`}
+                          className="flex items-center justify-center w-full p-2 mt-2 text-sm font-medium text-blue-600 hover:text-blue-700 border border-dashed border-blue-200 rounded-lg hover:bg-blue-50/30 group transition-colors"
+                        >
+                          View all {item.entries.length} chapters
+                          <ArrowRight className="h-3.5 w-3.5 ml-1.5 group-hover:translate-x-0.5 transition-transform" />
+                        </Link>
                       )}
                     </div>
                   </div>
