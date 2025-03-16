@@ -21,8 +21,13 @@ const BlogPost = () => {
   const [loadingChapters, setLoadingChapters] = useState(false);
 
   useEffect(() => {
-    // Scroll to top when component mounts
+    // Scroll to top when component mounts or slug changes
     window.scrollTo(0, 0);
+    
+    // Reset states when slug changes
+    setLoading(true);
+    setError(null);
+    setSeriesChapters([]);
     
     const fetchPost = async () => {
       try {
@@ -31,16 +36,29 @@ const BlogPost = () => {
           return;
         }
         
+        console.log("Loading post with slug:", slug);
         const postData = await blogController.loadBlogPost(slug);
         if (postData) {
           setPost(postData);
+          console.log("Post loaded:", { 
+            title: postData.title, 
+            isSeries: postData.isSeries, 
+            seriesSlug: postData.seriesSlug 
+          });
           
           // If this is a series main post, fetch all chapters
           if (postData.isSeries && postData.seriesSlug) {
             setLoadingChapters(true);
-            const chapters = await blogController.getSeriesChapters(postData.seriesSlug);
-            setSeriesChapters(chapters);
-            setLoadingChapters(false);
+            console.log("Loading chapters for series:", postData.seriesSlug);
+            try {
+              const chapters = await blogController.getSeriesChapters(postData.seriesSlug);
+              console.log(`Loaded ${chapters.length} chapters`);
+              setSeriesChapters(chapters);
+            } catch (chapterErr) {
+              console.error("Error loading chapters:", chapterErr);
+            } finally {
+              setLoadingChapters(false);
+            }
           }
         } else {
           setError("Post not found");
@@ -82,13 +100,18 @@ const BlogPost = () => {
       <article className="container mx-auto px-4 sm:px-6 py-12">
         <div className="max-w-3xl mx-auto">
           <BlogPostHeader post={post} />
-          <BlogPostContent post={post} />
-          <ChapterNavigation post={post} />
-          <SeriesChapterList 
+          <BlogPostContent 
             post={post} 
-            seriesChapters={seriesChapters} 
-            loading={loadingChapters} 
+            seriesChapters={post.isSeries ? seriesChapters : []} 
           />
+          {!post.isSeries && <ChapterNavigation post={post} />}
+          {post.isSeries && (
+            <SeriesChapterList 
+              post={post} 
+              seriesChapters={seriesChapters} 
+              loading={loadingChapters} 
+            />
+          )}
         </div>
       </article>
     </div>

@@ -1,6 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { BlogPost } from "@/apps/blog";
+import { Database } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -53,6 +54,11 @@ export const BlogPostHeader = ({ post }: BlogPostHeaderProps) => {
       </Breadcrumb>
 
       <div className="animate-fade-up">
+        <div className="flex items-center gap-4 text-sm text-gray-500 mt-6 mb-4">
+          <span>{post.date}</span>
+          <span>{post.readTime}</span>
+        </div>
+
         {/* Series banner when viewing a chapter */}
         {post.isSeriesEntry && post.seriesTitle && (
           <div className="mb-6 p-4 bg-slate-50 rounded-lg border border-slate-100">
@@ -71,7 +77,7 @@ export const BlogPostHeader = ({ post }: BlogPostHeaderProps) => {
           <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
             <p className="text-sm font-medium text-blue-800">This is a multi-part series</p>
             <p className="text-sm text-blue-600">
-              This series contains multiple chapters. Navigate through them using the links at the end of each article.
+              This series contains multiple chapters. Navigate through them using the links below.
             </p>
           </div>
         )}
@@ -88,18 +94,13 @@ export const BlogPostHeader = ({ post }: BlogPostHeaderProps) => {
             ))}
           </div>
           <div className="p-2 rounded-full bg-[#F8FAFC]">
-            {post.icon}
+            {post.icon || <Database className="h-6 w-6 text-blue-500" />}
           </div>
         </div>
 
         <h1 className="text-4xl font-bold text-[#1E293B] mb-4 text-left">
           {post.isSeriesEntry && post.chapterTitle ? post.chapterTitle : post.title}
         </h1>
-
-        <div className="flex items-center gap-4 text-sm text-gray-500 mb-8">
-          <span>{post.date}</span>
-          <span>{post.readTime}</span>
-        </div>
       </div>
     </div>
   );

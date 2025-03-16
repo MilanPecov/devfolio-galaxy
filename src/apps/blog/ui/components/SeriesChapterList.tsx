@@ -11,7 +11,19 @@ interface SeriesChapterListProps {
 }
 
 export const SeriesChapterList = ({ post, seriesChapters, loading = false }: SeriesChapterListProps) => {
-  if (!post.isSeries || (!loading && seriesChapters.length === 0)) return null;
+  // Debug logging
+  console.log("SeriesChapterList props:", { 
+    isSeries: post.isSeries, 
+    seriesSlug: post.seriesSlug,
+    chaptersCount: seriesChapters.length,
+    loading
+  });
+  
+  // Only show for series main posts
+  if (!post.isSeries || (!loading && seriesChapters.length === 0)) {
+    console.log("Not showing chapter list - conditions not met");
+    return null;
+  }
 
   if (loading) {
     return (
