@@ -14,24 +14,23 @@ export const TableOfContents = ({ seriesChapters, compact = false }: TableOfCont
   if (!seriesChapters.length) return null;
 
   return (
-    <div className={`${compact ? '' : 'mt-8'} animate-fade-up`}>
+    <div className={`${compact ? '' : 'mt-4'} animate-fade-up w-full`}>
       {!compact && (
-        <div className="flex items-center gap-2 mb-4">
-          <BookOpen className="h-5 w-5 text-blue-500" />
+        <div className="flex items-center gap-2 mb-4 text-left">
+          <BookOpen className="h-5 w-5 text-blue-500 flex-shrink-0" />
           <h2 className="text-xl font-bold text-slate-800">Table of Contents</h2>
         </div>
       )}
       
       <Card className={cn(
-        "border-slate-200 overflow-hidden",
-        compact ? "shadow-none" : "shadow-sm hover:shadow-md transition-shadow duration-300"
+        "border-slate-200 overflow-hidden shadow-none",
       )}>
         <CardContent className="p-0">
           {seriesChapters.map((chapter, index) => (
             <Link
               key={chapter.slug}
               to={`/blog/${chapter.slug}`}
-              className={`flex items-center justify-between ${compact ? 'p-3' : 'p-4'} transition-colors hover:bg-blue-50/50 group ${
+              className={`flex items-center justify-between ${compact ? 'p-3' : 'p-4'} transition-colors hover:bg-blue-50/50 group text-left ${
                 index !== seriesChapters.length - 1 ? "border-b border-slate-200" : ""
               }`}
             >

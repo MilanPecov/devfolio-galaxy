@@ -22,27 +22,29 @@ export const BlogPostContent = ({ post, seriesChapters = [], loadingChapters = f
       
       {/* For series main page, show table of contents in a collapsible section */}
       {hasSeriesChapters && (
-        <div className="my-8 border border-slate-200 rounded-lg overflow-hidden bg-slate-50/50 not-prose">
-          <div className="flex items-center justify-between p-4 border-b border-slate-200 bg-white">
+        <div className="my-8 border border-slate-200 rounded-lg overflow-hidden bg-white not-prose">
+          <div className="flex items-center justify-between p-4 border-b border-slate-200">
             <div className="flex items-center gap-2">
-              <BookOpen className="h-5 w-5 text-blue-500" />
+              <BookOpen className="h-5 w-5 text-blue-500 flex-shrink-0" />
               <h3 className="text-lg font-semibold text-slate-800 m-0">Chapters in this Series</h3>
             </div>
             
             <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
               <CollapsibleTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-1 ml-auto">
+                <Button variant="ghost" size="sm" className="gap-1 ml-auto px-3 py-1 h-8">
                   {isOpen ? "Hide chapters" : "View all chapters"}
                   <ChevronDown 
-                    className={`h-4 w-4 text-slate-500 transition-transform duration-200 ${
+                    className={`h-4 w-4 text-slate-500 transition-transform duration-200 flex-shrink-0 ${
                       isOpen ? "transform rotate-180" : ""
                     }`} 
                   />
                 </Button>
               </CollapsibleTrigger>
               
-              <CollapsibleContent className="mt-4 overflow-hidden">
-                <TableOfContents seriesChapters={seriesChapters} />
+              <CollapsibleContent className="overflow-hidden">
+                <div className="p-4 pt-0">
+                  <TableOfContents seriesChapters={seriesChapters} />
+                </div>
               </CollapsibleContent>
             </Collapsible>
           </div>
