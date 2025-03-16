@@ -5,6 +5,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import yaml from 'js-yaml';  // Import yaml properly as ES module
 
 // Get proper __dirname equivalent for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -37,7 +38,6 @@ function generateBlogData() {
           yaml: {
             parse: (str) => {
               // Custom YAML parser that wraps values containing colons in quotes
-              const yaml = require('js-yaml');
               // Simple preprocessing for YAML
               const processed = str
                 .split('\n')
@@ -60,7 +60,7 @@ function generateBlogData() {
                 .join('\n');
               
               try {
-                return yaml.safeLoad(processed);
+                return yaml.load(processed);  // Using yaml.load instead of safeLoad
               } catch (err) {
                 console.error(`YAML parsing error for ${filename}:`, err);
                 // Fallback to treating the entire frontmatter as a string
