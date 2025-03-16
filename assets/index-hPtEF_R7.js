@@ -199,7 +199,120 @@ Error generating stack: `+i.message+`
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
- */const hx=ue("X",[["path",{d:"M18 6 6 18",key:"1bl5f8"}],["path",{d:"m6 6 12 12",key:"d8bk6v"}]]),tr=()=>{const[e,t]=x.useState(!1),n=cx(),r=[{name:"about",href:"/about"},{name:"blog",href:"/blog"}],a=i=>{i.preventDefault(),n("/"),window.scrollTo({top:0,behavior:"smooth"})};return d.jsxs("nav",{className:"fixed top-0 left-0 right-0 z-50",children:[d.jsx("div",{className:"absolute inset-0 bg-white/70 backdrop-blur-xl border-b border-gray-100"}),d.jsxs("div",{className:"container mx-auto px-6 py-4 relative",children:[d.jsxs("div",{className:"flex items-center justify-between",children:[d.jsx(qe,{to:"/",className:"text-xl font-semibold text-[#1E293B]",onClick:a,children:"~/milan"}),d.jsx("div",{className:"hidden md:flex items-center space-x-12",children:r.map(i=>i.href.startsWith("/")?d.jsx(qe,{to:i.href,className:"text-gray-600 hover:text-[#1E293B] transition-colors duration-300",children:i.name},i.name):d.jsx("a",{href:i.href,className:"text-gray-600 hover:text-[#1E293B] transition-colors duration-300",children:i.name},i.name))}),d.jsx("button",{className:"md:hidden",onClick:()=>t(!e),"aria-label":"Toggle menu",children:e?d.jsx(hx,{size:24}):d.jsx($A,{size:24})})]}),e&&d.jsx("div",{className:"md:hidden absolute top-full left-0 right-0 bg-white/80 backdrop-blur-xl border-b border-gray-100 animate-fade-in",children:d.jsx("div",{className:"container mx-auto px-6 py-4",children:r.map(i=>i.href.startsWith("/")?d.jsx(qe,{to:i.href,className:"block py-2 text-gray-600 hover:text-[#1E293B] transition-colors duration-300",onClick:()=>t(!1),children:i.name},i.name):d.jsx("a",{href:i.href,className:"block py-2 text-gray-600 hover:text-[#1E293B] transition-colors duration-300",onClick:()=>t(!1),children:i.name},i.name))})})]})]})},VA=[{slug:"evolving-postgresql-chapter-1",frontmatter:{slug:"evolving-postgresql-chapter-1",title:"Chapter 1: The Price of Order",excerpt:"Learn about PostgreSQL's locking mechanisms and why naively applying constraints can bring your application to a halt.",date:"March 15, 2024",readTime:"12 min read",categories:["Database","PostgreSQL","DevOps"],icon:"Database",iconColor:"blue",isSeriesEntry:!0,seriesSlug:"evolving-postgresql-without-breaking-things",seriesTitle:"Evolving PostgreSQL Without Breaking the World",chapterTitle:"Chapter 1: The Price of Order",chapterNumber:1,previousChapter:"evolving-postgresql-prologue",previousChapterTitle:"Prologue: The Immutable and the Changing",nextChapter:"evolving-postgresql-chapter-2",nextChapterTitle:"Chapter 2: Parallel Evolution – Creating Indexes Concurrently"},content:`
+ */const hx=ue("X",[["path",{d:"M18 6 6 18",key:"1bl5f8"}],["path",{d:"m6 6 12 12",key:"d8bk6v"}]]),tr=()=>{const[e,t]=x.useState(!1),n=cx(),r=[{name:"about",href:"/about"},{name:"blog",href:"/blog"}],a=i=>{i.preventDefault(),n("/"),window.scrollTo({top:0,behavior:"smooth"})};return d.jsxs("nav",{className:"fixed top-0 left-0 right-0 z-50",children:[d.jsx("div",{className:"absolute inset-0 bg-white/70 backdrop-blur-xl border-b border-gray-100"}),d.jsxs("div",{className:"container mx-auto px-6 py-4 relative",children:[d.jsxs("div",{className:"flex items-center justify-between",children:[d.jsx(qe,{to:"/",className:"text-xl font-semibold text-[#1E293B]",onClick:a,children:"~/milan"}),d.jsx("div",{className:"hidden md:flex items-center space-x-12",children:r.map(i=>i.href.startsWith("/")?d.jsx(qe,{to:i.href,className:"text-gray-600 hover:text-[#1E293B] transition-colors duration-300",children:i.name},i.name):d.jsx("a",{href:i.href,className:"text-gray-600 hover:text-[#1E293B] transition-colors duration-300",children:i.name},i.name))}),d.jsx("button",{className:"md:hidden",onClick:()=>t(!e),"aria-label":"Toggle menu",children:e?d.jsx(hx,{size:24}):d.jsx($A,{size:24})})]}),e&&d.jsx("div",{className:"md:hidden absolute top-full left-0 right-0 bg-white/80 backdrop-blur-xl border-b border-gray-100 animate-fade-in",children:d.jsx("div",{className:"container mx-auto px-6 py-4",children:r.map(i=>i.href.startsWith("/")?d.jsx(qe,{to:i.href,className:"block py-2 text-gray-600 hover:text-[#1E293B] transition-colors duration-300",onClick:()=>t(!1),children:i.name},i.name):d.jsx("a",{href:i.href,className:"block py-2 text-gray-600 hover:text-[#1E293B] transition-colors duration-300",onClick:()=>t(!1),children:i.name},i.name))})})]})]})},VA=[{slug:"building-high-performance-ticketing-systems",frontmatter:{slug:"building-high-performance-ticketing-systems",title:"Building High-Performance Ticketing Systems",excerpt:"Learn how we architected a system capable of handling over 100,000 bookings per minute using modern cloud infrastructure.",date:"March 10, 2024",readTime:"8 min read",categories:["Architecture","Cloud","Performance"],icon:"Server",iconColor:"indigo"},content:`
+## Introduction
+
+At Showpass, we faced the challenge of building a ticketing system that could handle massive concurrent user load during high-demand event sales. This article details our journey in architecting a solution that can process over 100,000 bookings per minute.
+
+## Implementation Example
+
+Here's how we implemented our rate limiting using Python:
+
+\`\`\`python
+import redis
+from functools import wraps
+from datetime import datetime, timedelta
+
+class RateLimiter:
+    def __init__(self, redis_client):
+        self.redis = redis_client
+    
+    def limit_requests(self, max_requests=100, window_seconds=60):
+        def decorator(f):
+            @wraps(f)
+            async def wrapped(request, *args, **kwargs):
+                key = f"rate_limit:{request.client_ip}"
+                
+                # Get current count
+                current = await self.redis.get(key) or 0
+                
+                if int(current) >= max_requests:
+                    raise Exception("Rate limit exceeded")
+                
+                # Increment and set expiry
+                pipe = self.redis.pipeline()
+                pipe.incr(key)
+                pipe.expire(key, window_seconds)
+                await pipe.execute()
+                
+                return await f(request, *args, **kwargs)
+            return wrapped
+        return decorator
+\`\`\`
+
+And here's the corresponding frontend JavaScript code:
+
+\`\`\`javascript
+const handleBooking = async (eventId) => {
+  try {
+    const response = await fetch('/api/bookings', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        eventId,
+        quantity: 1,
+        timestamp: Date.now()
+      })
+    });
+
+    if (response.status === 429) {
+      throw new Error('Too many requests. Please try again later.');
+    }
+
+    const data = await response.json();
+    return data.bookingId;
+  } catch (error) {
+    console.error('Booking failed:', error);
+    throw error;
+  }
+};
+\`\`\`
+
+## Results
+
+The new architecture allowed us to handle peak loads of over 100,000 concurrent users while maintaining sub-second response times and ensuring transaction consistency.
+`},{slug:"event-driven-architecture-in-practice",frontmatter:{slug:"event-driven-architecture-in-practice",title:"Event-Driven Architecture in Practice",excerpt:"How we implemented event-driven architecture using RabbitMQ and Kafka to handle high-throughput ticketing operations.",date:"March 5, 2024",readTime:"12 min read",categories:["System Design","Backend","Architecture"],icon:"Code",iconColor:"emerald"},content:`
+## Introduction
+
+Event-driven architecture has been crucial in building our scalable ticketing platform. This post explores how we use RabbitMQ and Kafka to handle complex ticketing workflows.
+
+## Why Event-Driven?
+
+The ticketing industry presents unique challenges that make event-driven architecture particularly valuable. We'll explore the benefits and tradeoffs of this approach.
+
+## Implementation Details
+
+Our event-driven architecture includes:
+- Message queues for async processing
+- Event sourcing for ticket transactions
+- CQRS pattern implementation
+- Real-time updates and notifications
+`},{slug:"evolving-postgresql-chapter-1",frontmatter:{},content:`
+---
+slug: evolving-postgresql-chapter-1
+title: "Chapter 1: The Price of Order"
+excerpt: Learn about PostgreSQL's locking mechanisms and why naively applying constraints can bring your application to a halt.
+date: March 15, 2024
+readTime: 12 min read
+categories:
+  - Database
+  - PostgreSQL
+  - DevOps
+icon: Database
+iconColor: blue
+isSeriesEntry: true
+seriesSlug: evolving-postgresql-without-breaking-things
+seriesTitle: Evolving PostgreSQL Without Breaking the World
+chapterTitle: "Chapter 1: The Price of Order"
+chapterNumber: 1
+previousChapter: evolving-postgresql-prologue
+previousChapterTitle: "Prologue: The Immutable and the Changing"
+nextChapter: evolving-postgresql-chapter-2
+nextChapterTitle: "Chapter 2: Parallel Evolution – Creating Indexes Concurrently"
+---
+
 ## Chapter 1: The Price of Order
 
 PostgreSQL enforces its rules through a formidable mechanism: the **AccessExclusiveLock**. When modifying a table's schema, the database halts operations, preventing all writes, reads, and transactions until the change is complete.
@@ -214,7 +327,30 @@ ALTER TABLE users_user ADD CONSTRAINT users_email_unique UNIQUE(email);
 On a small table, this would be instant. On a table with millions of records, it could take minutes—or longer. During this time, all queries that depend on this table will queue up, waiting for the migration to finish. The application will freeze. Users will see timeouts. Customer support will flood with complaints. And all because we asked PostgreSQL to enforce a rule that was not there before.
 
 But we are not without options. There is a way to achieve order without bringing the system to its knees.
-`},{slug:"evolving-postgresql-chapter-2",frontmatter:{slug:"evolving-postgresql-chapter-2",title:"Chapter 2: Parallel Evolution – Creating Indexes Concurrently",excerpt:"Discover how to create indexes without locking your database, allowing reads and writes to continue while your constraints are built.",date:"March 15, 2024",readTime:"15 min read",categories:["Database","PostgreSQL","DevOps"],icon:"Database",iconColor:"blue",isSeriesEntry:!0,seriesSlug:"evolving-postgresql-without-breaking-things",seriesTitle:"Evolving PostgreSQL Without Breaking the World",chapterTitle:"Chapter 2: Parallel Evolution – Creating Indexes Concurrently",chapterNumber:2,previousChapter:"evolving-postgresql-chapter-1",previousChapterTitle:"Chapter 1: The Price of Order",nextChapter:"evolving-postgresql-chapter-3",nextChapterTitle:"Chapter 3: The Challenge of Foreign Keys"},content:`
+`},{slug:"evolving-postgresql-chapter-2",frontmatter:{},content:`
+---
+slug: evolving-postgresql-chapter-2
+title: "Chapter 2: Parallel Evolution – Creating Indexes Concurrently"
+excerpt: Discover how to create indexes without locking your database, allowing reads and writes to continue while your constraints are built.
+date: March 15, 2024
+readTime: 15 min read
+categories:
+  - Database
+  - PostgreSQL
+  - DevOps
+icon: Database
+iconColor: blue
+isSeriesEntry: true
+seriesSlug: evolving-postgresql-without-breaking-things
+seriesTitle: Evolving PostgreSQL Without Breaking the World
+chapterTitle: "Chapter 2: Parallel Evolution – Creating Indexes Concurrently"
+chapterNumber: 2
+previousChapter: evolving-postgresql-chapter-1
+previousChapterTitle: "Chapter 1: The Price of Order"
+nextChapter: evolving-postgresql-chapter-3
+nextChapterTitle: "Chapter 3: The Challenge of Foreign Keys"
+---
+
 ## Chapter 2: Parallel Evolution – Creating Indexes Concurrently
 
 In 2001, PostgreSQL introduced a new approach: **concurrent indexing**. Instead of freezing the system while building an index, it constructs it in the background.
@@ -259,7 +395,30 @@ operations = [
 \`\`\`
 
 By separating the database operation from Django's model state, we ensure that the system does not attempt to enforce the constraint in a way that would trigger unnecessary locks.
-`},{slug:"evolving-postgresql-chapter-3",frontmatter:{slug:"evolving-postgresql-chapter-3",title:"Chapter 3: The Challenge of Foreign Keys",excerpt:"Foreign keys enforce relationships but can be troublesome to add to existing tables. Learn how to safely implement them without disrupting your system.",date:"March 15, 2024",readTime:"12 min read",categories:["Database","PostgreSQL","DevOps"],icon:"Database",iconColor:"blue",isSeriesEntry:!0,seriesSlug:"evolving-postgresql-without-breaking-things",seriesTitle:"Evolving PostgreSQL Without Breaking the World",chapterTitle:"Chapter 3: The Challenge of Foreign Keys",chapterNumber:3,previousChapter:"evolving-postgresql-chapter-2",previousChapterTitle:"Chapter 2: Parallel Evolution – Creating Indexes Concurrently",nextChapter:"evolving-postgresql-chapter-4",nextChapterTitle:"Chapter 4: The Burden of Bloat – Using pg_repack"},content:`
+`},{slug:"evolving-postgresql-chapter-3",frontmatter:{},content:`
+---
+slug: evolving-postgresql-chapter-3
+title: "Chapter 3: The Challenge of Foreign Keys"
+excerpt: Foreign keys enforce relationships but can be troublesome to add to existing tables. Learn how to safely implement them without disrupting your system.
+date: March 15, 2024
+readTime: 12 min read
+categories:
+  - Database
+  - PostgreSQL
+  - DevOps
+icon: Database
+iconColor: blue
+isSeriesEntry: true
+seriesSlug: evolving-postgresql-without-breaking-things
+seriesTitle: Evolving PostgreSQL Without Breaking the World
+chapterTitle: "Chapter 3: The Challenge of Foreign Keys"
+chapterNumber: 3
+previousChapter: evolving-postgresql-chapter-2
+previousChapterTitle: "Chapter 2: Parallel Evolution – Creating Indexes Concurrently"
+nextChapter: evolving-postgresql-chapter-4
+nextChapterTitle: "Chapter 4: The Burden of Bloat – Using pg_repack"
+---
+
 ## Chapter 3: The Challenge of Foreign Keys
 
 Foreign keys are another enforcer of order, ensuring referential integrity. But adding them retroactively to an existing table can be devastating.
@@ -331,7 +490,30 @@ operations = [
 \`\`\`
 
 Through this process, we make peace with PostgreSQL, navigating between its demand for integrity and our need for uptime.
-`},{slug:"evolving-postgresql-chapter-4",frontmatter:{slug:"evolving-postgresql-chapter-4",title:"Chapter 4: The Burden of Bloat – Using pg_repack",excerpt:"Over time, PostgreSQL tables develop bloat that degrades performance. Learn how to reclaim space and improve query speed without downtime.",date:"March 15, 2024",readTime:"14 min read",categories:["Database","PostgreSQL","DevOps"],icon:"Database",iconColor:"blue",isSeriesEntry:!0,seriesSlug:"evolving-postgresql-without-breaking-things",seriesTitle:"Evolving PostgreSQL Without Breaking the World",chapterTitle:"Chapter 4: The Burden of Bloat – Using pg_repack",chapterNumber:4,previousChapter:"evolving-postgresql-chapter-3",previousChapterTitle:"Chapter 3: The Challenge of Foreign Keys",nextChapter:"evolving-postgresql-chapter-5",nextChapterTitle:"Chapter 5: Observing Migrations in Production"},content:`
+`},{slug:"evolving-postgresql-chapter-4",frontmatter:{},content:`
+---
+slug: evolving-postgresql-chapter-4
+title: "Chapter 4: The Burden of Bloat – Using pg_repack"
+excerpt: Over time, PostgreSQL tables develop bloat that degrades performance. Learn how to reclaim space and improve query speed without downtime.
+date: March 15, 2024
+readTime: 14 min read
+categories:
+  - Database
+  - PostgreSQL
+  - DevOps
+icon: Database
+iconColor: blue
+isSeriesEntry: true
+seriesSlug: evolving-postgresql-without-breaking-things
+seriesTitle: Evolving PostgreSQL Without Breaking the World
+chapterTitle: "Chapter 4: The Burden of Bloat – Using pg_repack"
+chapterNumber: 4
+previousChapter: evolving-postgresql-chapter-3
+previousChapterTitle: "Chapter 3: The Challenge of Foreign Keys"
+nextChapter: evolving-postgresql-chapter-5
+nextChapterTitle: "Chapter 5: Observing Migrations in Production"
+---
+
 ## Chapter 4: The Burden of Bloat – Using pg_repack
 
 Time leaves its mark on a database. It grows, shifts, and accumulates inefficiencies—wasted space from deleted rows, fragmented data pages, indexes that no longer fit neatly within memory. PostgreSQL does not clean up after itself perfectly; it relies on \`AUTOVACUUM\`, a background process that tidies up table bloat when the system allows.
@@ -375,7 +557,28 @@ The final swap is instantaneous. PostgreSQL never sees an inconsistent state, an
 - Indexes have grown inefficient due to fragmentation.
 - Disk usage has increased significantly despite removing data.
 - Queries have slowed down, and \`AUTOVACUUM\` is insufficient.
-`},{slug:"evolving-postgresql-chapter-5",frontmatter:{slug:"evolving-postgresql-chapter-5",title:"Chapter 5: Observing Migrations in Production",excerpt:"Even with the best techniques, database migrations need careful monitoring. Learn how to track progress and identify problems before they affect users.",date:"March 15, 2024",readTime:"16 min read",categories:["Database","PostgreSQL","DevOps"],icon:"Database",iconColor:"blue",isSeriesEntry:!0,seriesSlug:"evolving-postgresql-without-breaking-things",seriesTitle:"Evolving PostgreSQL Without Breaking the World",chapterTitle:"Chapter 5: Observing Migrations in Production",chapterNumber:5,previousChapter:"evolving-postgresql-chapter-4",previousChapterTitle:"Chapter 4: The Burden of Bloat – Using pg_repack"},content:`
+`},{slug:"evolving-postgresql-chapter-5",frontmatter:{},content:`
+---
+slug: evolving-postgresql-chapter-5
+title: "Chapter 5: Observing Migrations in Production"
+excerpt: Even with the best techniques, database migrations need careful monitoring. Learn how to track progress and identify problems before they affect users.
+date: March 15, 2024
+readTime: 16 min read
+categories:
+  - Database
+  - PostgreSQL
+  - DevOps
+icon: Database
+iconColor: blue
+isSeriesEntry: true
+seriesSlug: evolving-postgresql-without-breaking-things
+seriesTitle: Evolving PostgreSQL Without Breaking the World
+chapterTitle: "Chapter 5: Observing Migrations in Production"
+chapterNumber: 5
+previousChapter: evolving-postgresql-chapter-4
+previousChapterTitle: "Chapter 4: The Burden of Bloat – Using pg_repack"
+---
+
 ## Chapter 5: Observing Migrations in Production
 
 In the realm of databases, visibility is survival. To migrate a system while it is alive—to change it without stopping its pulse—we must see everything. Every long-running query, every locking transaction, every blocked process: these are the signals, the whispers of PostgreSQL telling us when something is wrong.
@@ -479,7 +682,28 @@ It is not enough to check once and walk away. Migration observability is an ongo
 ## Final Thoughts
 
 PostgreSQL does not resist change—it resists careless change. By understanding its mechanisms, we find ways to move forward while preserving the system's integrity. We do not break its rules; we learn to work within them.
-`},{slug:"evolving-postgresql-prologue",frontmatter:{slug:"evolving-postgresql-prologue",title:"Prologue: The Immutable and the Changing",excerpt:"The introduction to our PostgreSQL evolution journey begins with a seemingly simple change that reveals the fundamental tension between database integrity and application agility.",date:"March 15, 2024",readTime:"10 min read",categories:["Database","PostgreSQL","DevOps"],icon:"Database",iconColor:"blue",isSeriesEntry:!0,seriesSlug:"evolving-postgresql-without-breaking-things",seriesTitle:"Evolving PostgreSQL Without Breaking the World",chapterTitle:"Prologue: The Immutable and the Changing",chapterNumber:0,nextChapter:"evolving-postgresql-chapter-1",nextChapterTitle:"Chapter 1: The Price of Order"},content:`
+`},{slug:"evolving-postgresql-prologue",frontmatter:{},content:`
+---
+slug: evolving-postgresql-prologue
+title: "Prologue: The Immutable and the Changing"
+excerpt: The introduction to our PostgreSQL evolution journey begins with a seemingly simple change that reveals the fundamental tension between database integrity and application agility.
+date: March 15, 2024
+readTime: 10 min read
+categories:
+  - Database
+  - PostgreSQL
+  - DevOps
+icon: Database
+iconColor: blue
+isSeriesEntry: true
+seriesSlug: evolving-postgresql-without-breaking-things
+seriesTitle: "Evolving PostgreSQL Without Breaking the World"
+chapterTitle: "Prologue: The Immutable and the Changing"
+chapterNumber: 0
+nextChapter: evolving-postgresql-chapter-1
+nextChapterTitle: "Chapter 1: The Price of Order"
+---
+
 ## Prologue: The Immutable and the Changing
 
 It began with a simple requirement: enforce uniqueness on the \`email\` field in our \`users\` table. A trivial change, or so we thought.
@@ -498,7 +722,25 @@ email = models.CharField(max_length=255, unique=True)  # The future: structured,
 The request seemed innocent. But PostgreSQL sees differently. To apply a uniqueness constraint, it must inspect every row, verify every entry, ensure that order has always existed in a structure that was previously indifferent to it.
 
 And thus begins our journey into the world of PostgreSQL migrations, where we'll learn to navigate the tension between the database's need for integrity and our application's demand for continuous availability.
-`},{slug:"evolving-postgresql-without-breaking-things",frontmatter:{slug:"evolving-postgresql-without-breaking-things",title:"Evolving PostgreSQL Without Breaking the World",excerpt:"PostgreSQL is built for integrity, but applications demand agility. How do you evolve a live database without halting the system? This guide explores zero-downtime migration techniques—concurrent indexing, safe foreign keys, and schema changes that preserve uptime.",date:"March 15, 2024",readTime:"40 min read",categories:["Database","PostgreSQL","DevOps","Django"],icon:"Database",iconColor:"blue",isSeries:!0,seriesSlug:"evolving-postgresql-without-breaking-things",seriesTitle:"Evolving PostgreSQL Without Breaking the World"},content:`
+`},{slug:"evolving-postgresql-without-breaking-things",frontmatter:{},content:`
+---
+slug: evolving-postgresql-without-breaking-things
+title: Evolving PostgreSQL Without Breaking the World
+excerpt: PostgreSQL is built for integrity, but applications demand agility. How do you evolve a live database without halting the system? This guide explores zero-downtime migration techniques—concurrent indexing, safe foreign keys, and schema changes that preserve uptime.
+date: March 15, 2024
+readTime: 40 min read
+categories:
+  - Database
+  - PostgreSQL
+  - DevOps
+  - Django
+icon: Database
+iconColor: blue
+isSeries: true
+seriesSlug: evolving-postgresql-without-breaking-things
+seriesTitle: Evolving PostgreSQL Without Breaking the World
+---
+
 To change a database is to change the world in miniature. It is an act of transformation, of restructuring something vast and interconnected while it continues to pulse with life. The database does not pause for us; it does not yield easily to our aspirations. Its architecture is built on the principles of order, consistency, and unbreakable rules. And yet, we must change it, we must move forward—without halting time itself.
 
 In this journey, we will encounter resistance. PostgreSQL does not allow change without consequence. Every modification is an assertion of control over the system, an attempt to impose new order upon a structure already settled into its form. But we have tools. We have techniques. We can navigate this process, ensuring that the database evolves without collapsing under the weight of its own integrity.
@@ -514,96 +756,6 @@ This series will guide you through the processes, techniques, and principles nec
 - Monitoring database operations during migrations to ensure system stability
 
 Join me on this journey as we explore the art and science of evolving PostgreSQL databases while keeping your applications responsive and your users happy.
-`},{slug:"building-high-performance-ticketing-systems",frontmatter:{slug:"building-high-performance-ticketing-systems",title:"Building High-Performance Ticketing Systems",excerpt:"Learn how we architected a system capable of handling over 100,000 bookings per minute using modern cloud infrastructure.",date:"March 10, 2024",readTime:"8 min read",categories:["Architecture","Cloud","Performance"],icon:"Server",iconColor:"indigo"},content:`
-## Introduction
-
-At Showpass, we faced the challenge of building a ticketing system that could handle massive concurrent user load during high-demand event sales. This article details our journey in architecting a solution that can process over 100,000 bookings per minute.
-
-## Implementation Example
-
-Here's how we implemented our rate limiting using Python:
-
-\`\`\`python
-import redis
-from functools import wraps
-from datetime import datetime, timedelta
-
-class RateLimiter:
-    def __init__(self, redis_client):
-        self.redis = redis_client
-    
-    def limit_requests(self, max_requests=100, window_seconds=60):
-        def decorator(f):
-            @wraps(f)
-            async def wrapped(request, *args, **kwargs):
-                key = f"rate_limit:{request.client_ip}"
-                
-                # Get current count
-                current = await self.redis.get(key) or 0
-                
-                if int(current) >= max_requests:
-                    raise Exception("Rate limit exceeded")
-                
-                # Increment and set expiry
-                pipe = self.redis.pipeline()
-                pipe.incr(key)
-                pipe.expire(key, window_seconds)
-                await pipe.execute()
-                
-                return await f(request, *args, **kwargs)
-            return wrapped
-        return decorator
-\`\`\`
-
-And here's the corresponding frontend JavaScript code:
-
-\`\`\`javascript
-const handleBooking = async (eventId) => {
-  try {
-    const response = await fetch('/api/bookings', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        eventId,
-        quantity: 1,
-        timestamp: Date.now()
-      })
-    });
-
-    if (response.status === 429) {
-      throw new Error('Too many requests. Please try again later.');
-    }
-
-    const data = await response.json();
-    return data.bookingId;
-  } catch (error) {
-    console.error('Booking failed:', error);
-    throw error;
-  }
-};
-\`\`\`
-
-## Results
-
-The new architecture allowed us to handle peak loads of over 100,000 concurrent users while maintaining sub-second response times and ensuring transaction consistency.
-`},{slug:"event-driven-architecture-in-practice",frontmatter:{slug:"event-driven-architecture-in-practice",title:"Event-Driven Architecture in Practice",excerpt:"How we implemented event-driven architecture using RabbitMQ and Kafka to handle high-throughput ticketing operations.",date:"March 5, 2024",readTime:"12 min read",categories:["System Design","Backend","Architecture"],icon:"Code",iconColor:"emerald"},content:`
-## Introduction
-
-Event-driven architecture has been crucial in building our scalable ticketing platform. This post explores how we use RabbitMQ and Kafka to handle complex ticketing workflows.
-
-## Why Event-Driven?
-
-The ticketing industry presents unique challenges that make event-driven architecture particularly valuable. We'll explore the benefits and tradeoffs of this approach.
-
-## Implementation Details
-
-Our event-driven architecture includes:
-- Message queues for async processing
-- Event sourcing for ticket transactions
-- CQRS pattern implementation
-- Real-time updates and notifications
 `}];class WA{constructor(){z(this,"blogData");this.blogData=VA}getBlogSlugs(){return this.blogData.map(t=>t.slug)}async getBlogContent(t){const n=this.blogData.find(r=>r.slug===t);return n?{frontmatter:n.frontmatter,content:n.content}:(console.error(`Blog post with slug: ${t} not found`),null)}getSeriesEntries(t){return this.blogData.filter(n=>n.frontmatter.isSeriesEntry&&n.frontmatter.seriesSlug===t).map(n=>({slug:n.slug,frontmatter:n.frontmatter,content:n.content})).sort((n,r)=>{const a=n.frontmatter.chapterNumber??999,i=r.frontmatter.chapterNumber??999;return a-i})}}function YA(e,t){if(e==null)return{};var n={};for(var r in e)if({}.hasOwnProperty.call(e,r)){if(t.includes(r))continue;n[r]=e[r]}return n}function KA(e,t){if(e==null)return{};var n,r,a=YA(e,t);if(Object.getOwnPropertySymbols){var i=Object.getOwnPropertySymbols(e);for(r=0;r<i.length;r++)n=i[r],t.includes(n)||{}.propertyIsEnumerable.call(e,n)&&(a[n]=e[n])}return a}function Yp(e,t){(t==null||t>e.length)&&(t=e.length);for(var n=0,r=Array(t);n<t;n++)r[n]=e[n];return r}function ZA(e){if(Array.isArray(e))return Yp(e)}function XA(e){if(typeof Symbol<"u"&&e[Symbol.iterator]!=null||e["@@iterator"]!=null)return Array.from(e)}function QA(e,t){if(e){if(typeof e=="string")return Yp(e,t);var n={}.toString.call(e).slice(8,-1);return n==="Object"&&e.constructor&&(n=e.constructor.name),n==="Map"||n==="Set"?Array.from(e):n==="Arguments"||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)?Yp(e,t):void 0}}function JA(){throw new TypeError(`Invalid attempt to spread non-iterable instance.
 In order to be iterable, non-array objects must have a [Symbol.iterator]() method.`)}function eI(e){return ZA(e)||XA(e)||QA(e)||JA()}function ba(e){"@babel/helpers - typeof";return ba=typeof Symbol=="function"&&typeof Symbol.iterator=="symbol"?function(t){return typeof t}:function(t){return t&&typeof Symbol=="function"&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},ba(e)}function tI(e,t){if(ba(e)!="object"||!e)return e;var n=e[Symbol.toPrimitive];if(n!==void 0){var r=n.call(e,t||"default");if(ba(r)!="object")return r;throw new TypeError("@@toPrimitive must return a primitive value.")}return(t==="string"?String:Number)(e)}function nI(e){var t=tI(e,"string");return ba(t)=="symbol"?t:t+""}function bx(e,t,n){return(t=nI(t))in e?Object.defineProperty(e,t,{value:n,enumerable:!0,configurable:!0,writable:!0}):e[t]=n,e}function Kp(){return Kp=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)({}).hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},Kp.apply(null,arguments)}function uh(e,t){var n=Object.keys(e);if(Object.getOwnPropertySymbols){var r=Object.getOwnPropertySymbols(e);t&&(r=r.filter(function(a){return Object.getOwnPropertyDescriptor(e,a).enumerable})),n.push.apply(n,r)}return n}function Wn(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]!=null?arguments[t]:{};t%2?uh(Object(n),!0).forEach(function(r){bx(e,r,n[r])}):Object.getOwnPropertyDescriptors?Object.defineProperties(e,Object.getOwnPropertyDescriptors(n)):uh(Object(n)).forEach(function(r){Object.defineProperty(e,r,Object.getOwnPropertyDescriptor(n,r))})}return e}function rI(e){var t=e.length;if(t===0||t===1)return e;if(t===2)return[e[0],e[1],"".concat(e[0],".").concat(e[1]),"".concat(e[1],".").concat(e[0])];if(t===3)return[e[0],e[1],e[2],"".concat(e[0],".").concat(e[1]),"".concat(e[0],".").concat(e[2]),"".concat(e[1],".").concat(e[0]),"".concat(e[1],".").concat(e[2]),"".concat(e[2],".").concat(e[0]),"".concat(e[2],".").concat(e[1]),"".concat(e[0],".").concat(e[1],".").concat(e[2]),"".concat(e[0],".").concat(e[2],".").concat(e[1]),"".concat(e[1],".").concat(e[0],".").concat(e[2]),"".concat(e[1],".").concat(e[2],".").concat(e[0]),"".concat(e[2],".").concat(e[0],".").concat(e[1]),"".concat(e[2],".").concat(e[1],".").concat(e[0])];if(t>=4)return[e[0],e[1],e[2],e[3],"".concat(e[0],".").concat(e[1]),"".concat(e[0],".").concat(e[2]),"".concat(e[0],".").concat(e[3]),"".concat(e[1],".").concat(e[0]),"".concat(e[1],".").concat(e[2]),"".concat(e[1],".").concat(e[3]),"".concat(e[2],".").concat(e[0]),"".concat(e[2],".").concat(e[1]),"".concat(e[2],".").concat(e[3]),"".concat(e[3],".").concat(e[0]),"".concat(e[3],".").concat(e[1]),"".concat(e[3],".").concat(e[2]),"".concat(e[0],".").concat(e[1],".").concat(e[2]),"".concat(e[0],".").concat(e[1],".").concat(e[3]),"".concat(e[0],".").concat(e[2],".").concat(e[1]),"".concat(e[0],".").concat(e[2],".").concat(e[3]),"".concat(e[0],".").concat(e[3],".").concat(e[1]),"".concat(e[0],".").concat(e[3],".").concat(e[2]),"".concat(e[1],".").concat(e[0],".").concat(e[2]),"".concat(e[1],".").concat(e[0],".").concat(e[3]),"".concat(e[1],".").concat(e[2],".").concat(e[0]),"".concat(e[1],".").concat(e[2],".").concat(e[3]),"".concat(e[1],".").concat(e[3],".").concat(e[0]),"".concat(e[1],".").concat(e[3],".").concat(e[2]),"".concat(e[2],".").concat(e[0],".").concat(e[1]),"".concat(e[2],".").concat(e[0],".").concat(e[3]),"".concat(e[2],".").concat(e[1],".").concat(e[0]),"".concat(e[2],".").concat(e[1],".").concat(e[3]),"".concat(e[2],".").concat(e[3],".").concat(e[0]),"".concat(e[2],".").concat(e[3],".").concat(e[1]),"".concat(e[3],".").concat(e[0],".").concat(e[1]),"".concat(e[3],".").concat(e[0],".").concat(e[2]),"".concat(e[3],".").concat(e[1],".").concat(e[0]),"".concat(e[3],".").concat(e[1],".").concat(e[2]),"".concat(e[3],".").concat(e[2],".").concat(e[0]),"".concat(e[3],".").concat(e[2],".").concat(e[1]),"".concat(e[0],".").concat(e[1],".").concat(e[2],".").concat(e[3]),"".concat(e[0],".").concat(e[1],".").concat(e[3],".").concat(e[2]),"".concat(e[0],".").concat(e[2],".").concat(e[1],".").concat(e[3]),"".concat(e[0],".").concat(e[2],".").concat(e[3],".").concat(e[1]),"".concat(e[0],".").concat(e[3],".").concat(e[1],".").concat(e[2]),"".concat(e[0],".").concat(e[3],".").concat(e[2],".").concat(e[1]),"".concat(e[1],".").concat(e[0],".").concat(e[2],".").concat(e[3]),"".concat(e[1],".").concat(e[0],".").concat(e[3],".").concat(e[2]),"".concat(e[1],".").concat(e[2],".").concat(e[0],".").concat(e[3]),"".concat(e[1],".").concat(e[2],".").concat(e[3],".").concat(e[0]),"".concat(e[1],".").concat(e[3],".").concat(e[0],".").concat(e[2]),"".concat(e[1],".").concat(e[3],".").concat(e[2],".").concat(e[0]),"".concat(e[2],".").concat(e[0],".").concat(e[1],".").concat(e[3]),"".concat(e[2],".").concat(e[0],".").concat(e[3],".").concat(e[1]),"".concat(e[2],".").concat(e[1],".").concat(e[0],".").concat(e[3]),"".concat(e[2],".").concat(e[1],".").concat(e[3],".").concat(e[0]),"".concat(e[2],".").concat(e[3],".").concat(e[0],".").concat(e[1]),"".concat(e[2],".").concat(e[3],".").concat(e[1],".").concat(e[0]),"".concat(e[3],".").concat(e[0],".").concat(e[1],".").concat(e[2]),"".concat(e[3],".").concat(e[0],".").concat(e[2],".").concat(e[1]),"".concat(e[3],".").concat(e[1],".").concat(e[0],".").concat(e[2]),"".concat(e[3],".").concat(e[1],".").concat(e[2],".").concat(e[0]),"".concat(e[3],".").concat(e[2],".").concat(e[0],".").concat(e[1]),"".concat(e[3],".").concat(e[2],".").concat(e[1],".").concat(e[0])]}var Ho={};function aI(e){if(e.length===0||e.length===1)return e;var t=e.join(".");return Ho[t]||(Ho[t]=rI(e)),Ho[t]}function iI(e){var t=arguments.length>1&&arguments[1]!==void 0?arguments[1]:{},n=arguments.length>2?arguments[2]:void 0,r=e.filter(function(i){return i!=="token"}),a=aI(r);return a.reduce(function(i,o){return Wn(Wn({},i),n[o])},t)}function ch(e){return e.join(" ")}function oI(e,t){var n=0;return function(r){return n+=1,r.map(function(a,i){return yx({node:a,stylesheet:e,useInlineStyles:t,key:"code-segment-".concat(n,"-").concat(i)})})}}function yx(e){var t=e.node,n=e.stylesheet,r=e.style,a=r===void 0?{}:r,i=e.useInlineStyles,o=e.key,s=t.properties,l=t.type,u=t.tagName,c=t.value;if(l==="text")return c;if(u){var p=oI(n,i),f;if(!i)f=Wn(Wn({},s),{},{className:ch(s.className)});else{var y=Object.keys(n).reduce(function(h,g){return g.split(".").forEach(function(m){h.includes(m)||h.push(m)}),h},[]),E=s.className&&s.className.includes("token")?["token"]:[],b=s.className&&E.concat(s.className.filter(function(h){return!y.includes(h)}));f=Wn(Wn({},s),{},{className:ch(b)||void 0,style:iI(s.className,Object.assign({},s.style,a),n)})}var w=p(t.children);return Se.createElement(u,Kp({key:o},f),w)}}const sI=function(e,t){var n=e.listLanguages();return n.indexOf(t)!==-1};var lI=["language","children","style","customStyle","codeTagProps","useInlineStyles","showLineNumbers","showInlineLineNumbers","startingLineNumber","lineNumberContainerStyle","lineNumberStyle","wrapLines","wrapLongLines","lineProps","renderer","PreTag","CodeTag","code","astGenerator"];function dh(e,t){var n=Object.keys(e);if(Object.getOwnPropertySymbols){var r=Object.getOwnPropertySymbols(e);t&&(r=r.filter(function(a){return Object.getOwnPropertyDescriptor(e,a).enumerable})),n.push.apply(n,r)}return n}function bt(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]!=null?arguments[t]:{};t%2?dh(Object(n),!0).forEach(function(r){bx(e,r,n[r])}):Object.getOwnPropertyDescriptors?Object.defineProperties(e,Object.getOwnPropertyDescriptors(n)):dh(Object(n)).forEach(function(r){Object.defineProperty(e,r,Object.getOwnPropertyDescriptor(n,r))})}return e}var uI=/\n/g;function cI(e){return e.match(uI)}function dI(e){var t=e.lines,n=e.startingLineNumber,r=e.style;return t.map(function(a,i){var o=i+n;return Se.createElement("span",{key:"line-".concat(i),className:"react-syntax-highlighter-line-number",style:typeof r=="function"?r(o):r},"".concat(o,`
 `))})}function pI(e){var t=e.codeString,n=e.codeStyle,r=e.containerStyle,a=r===void 0?{float:"left",paddingRight:"10px"}:r,i=e.numberStyle,o=i===void 0?{}:i,s=e.startingLineNumber;return Se.createElement("code",{style:Object.assign({},n,a)},dI({lines:t.replace(/\n$/,"").split(`
