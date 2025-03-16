@@ -1,9 +1,25 @@
 
 import { useEffect, useState } from "react";
-import { CheckCircle, Code, Database, Server, BrainCircuit, Users, Layout, Cloud, LineChart, Layers, MessageSquareCode, Share, Network, GitBranch, Zap } from "lucide-react";
+import {
+  CheckCircle,
+  Code,
+  Database,
+  Server,
+  BrainCircuit,
+  Users,
+  Layout,
+  Cloud,
+  LineChart,
+  Layers,
+  MessageSquareCode,
+  Share,
+  Network,
+  Plug
+} from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
 
 // Group skills by higher-level categories
+// Grouping Skills into High-Level Categories
 const skillGroups = [
   {
     name: "Leadership & Architecture",
@@ -12,7 +28,7 @@ const skillGroups = [
   },
   {
     name: "Development",
-    categories: ["Backend", "Frontend", "Other Technologies"],
+    categories: ["Backend", "Frontend", "Integrations & APIs", "Other Technologies"],
     icon: <Code className="h-5 w-5 text-indigo-600" />,
   },
   {
@@ -21,23 +37,23 @@ const skillGroups = [
     icon: <Server className="h-5 w-5 text-indigo-600" />,
   },
   {
-    name: "AI & Emerging",
+    name: "AI & Emerging Tech",
     categories: ["AI & Data"],
     icon: <BrainCircuit className="h-5 w-5 text-indigo-600" />,
   },
 ];
 
-// Skills data structure
+// Skill categories & items
 const skills = [
   {
     category: "Engineering Leadership",
     icon: <Users className="h-5 w-5 text-indigo-500" />,
     items: [
-      "Technical Vision",
-      "Team Leadership",
+      "Technical Vision & Strategy",
+      "Scaling Engineering Teams",
       "Mentoring & Coaching",
-      "Agile Methodologies",
-      "Security & Compliance (PCI)",
+      "Agile & Lean Development",
+      "Security & Compliance (PCI, SOC2)",
       "Cross-Functional Collaboration",
     ],
   },
@@ -45,119 +61,121 @@ const skills = [
     category: "Software Design",
     icon: <Network className="h-5 w-5 text-indigo-500" />,
     items: [
-      "Clean Code",
-      "Domain-Driven Design",
+      "Domain-Driven Design (DDD)",
       "Design Patterns",
       "Event-Driven Architectures",
-      "Service-Oriented Architecture",
-      "Modular Monolith Design",
-      "Test-Driven Development",
+      "Service-Oriented Architecture (SOA)",
+      "Modular Monolith & Microservices",
+      "Test-Driven Development (TDD)",
     ],
   },
   {
     category: "System Design",
     icon: <Share className="h-5 w-5 text-indigo-500" />,
     items: [
-      "Distributed Systems",
-      "High Scalability Architecture",
+      "Scalable Distributed Systems",
+      "High Availability & Fault Tolerance",
       "Horizontal & Vertical Scaling",
       "Load Balancing Strategies",
       "Multi-Tenancy Architecture",
-      "Caching Strategies",
-      "API Gateway Patterns",
-      "Microservices Architecture",
+      "Efficient Caching Strategies",
+      "API Gateway & Rate Limiting",
+      "Event Streaming & Messaging Queues",
     ],
   },
   {
     category: "Domain Knowledge",
     icon: <MessageSquareCode className="h-5 w-5 text-indigo-500" />,
     items: [
-      "Enterprise Systems",
-      "E-commerce Platforms",
-      "Booking Systems",
-      "Payments & Financial Systems",
+      "Enterprise Software Development",
+      "E-commerce Platforms & Marketplaces",
+      "Booking & Ticketing Systems",
+      "Payments, Banking, & FinTech",
+      "Event-Driven Analytics Pipelines\"",
       "Data Pipelines & ETL Workflows",
       "Geospatial Data & PostGIS",
-      "High-Performance Caching Strategies",
-      "Real-Time Data Processing",
     ],
   },
   {
     category: "Backend",
     icon: <Server className="h-5 w-5 text-indigo-500" />,
     items: [
-      "Python",
-      "Django",
-      "Celery",
-      "FastAPI",
-      "Flask",
-      "Node.js",
-      "Go",
+      "Python (Django, FastAPI, Flask)",
+      "Celery & Asynchronous Task Queues",
+      "Node.js & TypeScript",
+      "Golang (Go)",
+      "REST APIs & GraphQL",
+      "WebSockets & Real-Time Communication",
     ],
   },
   {
     category: "Frontend",
     icon: <Layout className="h-5 w-5 text-indigo-500" />,
     items: [
-      "JavaScript",
-      "TypeScript",
-      "ReactJS",
-      "NextJS",
-      "AngularJS",
+      "JavaScript & TypeScript",
+      "ReactJS & Next.js",
+      "AngularJS (Legacy Migrations)",
+      "TailwindCSS & Component Libraries",
+    ],
+  },
+  {
+    category: "Integrations & APIs",
+    icon: <Plug className="h-5 w-5 text-indigo-500" />,
+    items: [
+      "OAuth & SSO Authentication",
+      "Third-Party API Integrations",
+      "CRM & ERP System Integrations",
+      "Payment Gateway & Banking APIs",
+      "POS & Hardware Integrations",
+      "Webhooks & Event-Driven Syncing",
+      "GraphQL & REST API Development",
     ],
   },
   {
     category: "Databases & Cache",
     icon: <Database className="h-5 w-5 text-indigo-500" />,
     items: [
-      "PostgreSQL",
-      "MySQL",
-      "BigQuery",
-      "ClickHouse",
-      "MongoDB",
-      "Cassandra",
-      "Redis",
-      "Memcached",
+      "PostgreSQL & MySQL",
+      "Google BigQuery & ClickHouse",
+      "MongoDB & NoSQL Databases",
+      "Cassandra & Scalable Data Stores",
+      "Redis & Memcached",
     ],
   },
   {
     category: "Cloud Services",
     icon: <Cloud className="h-5 w-5 text-indigo-500" />,
-    items: ["GCP", "Kubernetes", "AWS", "Heroku", "Linode"],
+    items: ["Google Cloud (GCP)", "AWS", "Kubernetes", "Heroku", "Linode"],
   },
   {
     category: "AI & Data",
     icon: <BrainCircuit className="h-5 w-5 text-indigo-500" />,
     items: [
-      "Agent Design",
-      "RAG",
-      "LangChain",
-      "Pinecone",
-      "Prompt Engineering",
+      "LLM Agents & AI Workflows",
+      "Retrieval-Augmented Generation (RAG)",
+      "Vector Databases & Semantic Search",
+      "Advanced Prompt Engineering",
     ],
   },
   {
     category: "Observability & Monitoring",
     icon: <LineChart className="h-5 w-5 text-indigo-500" />,
     items: [
-      "Datadog",
-      "Grafana",
-      "Prometheus",
-      "Sentry",
-      "Elastic Stack",
+      "Datadog & APM Tools",
+      "Grafana & Prometheus",
+      "Sentry & Logging Systems",
+      "Elastic Stack (ELK)",
     ],
   },
   {
     category: "Other Technologies",
     icon: <Code className="h-5 w-5 text-indigo-500" />,
     items: [
-      "Nginx",
-      "Apache Server",
-      "Docker",
-      "RabbitMQ",
-      "Kafka",
-      "Git",
-      "Linux/Debian",
+      "Nginx & Apache",
+      "Docker & Kubernetes",
+      "RabbitMQ & Kafka",
+      "Git & CI/CD Pipelines",
+      "Linux (Debian & Ubuntu)",
     ],
   },
 ];
@@ -195,8 +213,8 @@ const Skills = () => {
   const groups = ["all", ...skillGroups.map(g => g.name)];
 
   // Filter skills based on active group
-  const filteredSkills = activeGroup === "all" 
-    ? skills 
+  const filteredSkills = activeGroup === "all"
+    ? skills
     : skills.filter(skill => {
         const group = skillGroups.find(g => g.name === activeGroup);
         return group ? group.categories.includes(skill.category) : false;
@@ -249,7 +267,7 @@ const Skills = () => {
                 >
                   All {activeGroup} Skills
                 </button>
-                
+
                 {skillGroups.find(g => g.name === activeGroup)?.categories.map(cat => (
                   <button
                     key={cat}
@@ -283,7 +301,7 @@ const Skills = () => {
                         </div>
                         <h3 className="text-xl font-semibold">{skill.category}</h3>
                       </div>
-                      
+
                       <div className="flex flex-wrap gap-2">
                         {skill.items.slice(0, visibleItems[skill.category] || 5).map((item) => (
                           <span
@@ -300,18 +318,18 @@ const Skills = () => {
                           </span>
                         ))}
                       </div>
-                      
+
                       {skill.items.length > 5 && (
                         <div className="mt-4 text-right">
                           {visibleItems[skill.category] === 5 ? (
-                            <button 
+                            <button
                               onClick={() => handleShowMore(skill.category)}
                               className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
                             >
                               Show all ({skill.items.length})
                             </button>
                           ) : (
-                            <button 
+                            <button
                               onClick={() => handleShowLess(skill.category)}
                               className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
                             >
@@ -335,10 +353,10 @@ const Skills = () => {
                     </div>
                     <h3 className="text-2xl font-semibold">{skill.category}</h3>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {skill.items.map((item) => (
-                      <div 
+                      <div
                         key={item}
                         className="flex items-center p-3 rounded-lg hover:bg-indigo-50 transition-all duration-200"
                       >
