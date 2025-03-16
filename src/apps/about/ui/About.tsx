@@ -45,50 +45,111 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* About Me Hero Section */}
-      <section className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[#F8FAFC]">
+      {/* About Me Hero Section - Updated for better cohesion and flow */}
+      <section className="relative py-24 overflow-hidden">
+        {/* Background with subtle pattern gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-indigo-50/30 to-white">
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(238,238,238,0.6)_1px,transparent_1px),linear-gradient(rgba(238,238,238,0.6)_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-[#F8FAFC] via-white/90 to-[#F8FAFC]"></div>
         </div>
 
         <div className="container mx-auto px-6 relative">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-bold text-[#1E293B] mb-6">
-              About Me
-            </h1>
-            
-            <div className="p-6 bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl shadow-sm mb-8">
-              <p className="text-lg text-gray-700 leading-relaxed italic">
-                "{quote.text}"
-              </p>
-              <p className="text-sm text-gray-500 mt-2">— {quote.author}</p>
+          <div className="max-w-4xl mx-auto">
+            {/* Visual journey section */}
+            <div className="flex flex-col sm:flex-row gap-8 items-center mb-12">
+              <div className="flex-1">
+                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3 relative">
+                  About Me
+                  <span className="absolute -bottom-2 left-0 w-20 h-1 bg-indigo-400"></span>
+                </h1>
+                <p className="text-xl text-gray-700 mt-6 leading-relaxed">
+                  I'm an <span className="font-semibold text-indigo-700">Engineering Leader</span> who 
+                  builds bridges — between teams, technologies, and business goals.
+                </p>
+              </div>
+              
+              {/* Quote card with gradient background */}
+              <div className="flex-1">
+                <div className="p-6 bg-gradient-to-r from-[#E5DEFF] to-[#D3E4FD] rounded-xl shadow-sm transform rotate-1 hover:rotate-0 transition-transform">
+                  <p className="text-lg text-gray-700 leading-relaxed italic">
+                    "{quote.text}"
+                  </p>
+                  <p className="text-sm text-gray-600 mt-2 font-medium">— {quote.author}</p>
+                </div>
+              </div>
             </div>
-            
-            <p className="text-lg text-gray-600 leading-relaxed mb-8">
-              I'm an Engineering Leader who builds bridges — between teams, technologies, and business goals.
-              Currently serving as Director of Engineering at Showpass, I've spent years crafting elegant solutions 
-              to complex problems while growing teams that thrive on innovation.
-            </p>
 
-            <div className="flex flex-col md:flex-row gap-4 justify-center mb-8">
-              <div className="p-4 bg-[#E5DEFF] rounded-lg flex-1">
-                <h3 className="font-semibold mb-2">Technical Vision</h3>
-                <p className="text-sm text-gray-600">
-                  Driving architecture decisions that balance innovation with stability
-                </p>
+            {/* Current Role & Journey */}
+            <div className="mb-12 p-6 bg-white rounded-xl shadow-sm border border-indigo-100 animate-fade-in">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">My Journey</h2>
+              
+              <div className="space-y-6">
+                <div className="relative pl-8 border-l-2 border-indigo-200">
+                  <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-indigo-400"></div>
+                  <h3 className="font-semibold text-lg text-indigo-700">Currently</h3>
+                  <p className="text-gray-700">
+                    Serving as <span className="font-medium">Director of Engineering at Showpass</span>, 
+                    where I lead technical strategy and engineering excellence initiatives.
+                  </p>
+                </div>
+                
+                <div className="relative pl-8 border-l-2 border-indigo-200">
+                  <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-indigo-300"></div>
+                  <h3 className="font-semibold text-lg text-indigo-600">Previously</h3>
+                  <p className="text-gray-700">
+                    Crafted elegant solutions to complex problems while growing teams 
+                    that thrive on innovation across various industries.
+                  </p>
+                </div>
               </div>
-              <div className="p-4 bg-[#FDE1D3] rounded-lg flex-1">
-                <h3 className="font-semibold mb-2">Product Delivery</h3>
-                <p className="text-sm text-gray-600">
-                  Turning complex requirements into exceptional experiences
-                </p>
-              </div>
-              <div className="p-4 bg-[#D3E4FD] rounded-lg flex-1">
-                <h3 className="font-semibold mb-2">Team Growth</h3>
-                <p className="text-sm text-gray-600">
-                  Mentoring engineers and building collaborative cultures
-                </p>
+            </div>
+
+            {/* Core strengths with visual cards */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Core Strengths</h2>
+              
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="p-5 bg-[#E5DEFF] rounded-lg transform transition-all hover:scale-105 hover:shadow-md">
+                  <h3 className="font-semibold mb-2 text-gray-800 flex items-center gap-2">
+                    <span className="p-1.5 bg-white rounded-full">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-600">
+                        <rect width="18" height="18" x="3" y="3" rx="2" />
+                        <path d="M7 7h10" />
+                        <path d="M7 12h10" />
+                        <path d="M7 17h10" />
+                      </svg>
+                    </span>
+                    Technical Vision
+                  </h3>
+                  <p className="text-sm text-gray-700">
+                    Driving architecture decisions that balance innovation with stability and business goals
+                  </p>
+                </div>
+                
+                <div className="p-5 bg-[#FDE1D3] rounded-lg transform transition-all hover:scale-105 hover:shadow-md">
+                  <h3 className="font-semibold mb-2 text-gray-800 flex items-center gap-2">
+                    <span className="p-1.5 bg-white rounded-full">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-orange-600">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                      </svg>
+                    </span>
+                    Product Delivery
+                  </h3>
+                  <p className="text-sm text-gray-700">
+                    Turning complex requirements into exceptional user experiences through technical execution
+                  </p>
+                </div>
+                
+                <div className="p-5 bg-[#D3E4FD] rounded-lg transform transition-all hover:scale-105 hover:shadow-md">
+                  <h3 className="font-semibold mb-2 text-gray-800 flex items-center gap-2">
+                    <span className="p-1.5 bg-white rounded-full">
+                      <Users className="h-4 w-4 text-blue-600" />
+                    </span>
+                    Team Growth
+                  </h3>
+                  <p className="text-sm text-gray-700">
+                    Mentoring engineers and building collaborative cultures that foster innovation
+                  </p>
+                </div>
               </div>
             </div>
           </div>
