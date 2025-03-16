@@ -1,3 +1,4 @@
+
 "use client";
 
 import { ArrowRight, BrainCircuit, Code, Database, Server } from "lucide-react";
