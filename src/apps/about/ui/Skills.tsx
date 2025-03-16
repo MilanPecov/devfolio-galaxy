@@ -1,13 +1,13 @@
 
 import { useEffect, useState } from "react";
-import { CheckCircle, Code, Database, Server, BrainCircuit, Users, Layout, Cloud, LineChart, Layers } from "lucide-react";
+import { CheckCircle, Code, Database, Server, BrainCircuit, Users, Layout, Cloud, LineChart, Layers, MessageSquareCode, Share, Network } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
 
 // Group skills by higher-level categories
 const skillGroups = [
   {
-    name: "Leadership & Design",
-    categories: ["Engineering Leadership", "Software Design"],
+    name: "Leadership & Architecture",
+    categories: ["Engineering Leadership", "System Design", "Domain Knowledge"],
     icon: <Layers className="h-5 w-5 text-indigo-600" />,
   },
   {
@@ -35,7 +35,6 @@ const skills = [
     items: [
       "Team Leadership",
       "Technical Vision",
-      "Architecture Design",
       "Mentoring & Coaching",
       "Agile Methodologies",
       "Security & Compliance (PCI)",
@@ -43,15 +42,28 @@ const skills = [
     ],
   },
   {
-    category: "Software Design",
-    icon: <BrainCircuit className="h-5 w-5 text-indigo-500" />,
+    category: "System Design",
+    icon: <Network className="h-5 w-5 text-indigo-500" />,
     items: [
       "Clean Code",
       "Domain-Driven Design",
       "Design Patterns",
-      "Event-Driven & Service-Oriented Architectures",
+      "Event-Driven Architectures",
+      "Service-Oriented Architecture",
       "Modular Monolith Design",
       "Test-Driven Development",
+      "Architecture Design",
+    ],
+  },
+  {
+    category: "Domain Knowledge",
+    icon: <MessageSquareCode className="h-5 w-5 text-indigo-500" />,
+    items: [
+      "Booking Systems",
+      "E-commerce Platforms",
+      "Payment Processing",
+      "Inventory Management",
+      "High-Performance Ticketing",
     ],
   },
   {
@@ -184,7 +196,7 @@ const Skills = () => {
             Technology Proficiency
           </h2>
           <p className="text-gray-600">
-            Expertise across software design, backend, frontend, cloud, data, and leadership.
+            Expertise across system design, domain knowledge, backend, frontend, cloud, and leadership.
           </p>
         </div>
 
