@@ -1,4 +1,3 @@
-
 ---
 slug: evolving-postgresql-chapter-4
 title: Chapter 4: The Burden of Bloat – Using pg_repack

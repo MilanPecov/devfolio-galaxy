@@ -1,4 +1,3 @@
-
 ---
 slug: evolving-postgresql-chapter-5
 title: Chapter 5: Observing Migrations in Production

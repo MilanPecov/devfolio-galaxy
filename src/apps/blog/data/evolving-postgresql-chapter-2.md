@@ -1,4 +1,3 @@
-
 ---
 slug: evolving-postgresql-chapter-2
 title: Chapter 2: Parallel Evolution – Creating Indexes Concurrently
