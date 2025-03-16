@@ -73,7 +73,7 @@ const skills = [
     items: ["GCP", "Kubernetes", "AWS", "Heroku", "Linode"],
   },
   {
-    category: "AI & Data",
+    category: "AI & Emerging Tech",
     icon: <BrainCircuit className="h-5 w-5 text-indigo-500" />,
     items: [
       "LangChain",

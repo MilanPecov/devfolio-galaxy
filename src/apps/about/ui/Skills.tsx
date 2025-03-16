@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import {
   CheckCircle,
@@ -19,7 +18,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
 
 // Group skills by higher-level categories
-// Grouping Skills into High-Level Categories
 const skillGroups = [
   {
     name: "Leadership & Architecture",
@@ -38,7 +36,7 @@ const skillGroups = [
   },
   {
     name: "AI & Emerging Tech",
-    categories: ["AI & Data"],
+    categories: ["AI & Emerging Tech"],
     icon: <BrainCircuit className="h-5 w-5 text-indigo-600" />,
   },
 ];
@@ -91,7 +89,7 @@ const skills = [
       "E-commerce Platforms & Marketplaces",
       "Booking & Ticketing Systems",
       "Payments, Banking, & FinTech",
-      "Event-Driven Analytics Pipelines\"",
+      "Event-Driven Analytics Pipelines",
       "Data Pipelines & ETL Workflows",
       "Geospatial Data & PostGIS",
     ],
@@ -148,7 +146,7 @@ const skills = [
     items: ["Google Cloud (GCP)", "AWS", "Kubernetes", "Heroku", "Linode"],
   },
   {
-    category: "AI & Data",
+    category: "AI & Emerging Tech",
     icon: <BrainCircuit className="h-5 w-5 text-indigo-500" />,
     items: [
       "LLM Agents & AI Workflows",
@@ -181,16 +179,17 @@ const skills = [
 ];
 
 const Skills = () => {
+  const DEFAULT_VISIBLE_SKILLS = 3;
   const [activeGroup, setActiveGroup] = useState("all");
   const [activeCategory, setActiveCategory] = useState("all");
   const [visibleItems, setVisibleItems] = useState<{ [key: string]: number }>({});
   const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
 
-  // Initialize with 5 items per category
+  // Initialize with DEFAULT_VISIBLE_SKILLS per category
   useEffect(() => {
     const initialVisibleItems: { [key: string]: number } = {};
     skills.forEach(skill => {
-      initialVisibleItems[skill.category] = 5;
+      initialVisibleItems[skill.category] = DEFAULT_VISIBLE_SKILLS;
     });
     setVisibleItems(initialVisibleItems);
   }, []);
@@ -205,7 +204,7 @@ const Skills = () => {
   const handleShowLess = (category: string) => {
     setVisibleItems(prev => ({
       ...prev,
-      [category]: 5
+      [category]: DEFAULT_VISIBLE_SKILLS
     }));
   };
 
@@ -219,6 +218,9 @@ const Skills = () => {
         const group = skillGroups.find(g => g.name === activeGroup);
         return group ? group.categories.includes(skill.category) : false;
       });
+
+  // Determine if we are on the landing page (i.e., showing all skills in summary view)
+  const isLandingPage = activeGroup === "all" && activeCategory === "all";
 
   return (
     <section id="skills" className="py-20 bg-gradient-to-b from-white to-gray-50">
@@ -303,7 +305,12 @@ const Skills = () => {
                       </div>
 
                       <div className="flex flex-wrap gap-2">
-                        {skill.items.slice(0, visibleItems[skill.category] || 5).map((item) => (
+                        {skill.items.slice(
+                          0,
+                          isLandingPage
+                            ? (visibleItems[skill.category] || DEFAULT_VISIBLE_SKILLS)
+                            : skill.items.length
+                        ).map((item) => (
                           <span
                             key={item}
                             className={`px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${
@@ -319,9 +326,9 @@ const Skills = () => {
                         ))}
                       </div>
 
-                      {skill.items.length > 5 && (
+                      {isLandingPage && skill.items.length > DEFAULT_VISIBLE_SKILLS && (
                         <div className="mt-4 text-right">
-                          {visibleItems[skill.category] === 5 ? (
+                          {visibleItems[skill.category] === DEFAULT_VISIBLE_SKILLS ? (
                             <button
                               onClick={() => handleShowMore(skill.category)}
                               className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
