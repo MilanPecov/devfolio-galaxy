@@ -1,7 +1,6 @@
-import Hero from "@/components/Hero";
-import Skills from "@/components/Skills";
+
+import { Hero, Contact } from "@/apps/landing";
 import Blog from "@/apps/blog/ui/Blog.tsx";
-import Contact from "@/components/Contact";
 import Navbar from "@/components/Navbar";
 
 const Index = () => {
@@ -10,7 +9,6 @@ const Index = () => {
       <Navbar />
       <Hero />
       <Blog />
-      <Skills />
       <Contact />
     </div>
   );

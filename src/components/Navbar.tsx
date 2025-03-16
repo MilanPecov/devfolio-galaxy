@@ -1,14 +1,17 @@
 
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
 
   const menuItems = [
-    {name: "Insights", href: "#blog"},
-    {name: "Skills", href: "#skills"},
-    {name: "Contact", href: "#contact"},
+    { name: "About", href: "/about" },
+    { name: "Insights", href: isHomePage ? "#blog" : "/blog" },
+    { name: "Contact", href: isHomePage ? "#contact" : "/#contact" },
   ];
 
   return (
@@ -16,20 +19,30 @@ const Navbar = () => {
       <div className="absolute inset-0 bg-white/70 backdrop-blur-xl border-b border-gray-100"></div>
       <div className="container mx-auto px-6 py-4 relative">
         <div className="flex items-center justify-between">
-          <a href="/" className="text-xl font-semibold text-[#1E293B]">
+          <Link to="/" className="text-xl font-semibold text-[#1E293B]">
             ~/milan
-          </a>
+          </Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-12">
             {menuItems.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className="text-gray-600 hover:text-[#1E293B] transition-colors duration-300"
-              >
-                {item.name}
-              </a>
+              item.href.startsWith("/") ? (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className="text-gray-600 hover:text-[#1E293B] transition-colors duration-300"
+                >
+                  {item.name}
+                </Link>
+              ) : (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className="text-gray-600 hover:text-[#1E293B] transition-colors duration-300"
+                >
+                  {item.name}
+                </a>
+              )
             ))}
           </div>
 
@@ -48,14 +61,25 @@ const Navbar = () => {
           <div className="md:hidden absolute top-full left-0 right-0 bg-white/80 backdrop-blur-xl border-b border-gray-100 animate-fade-in">
             <div className="container mx-auto px-6 py-4">
               {menuItems.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className="block py-2 text-gray-600 hover:text-[#1E293B] transition-colors duration-300"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {item.name}
-                </a>
+                item.href.startsWith("/") ? (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className="block py-2 text-gray-600 hover:text-[#1E293B] transition-colors duration-300"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                ) : (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    className="block py-2 text-gray-600 hover:text-[#1E293B] transition-colors duration-300"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {item.name}
+                  </a>
+                )
               ))}
             </div>
           </div>
