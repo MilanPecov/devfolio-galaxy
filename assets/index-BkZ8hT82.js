@@ -204,7 +204,7 @@ Error generating stack: `+i.message+`
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
- */const Ox=oe("X",[["path",{d:"M18 6 6 18",key:"1bl5f8"}],["path",{d:"m6 6 12 12",key:"d8bk6v"}]]),or=()=>{const[e,t]=S.useState(!1),n=kx(),r=[{name:"about",href:"/about"},{name:"blog",href:"/blog"}],a=i=>{i.preventDefault(),n("/"),window.scrollTo({top:0,behavior:"smooth"})};return c.jsxs("nav",{className:"fixed top-0 left-0 right-0 z-50",children:[c.jsx("div",{className:"absolute inset-0 bg-white/70 backdrop-blur-xl border-b border-gray-100"}),c.jsxs("div",{className:"container mx-auto px-6 py-4 relative",children:[c.jsxs("div",{className:"flex items-center justify-between",children:[c.jsx(ve,{to:"/",className:"text-xl font-semibold text-[#1E293B]",onClick:a,children:"~/milan"}),c.jsx("div",{className:"hidden md:flex items-center space-x-12",children:r.map(i=>i.href.startsWith("/")?c.jsx(ve,{to:i.href,className:"text-gray-600 hover:text-[#1E293B] transition-colors duration-300",children:i.name},i.name):c.jsx("a",{href:i.href,className:"text-gray-600 hover:text-[#1E293B] transition-colors duration-300",children:i.name},i.name))}),c.jsx("button",{className:"md:hidden",onClick:()=>t(!e),"aria-label":"Toggle menu",children:e?c.jsx(Ox,{size:24}):c.jsx(hC,{size:24})})]}),e&&c.jsx("div",{className:"md:hidden absolute top-full left-0 right-0 bg-white/80 backdrop-blur-xl border-b border-gray-100 animate-fade-in",children:c.jsx("div",{className:"container mx-auto px-6 py-4",children:r.map(i=>i.href.startsWith("/")?c.jsx(ve,{to:i.href,className:"block py-2 text-gray-600 hover:text-[#1E293B] transition-colors duration-300",onClick:()=>t(!1),children:i.name},i.name):c.jsx("a",{href:i.href,className:"block py-2 text-gray-600 hover:text-[#1E293B] transition-colors duration-300",onClick:()=>t(!1),children:i.name},i.name))})})]})]})},wC=[{slug:"evolving-postgresql-chapter-1",frontmatter:{slug:"evolving-postgresql-chapter-1",title:"Chapter 1: The Price of Order",excerpt:"Learn about PostgreSQL's locking mechanisms and why naively applying constraints can bring your application to a halt.",date:"March 15, 2024",readTime:"12 min read",categories:["Database","PostgreSQL","DevOps"],icon:"Database",iconColor:"blue",isSeriesEntry:!0,seriesSlug:"evolving-postgresql-without-breaking-things",seriesTitle:"Evolving PostgreSQL Without Breaking the World",chapterTitle:"Chapter 1: The Price of Order",chapterNumber:1,previousChapter:"evolving-postgresql-prologue",previousChapterTitle:"Prologue: The Immutable and the Changing",nextChapter:"evolving-postgresql-chapter-3",nextChapterTitle:"Chapter 3: The Challenge of Foreign Keys"},content:`
+ */const Ox=oe("X",[["path",{d:"M18 6 6 18",key:"1bl5f8"}],["path",{d:"m6 6 12 12",key:"d8bk6v"}]]),or=()=>{const[e,t]=S.useState(!1),n=kx(),r=[{name:"about",href:"/about"},{name:"blog",href:"/blog"}],a=i=>{i.preventDefault(),n("/"),window.scrollTo({top:0,behavior:"smooth"})};return c.jsxs("nav",{className:"fixed top-0 left-0 right-0 z-50",children:[c.jsx("div",{className:"absolute inset-0 bg-white/70 backdrop-blur-xl border-b border-gray-100"}),c.jsxs("div",{className:"container mx-auto px-6 py-4 relative",children:[c.jsxs("div",{className:"flex items-center justify-between",children:[c.jsx(ve,{to:"/",className:"text-xl font-semibold text-[#1E293B]",onClick:a,children:"~/milan"}),c.jsx("div",{className:"hidden md:flex items-center space-x-12",children:r.map(i=>i.href.startsWith("/")?c.jsx(ve,{to:i.href,className:"text-gray-600 hover:text-[#1E293B] transition-colors duration-300",children:i.name},i.name):c.jsx("a",{href:i.href,className:"text-gray-600 hover:text-[#1E293B] transition-colors duration-300",children:i.name},i.name))}),c.jsx("button",{className:"md:hidden",onClick:()=>t(!e),"aria-label":"Toggle menu",children:e?c.jsx(Ox,{size:24}):c.jsx(hC,{size:24})})]}),e&&c.jsx("div",{className:"md:hidden absolute top-full left-0 right-0 bg-white/80 backdrop-blur-xl border-b border-gray-100 animate-fade-in",children:c.jsx("div",{className:"container mx-auto px-6 py-4",children:r.map(i=>i.href.startsWith("/")?c.jsx(ve,{to:i.href,className:"block py-2 text-gray-600 hover:text-[#1E293B] transition-colors duration-300",onClick:()=>t(!1),children:i.name},i.name):c.jsx("a",{href:i.href,className:"block py-2 text-gray-600 hover:text-[#1E293B] transition-colors duration-300",onClick:()=>t(!1),children:i.name},i.name))})})]})]})},wC=[{slug:"evolving-postgresql-chapter-1",frontmatter:{slug:"evolving-postgresql-chapter-1",title:"Chapter 1: The Price of Order",excerpt:"Learn about PostgreSQL's locking mechanisms and why naively applying constraints can bring your application to a halt.",date:"March 15, 2024",readTime:"12 min read",categories:["Database","PostgreSQL","DevOps"],icon:"Database",iconColor:"blue",isSeriesEntry:!0,seriesSlug:"evolving-postgresql-without-breaking-things",seriesTitle:"Evolving PostgreSQL Without Breaking the World",chapterTitle:"Chapter 1: The Price of Order",chapterNumber:1,previousChapter:"evolving-postgresql-prologue",previousChapterTitle:"Prologue: The Immutable and the Changing",nextChapter:"evolving-postgresql-chapter-2",nextChapterTitle:"Chapter 2: Parallel Evolution – Creating Indexes Concurrently"},content:`
 ## Chapter 1: The Price of Order
 
 PostgreSQL enforces its rules through a formidable mechanism: the **AccessExclusiveLock**. When modifying a table's schema, the database halts operations, preventing all writes, reads, and transactions until the change is complete.
@@ -219,7 +219,52 @@ ALTER TABLE users_user ADD CONSTRAINT users_email_unique UNIQUE(email);
 On a small table, this would be instant. On a table with millions of records, it could take minutes—or longer. During this time, all queries that depend on this table will queue up, waiting for the migration to finish. The application will freeze. Users will see timeouts. Customer support will flood with complaints. And all because we asked PostgreSQL to enforce a rule that was not there before.
 
 But we are not without options. There is a way to achieve order without bringing the system to its knees.
-`},{slug:"evolving-postgresql-chapter-3",frontmatter:{slug:"evolving-postgresql-chapter-3",title:"Chapter 3: The Challenge of Foreign Keys",excerpt:"Foreign keys enforce relationships but can be troublesome to add to existing tables. Learn how to safely implement them without disrupting your system.",date:"March 15, 2024",readTime:"12 min read",categories:["Database","PostgreSQL","DevOps"],icon:"Database",iconColor:"blue",isSeriesEntry:!0,seriesSlug:"evolving-postgresql-without-breaking-things",seriesTitle:"Evolving PostgreSQL Without Breaking the World",chapterTitle:"Chapter 3: The Challenge of Foreign Keys",chapterNumber:3,previousChapter:"evolving-postgresql-chapter-1",previousChapterTitle:"Chapter 1: The Price of Order",nextChapter:"evolving-postgresql-chapter-4",nextChapterTitle:"Chapter 4: The Burden of Bloat – Using pg_repack"},content:`
+`},{slug:"evolving-postgresql-chapter-2",frontmatter:{slug:"evolving-postgresql-chapter-2",title:"Chapter 2: Parallel Evolution – Creating Indexes Concurrently",excerpt:"Discover how to create indexes without locking your database, allowing reads and writes to continue while your constraints are built.",date:"March 15, 2024",readTime:"15 min read",categories:["Database","PostgreSQL","DevOps"],icon:"Database",iconColor:"blue",isSeriesEntry:!0,seriesSlug:"evolving-postgresql-without-breaking-things",seriesTitle:"Evolving PostgreSQL Without Breaking the World",chapterTitle:"Chapter 2: Parallel Evolution – Creating Indexes Concurrently",chapterNumber:2,previousChapter:"evolving-postgresql-chapter-1",previousChapterTitle:"Chapter 1: The Price of Order",nextChapter:"evolving-postgresql-chapter-3",nextChapterTitle:"Chapter 3: The Challenge of Foreign Keys"},content:`
+## Chapter 2: Parallel Evolution – Creating Indexes Concurrently
+
+In 2001, PostgreSQL introduced a new approach: **concurrent indexing**. Instead of freezing the system while building an index, it constructs it in the background.
+
+\`\`\`sql
+-- A safe approach: create a unique index without locking writes
+CREATE UNIQUE INDEX CONCURRENTLY users_email_idx ON users_user(email);
+\`\`\`
+
+This method allows us to build the index while the system remains live. Here's how it works:
+- **Snapshot phase:** PostgreSQL takes a static view of existing data.
+- **Incremental build:** It constructs the index while tracking new changes.
+- **Final validation:** It briefly locks the table to verify consistency before finalizing the index.
+
+It is not without cost—this method is slower, requiring twice as much disk space during the process. But it allows the system to breathe.
+
+### Applying This in Django
+
+Since Django's migration system does not natively support concurrent indexes, we must use a special approach:
+
+\`\`\`python
+# migrations/0002_safe_unique_email.py
+from django.db import migrations
+
+operations = [
+    migrations.SeparateDatabaseAndState(
+        database_operations=[
+            migrations.RunSQL(
+                "CREATE UNIQUE INDEX CONCURRENTLY users_email_uniq ON users_user(email);",
+                reverse_sql="DROP INDEX CONCURRENTLY users_email_uniq;"
+            )
+        ],
+        state_operations=[
+            migrations.AlterField(
+                model_name='user',
+                name='email',
+                field=models.EmailField(unique=True),
+            )
+        ]
+    ),
+]
+\`\`\`
+
+By separating the database operation from Django's model state, we ensure that the system does not attempt to enforce the constraint in a way that would trigger unnecessary locks.
+`},{slug:"evolving-postgresql-chapter-3",frontmatter:{slug:"evolving-postgresql-chapter-3",title:"Chapter 3: The Challenge of Foreign Keys",excerpt:"Foreign keys enforce relationships but can be troublesome to add to existing tables. Learn how to safely implement them without disrupting your system.",date:"March 15, 2024",readTime:"12 min read",categories:["Database","PostgreSQL","DevOps"],icon:"Database",iconColor:"blue",isSeriesEntry:!0,seriesSlug:"evolving-postgresql-without-breaking-things",seriesTitle:"Evolving PostgreSQL Without Breaking the World",chapterTitle:"Chapter 3: The Challenge of Foreign Keys",chapterNumber:3,previousChapter:"evolving-postgresql-chapter-2",previousChapterTitle:"Chapter 2: Parallel Evolution – Creating Indexes Concurrently",nextChapter:"evolving-postgresql-chapter-4",nextChapterTitle:"Chapter 4: The Burden of Bloat – Using pg_repack"},content:`
 ## Chapter 3: The Challenge of Foreign Keys
 
 Foreign keys are another enforcer of order, ensuring referential integrity. But adding them retroactively to an existing table can be devastating.
@@ -564,73 +609,6 @@ Our event-driven architecture includes:
 - Event sourcing for ticket transactions
 - CQRS pattern implementation
 - Real-time updates and notifications
-`},{slug:"evolving-postgresql-chapter-2",frontmatter:{},content:`
----slug: evolving-postgresql-chapter-2
-title: "Chapter 2: Parallel Evolution – Creating Indexes Concurrently"
-excerpt: Discover how to create indexes without locking your database, allowing reads and writes to continue while your constraints are built.
-date: March 15, 2024
-readTime: 15 min read
-categories:
-  - Database
-  - PostgreSQL
-  - DevOps
-icon: Database
-iconColor: blue
-isSeriesEntry: true
-seriesSlug: evolving-postgresql-without-breaking-things
-seriesTitle: Evolving PostgreSQL Without Breaking the World
-chapterTitle: "Chapter 2: Parallel Evolution – Creating Indexes Concurrently"
-chapterNumber: 2
-previousChapter: evolving-postgresql-chapter-1
-previousChapterTitle: "Chapter 1: The Price of Order"
-nextChapter: evolving-postgresql-chapter-3
-nextChapterTitle: "Chapter 3: The Challenge of Foreign Keys"
----
-
-## Chapter 2: Parallel Evolution – Creating Indexes Concurrently
-
-In 2001, PostgreSQL introduced a new approach: **concurrent indexing**. Instead of freezing the system while building an index, it constructs it in the background.
-
-\`\`\`sql
--- A safe approach: create a unique index without locking writes
-CREATE UNIQUE INDEX CONCURRENTLY users_email_idx ON users_user(email);
-\`\`\`
-
-This method allows us to build the index while the system remains live. Here's how it works:
-- **Snapshot phase:** PostgreSQL takes a static view of existing data.
-- **Incremental build:** It constructs the index while tracking new changes.
-- **Final validation:** It briefly locks the table to verify consistency before finalizing the index.
-
-It is not without cost—this method is slower, requiring twice as much disk space during the process. But it allows the system to breathe.
-
-### Applying This in Django
-
-Since Django's migration system does not natively support concurrent indexes, we must use a special approach:
-
-\`\`\`python
-# migrations/0002_safe_unique_email.py
-from django.db import migrations
-
-operations = [
-    migrations.SeparateDatabaseAndState(
-        database_operations=[
-            migrations.RunSQL(
-                "CREATE UNIQUE INDEX CONCURRENTLY users_email_uniq ON users_user(email);",
-                reverse_sql="DROP INDEX CONCURRENTLY users_email_uniq;"
-            )
-        ],
-        state_operations=[
-            migrations.AlterField(
-                model_name='user',
-                name='email',
-                field=models.EmailField(unique=True),
-            )
-        ]
-    ),
-]
-\`\`\`
-
-By separating the database operation from Django's model state, we ensure that the system does not attempt to enforce the constraint in a way that would trigger unnecessary locks.
 `}];class TC{constructor(){z(this,"blogData");this.blogData=wC}getBlogSlugs(){return this.blogData.map(t=>t.slug)}async getBlogContent(t){const n=this.blogData.find(r=>r.slug===t);return n?{frontmatter:n.frontmatter,content:n.content}:(console.error(`Blog post with slug: ${t} not found`),null)}getSeriesEntries(t){return this.blogData.filter(n=>n.frontmatter.isSeriesEntry&&n.frontmatter.seriesSlug===t).map(n=>({slug:n.slug,frontmatter:n.frontmatter,content:n.content})).sort((n,r)=>{const a=n.frontmatter.chapterNumber??999,i=r.frontmatter.chapterNumber??999;return a-i})}}function xC(e,t){if(e==null)return{};var n={};for(var r in e)if({}.hasOwnProperty.call(e,r)){if(t.includes(r))continue;n[r]=e[r]}return n}function RC(e,t){if(e==null)return{};var n,r,a=xC(e,t);if(Object.getOwnPropertySymbols){var i=Object.getOwnPropertySymbols(e);for(r=0;r<i.length;r++)n=i[r],t.includes(n)||{}.propertyIsEnumerable.call(e,n)&&(a[n]=e[n])}return a}function og(e,t){(t==null||t>e.length)&&(t=e.length);for(var n=0,r=Array(t);n<t;n++)r[n]=e[n];return r}function _C(e){if(Array.isArray(e))return og(e)}function kC(e){if(typeof Symbol<"u"&&e[Symbol.iterator]!=null||e["@@iterator"]!=null)return Array.from(e)}function NC(e,t){if(e){if(typeof e=="string")return og(e,t);var n={}.toString.call(e).slice(8,-1);return n==="Object"&&e.constructor&&(n=e.constructor.name),n==="Map"||n==="Set"?Array.from(e):n==="Arguments"||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)?og(e,t):void 0}}function AC(){throw new TypeError(`Invalid attempt to spread non-iterable instance.
 In order to be iterable, non-array objects must have a [Symbol.iterator]() method.`)}function CC(e){return _C(e)||kC(e)||NC(e)||AC()}function _a(e){"@babel/helpers - typeof";return _a=typeof Symbol=="function"&&typeof Symbol.iterator=="symbol"?function(t){return typeof t}:function(t){return t&&typeof Symbol=="function"&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},_a(e)}function IC(e,t){if(_a(e)!="object"||!e)return e;var n=e[Symbol.toPrimitive];if(n!==void 0){var r=n.call(e,t||"default");if(_a(r)!="object")return r;throw new TypeError("@@toPrimitive must return a primitive value.")}return(t==="string"?String:Number)(e)}function OC(e){var t=IC(e,"string");return _a(t)=="symbol"?t:t+""}function Lx(e,t,n){return(t=OC(t))in e?Object.defineProperty(e,t,{value:n,enumerable:!0,configurable:!0,writable:!0}):e[t]=n,e}function sg(){return sg=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)({}).hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},sg.apply(null,arguments)}function Rh(e,t){var n=Object.keys(e);if(Object.getOwnPropertySymbols){var r=Object.getOwnPropertySymbols(e);t&&(r=r.filter(function(a){return Object.getOwnPropertyDescriptor(e,a).enumerable})),n.push.apply(n,r)}return n}function Qn(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]!=null?arguments[t]:{};t%2?Rh(Object(n),!0).forEach(function(r){Lx(e,r,n[r])}):Object.getOwnPropertyDescriptors?Object.defineProperties(e,Object.getOwnPropertyDescriptors(n)):Rh(Object(n)).forEach(function(r){Object.defineProperty(e,r,Object.getOwnPropertyDescriptor(n,r))})}return e}function LC(e){var t=e.length;if(t===0||t===1)return e;if(t===2)return[e[0],e[1],"".concat(e[0],".").concat(e[1]),"".concat(e[1],".").concat(e[0])];if(t===3)return[e[0],e[1],e[2],"".concat(e[0],".").concat(e[1]),"".concat(e[0],".").concat(e[2]),"".concat(e[1],".").concat(e[0]),"".concat(e[1],".").concat(e[2]),"".concat(e[2],".").concat(e[0]),"".concat(e[2],".").concat(e[1]),"".concat(e[0],".").concat(e[1],".").concat(e[2]),"".concat(e[0],".").concat(e[2],".").concat(e[1]),"".concat(e[1],".").concat(e[0],".").concat(e[2]),"".concat(e[1],".").concat(e[2],".").concat(e[0]),"".concat(e[2],".").concat(e[0],".").concat(e[1]),"".concat(e[2],".").concat(e[1],".").concat(e[0])];if(t>=4)return[e[0],e[1],e[2],e[3],"".concat(e[0],".").concat(e[1]),"".concat(e[0],".").concat(e[2]),"".concat(e[0],".").concat(e[3]),"".concat(e[1],".").concat(e[0]),"".concat(e[1],".").concat(e[2]),"".concat(e[1],".").concat(e[3]),"".concat(e[2],".").concat(e[0]),"".concat(e[2],".").concat(e[1]),"".concat(e[2],".").concat(e[3]),"".concat(e[3],".").concat(e[0]),"".concat(e[3],".").concat(e[1]),"".concat(e[3],".").concat(e[2]),"".concat(e[0],".").concat(e[1],".").concat(e[2]),"".concat(e[0],".").concat(e[1],".").concat(e[3]),"".concat(e[0],".").concat(e[2],".").concat(e[1]),"".concat(e[0],".").concat(e[2],".").concat(e[3]),"".concat(e[0],".").concat(e[3],".").concat(e[1]),"".concat(e[0],".").concat(e[3],".").concat(e[2]),"".concat(e[1],".").concat(e[0],".").concat(e[2]),"".concat(e[1],".").concat(e[0],".").concat(e[3]),"".concat(e[1],".").concat(e[2],".").concat(e[0]),"".concat(e[1],".").concat(e[2],".").concat(e[3]),"".concat(e[1],".").concat(e[3],".").concat(e[0]),"".concat(e[1],".").concat(e[3],".").concat(e[2]),"".concat(e[2],".").concat(e[0],".").concat(e[1]),"".concat(e[2],".").concat(e[0],".").concat(e[3]),"".concat(e[2],".").concat(e[1],".").concat(e[0]),"".concat(e[2],".").concat(e[1],".").concat(e[3]),"".concat(e[2],".").concat(e[3],".").concat(e[0]),"".concat(e[2],".").concat(e[3],".").concat(e[1]),"".concat(e[3],".").concat(e[0],".").concat(e[1]),"".concat(e[3],".").concat(e[0],".").concat(e[2]),"".concat(e[3],".").concat(e[1],".").concat(e[0]),"".concat(e[3],".").concat(e[1],".").concat(e[2]),"".concat(e[3],".").concat(e[2],".").concat(e[0]),"".concat(e[3],".").concat(e[2],".").concat(e[1]),"".concat(e[0],".").concat(e[1],".").concat(e[2],".").concat(e[3]),"".concat(e[0],".").concat(e[1],".").concat(e[3],".").concat(e[2]),"".concat(e[0],".").concat(e[2],".").concat(e[1],".").concat(e[3]),"".concat(e[0],".").concat(e[2],".").concat(e[3],".").concat(e[1]),"".concat(e[0],".").concat(e[3],".").concat(e[1],".").concat(e[2]),"".concat(e[0],".").concat(e[3],".").concat(e[2],".").concat(e[1]),"".concat(e[1],".").concat(e[0],".").concat(e[2],".").concat(e[3]),"".concat(e[1],".").concat(e[0],".").concat(e[3],".").concat(e[2]),"".concat(e[1],".").concat(e[2],".").concat(e[0],".").concat(e[3]),"".concat(e[1],".").concat(e[2],".").concat(e[3],".").concat(e[0]),"".concat(e[1],".").concat(e[3],".").concat(e[0],".").concat(e[2]),"".concat(e[1],".").concat(e[3],".").concat(e[2],".").concat(e[0]),"".concat(e[2],".").concat(e[0],".").concat(e[1],".").concat(e[3]),"".concat(e[2],".").concat(e[0],".").concat(e[3],".").concat(e[1]),"".concat(e[2],".").concat(e[1],".").concat(e[0],".").concat(e[3]),"".concat(e[2],".").concat(e[1],".").concat(e[3],".").concat(e[0]),"".concat(e[2],".").concat(e[3],".").concat(e[0],".").concat(e[1]),"".concat(e[2],".").concat(e[3],".").concat(e[1],".").concat(e[0]),"".concat(e[3],".").concat(e[0],".").concat(e[1],".").concat(e[2]),"".concat(e[3],".").concat(e[0],".").concat(e[2],".").concat(e[1]),"".concat(e[3],".").concat(e[1],".").concat(e[0],".").concat(e[2]),"".concat(e[3],".").concat(e[1],".").concat(e[2],".").concat(e[0]),"".concat(e[3],".").concat(e[2],".").concat(e[0],".").concat(e[1]),"".concat(e[3],".").concat(e[2],".").concat(e[1],".").concat(e[0])]}var rs={};function DC(e){if(e.length===0||e.length===1)return e;var t=e.join(".");return rs[t]||(rs[t]=LC(e)),rs[t]}function MC(e){var t=arguments.length>1&&arguments[1]!==void 0?arguments[1]:{},n=arguments.length>2?arguments[2]:void 0,r=e.filter(function(i){return i!=="token"}),a=DC(r);return a.reduce(function(i,o){return Qn(Qn({},i),n[o])},t)}function _h(e){return e.join(" ")}function PC(e,t){var n=0;return function(r){return n+=1,r.map(function(a,i){return Dx({node:a,stylesheet:e,useInlineStyles:t,key:"code-segment-".concat(n,"-").concat(i)})})}}function Dx(e){var t=e.node,n=e.stylesheet,r=e.style,a=r===void 0?{}:r,i=e.useInlineStyles,o=e.key,s=t.properties,l=t.type,u=t.tagName,d=t.value;if(l==="text")return d;if(u){var p=PC(n,i),g;if(!i)g=Qn(Qn({},s),{},{className:_h(s.className)});else{var b=Object.keys(n).reduce(function(h,f){return f.split(".").forEach(function(m){h.includes(m)||h.push(m)}),h},[]),E=s.className&&s.className.includes("token")?["token"]:[],y=s.className&&E.concat(s.className.filter(function(h){return!b.includes(h)}));g=Qn(Qn({},s),{},{className:_h(y)||void 0,style:MC(s.className,Object.assign({},s.style,a),n)})}var T=p(t.children);return we.createElement(u,sg({key:o},g),T)}}const FC=function(e,t){var n=e.listLanguages();return n.indexOf(t)!==-1};var UC=["language","children","style","customStyle","codeTagProps","useInlineStyles","showLineNumbers","showInlineLineNumbers","startingLineNumber","lineNumberContainerStyle","lineNumberStyle","wrapLines","wrapLongLines","lineProps","renderer","PreTag","CodeTag","code","astGenerator"];function kh(e,t){var n=Object.keys(e);if(Object.getOwnPropertySymbols){var r=Object.getOwnPropertySymbols(e);t&&(r=r.filter(function(a){return Object.getOwnPropertyDescriptor(e,a).enumerable})),n.push.apply(n,r)}return n}function Et(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]!=null?arguments[t]:{};t%2?kh(Object(n),!0).forEach(function(r){Lx(e,r,n[r])}):Object.getOwnPropertyDescriptors?Object.defineProperties(e,Object.getOwnPropertyDescriptors(n)):kh(Object(n)).forEach(function(r){Object.defineProperty(e,r,Object.getOwnPropertyDescriptor(n,r))})}return e}var BC=/\n/g;function jC(e){return e.match(BC)}function $C(e){var t=e.lines,n=e.startingLineNumber,r=e.style;return t.map(function(a,i){var o=i+n;return we.createElement("span",{key:"line-".concat(i),className:"react-syntax-highlighter-line-number",style:typeof r=="function"?r(o):r},"".concat(o,`
 `))})}function GC(e){var t=e.codeString,n=e.codeStyle,r=e.containerStyle,a=r===void 0?{float:"left",paddingRight:"10px"}:r,i=e.numberStyle,o=i===void 0?{}:i,s=e.startingLineNumber;return we.createElement("code",{style:Object.assign({},n,a)},$C({lines:t.replace(/\n$/,"").split(`
