@@ -1,4 +1,4 @@
-import { BlogRepository } from '@/apps/blog/repository/BlogRepository';
+import { BlogRepository } from '@/apps/blog/domain/repositories/BlogRepository';
 import { BlogPost } from "@/apps/blog";
 import { ContentProcessorService } from "@/apps/blog/domain/services/ContentProcessorService.tsx";
 import { IconService } from "@/apps/blog/domain/services/IconService.ts";
@@ -22,7 +22,7 @@ export class BlogController {
    */
   public async loadBlogPost(slug: string): Promise<BlogPost | null> {
     try {
-      // Get pre-processed blog content from repository
+      // Get pre-processed blog data from repositories
       const blogData = await this.repository.getBlogContent(slug);
 
       if (!blogData) {

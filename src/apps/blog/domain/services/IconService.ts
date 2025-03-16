@@ -2,7 +2,7 @@ import React from "react";
 import { Database, Server, Code } from "lucide-react";
 
 /**
- * Service responsible for handling icons in the application.
+ * Service responsible for handling icons
  */
 export class IconService {
   /**

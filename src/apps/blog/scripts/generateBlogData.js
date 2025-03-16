@@ -10,8 +10,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Path configurations
-const CONTENT_DIR = path.join(__dirname, '../content');
-const OUTPUT_FILE = path.join(__dirname, '../content/json/blogData.json');
+const CONTENT_DIR = path.join(__dirname, '../data');
+const OUTPUT_FILE = path.join(__dirname, '../data/json/blogData.json');
 
 // Ensure the data directory exists
 if (!fs.existsSync(path.dirname(OUTPUT_FILE))) {

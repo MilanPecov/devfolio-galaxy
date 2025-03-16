@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { MarkdownService } from "@/apps/blog/domain/services/MarkdownService.ts";
 
 /**
- * Service responsible for processing blog content and converting it to React components
+ * Service responsible for processing blog data and converting it to React components
  */
 export class ContentProcessorService {
   private markdownService: MarkdownService;
@@ -17,7 +17,7 @@ export class ContentProcessorService {
   }
 
   /**
-   * Main public method to process blog post content from markdown to React components
+   * Main public method to process blog post data from markdown to React components
    */
   public processContent(content: string): React.ReactNode[] {
     if (!content) return [];

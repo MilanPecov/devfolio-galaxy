@@ -1,5 +1,5 @@
 
-import blogData from '../content/json/blogData.json';
+import blogData from '@/apps/blog/data/json/blogData.json';
 
 interface BlogDataEntry {
   slug: string;
@@ -8,7 +8,7 @@ interface BlogDataEntry {
 }
 
 /**
- * Repository responsible for fetching blog content
+ * Repository responsible for fetching blog data
  */
 export class BlogRepository {
   private blogData: BlogDataEntry[];
@@ -26,7 +26,7 @@ export class BlogRepository {
   }
 
   /**
-   * Get blog content by slug
+   * Get blog data by slug
    */
   public async getBlogContent(slug: string): Promise<{ frontmatter: Record<string, any>, content: string } | null> {
     const entry = this.blogData.find(entry => entry.slug === slug);
