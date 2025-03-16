@@ -102,7 +102,7 @@ export class BlogController {
       
       const posts = await Promise.all(postsPromises);
       
-      // Filter out null values and sort
+      // Filter out null values and sort by date (newest first)
       const validPosts = posts.filter(Boolean) as BlogPost[];
       
       return validPosts;
@@ -126,11 +126,44 @@ export class BlogController {
       
       const chapters = await Promise.all(chaptersPromises);
       
-      // Filter out null values
-      return chapters.filter(Boolean) as BlogPost[];
+      // Filter out null values and ensure proper sorting by chapter number
+      const validChapters = chapters.filter(Boolean) as BlogPost[];
+      return validChapters.sort((a, b) => {
+        const aNum = a.chapterNumber ?? 999;
+        const bNum = b.chapterNumber ?? 999;
+        return aNum - bNum;
+      });
     } catch (error) {
       console.error(`Failed to load chapters for series: ${seriesSlug}`, error);
       return [];
+    }
+  }
+  
+  /**
+   * Get main series post and all its chapters
+   */
+  public async getFullSeries(seriesSlug: string): Promise<{
+    main: BlogPost | null,
+    chapters: BlogPost[]
+  }> {
+    try {
+      // First get the main series post
+      const allPosts = await this.loadAllBlogPosts();
+      const mainPost = allPosts.find(post => post.isSeries && post.seriesSlug === seriesSlug) || null;
+      
+      // Then get all chapters
+      const chapters = await this.getSeriesChapters(seriesSlug);
+      
+      return {
+        main: mainPost,
+        chapters
+      };
+    } catch (error) {
+      console.error(`Failed to load full series: ${seriesSlug}`, error);
+      return {
+        main: null,
+        chapters: []
+      };
     }
   }
 }

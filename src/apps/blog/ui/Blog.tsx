@@ -4,14 +4,17 @@ import { useState, useEffect } from "react";
 import { blogController, type BlogPost } from "@/apps/blog";
 import { Button } from "@/shared/components/ui/button.tsx";
 import BlogList from "@/apps/blog/ui/BlogList.tsx";
+import FeaturedSeries from "@/apps/blog/ui/components/FeaturedSeries.tsx";
+import { ArrowRight } from "lucide-react";
 
 const Blog = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [featuredSeries, setFeaturedSeries] = useState<{main: BlogPost, entries: BlogPost[]}[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Function to fetch all blog posts
+    // Function to fetch all blog posts and organize series
     const fetchPosts = async () => {
       try {
         setLoading(true);
@@ -19,7 +22,25 @@ const Blog = () => {
         
         // Check if posts were successfully loaded
         if (allPosts && allPosts.length > 0) {
-          setPosts(allPosts);
+          // Filter out series main posts
+          const regularPosts = allPosts.filter(post => !post.isSeries && !post.isSeriesEntry);
+          
+          // Get series main posts
+          const seriesMainPosts = allPosts.filter(post => post.isSeries);
+          
+          // Organize series with their entries
+          const seriesWithEntries = await Promise.all(
+            seriesMainPosts.map(async (mainPost) => {
+              if (mainPost.seriesSlug) {
+                const entries = await blogController.getSeriesChapters(mainPost.seriesSlug);
+                return { main: mainPost, entries };
+              }
+              return { main: mainPost, entries: [] };
+            })
+          );
+          
+          setFeaturedSeries(seriesWithEntries);
+          setPosts(regularPosts);
         } else {
           // Handle case where no posts are returned
           setPosts([]);
@@ -61,16 +82,44 @@ const Blog = () => {
           </p>
         </div>
 
-        {/* Blog posts */}
+        {/* Blog content */}
         <div className="max-w-4xl mx-auto">
-          <BlogList
-            posts={posts}
-            loading={loading}
-            error={error}
-          />
+          {/* Featured Series component */}
+          {featuredSeries.length > 0 && (
+            <FeaturedSeries series={featuredSeries} />
+          )}
+          
+          {/* Regular Blog Posts */}
+          {posts.length > 0 && (
+            <div className="mt-12">
+              <h3 className="text-xl font-semibold text-slate-800 mb-6">Latest Articles</h3>
+              <BlogList
+                posts={posts}
+                loading={loading}
+                error={error}
+              />
+            </div>
+          )}
+          
+          {/* Loading and error states */}
+          {loading && !posts.length && !featuredSeries.length && (
+            <div className="flex justify-center py-12">
+              <div className="animate-pulse text-center">
+                <p className="text-gray-500">Loading blog posts...</p>
+              </div>
+            </div>
+          )}
+          
+          {error && !loading && !posts.length && !featuredSeries.length && (
+            <div className="flex justify-center py-12">
+              <div className="text-center">
+                <p className="text-red-500">{error}</p>
+              </div>
+            </div>
+          )}
           
           {/* Link to blog page if there are posts */}
-          {posts.length > 0 && (
+          {(posts.length > 0 || featuredSeries.length > 0) && (
             <div className="mt-12 text-center">
               <Button asChild variant="outline">
                 <Link to="/blog">View All Articles</Link>
