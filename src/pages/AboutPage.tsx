@@ -1,6 +1,6 @@
 
 import { About } from "@/apps/about";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/shared/components/Navbar";
 
 const AboutPage = () => {
   return (

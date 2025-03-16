@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/shared/components/Navbar";
 import { useParams, Link } from "react-router-dom";
 import { blogController, type BlogPost as BlogPostType } from "@/apps/blog";
 import {
@@ -9,7 +9,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+} from "@/shared/components/ui/breadcrumb";
 
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();

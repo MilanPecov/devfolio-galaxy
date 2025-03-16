@@ -2,7 +2,7 @@
 import { Skills } from "@/apps/about";
 import { Link } from "react-router-dom";
 import { BookOpen, Github, Linkedin, Mail } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/components/ui/button";
 import { Contact } from "@/apps/landing";
 
 const About = () => {

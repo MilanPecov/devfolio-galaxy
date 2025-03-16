@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { blogController, type BlogPost } from "@/apps/blog";
-import { Button } from "@/components/ui/button.tsx";
+import { Button } from "@/shared/components/ui/button.tsx";
 import BlogList from "@/apps/blog/ui/BlogList.tsx";
 
 const Blog = () => {

@@ -1,3 +1,4 @@
+"use client";
 
 import { ArrowRight, BrainCircuit, Code, Database, Server } from "lucide-react";
 import { useTypewriter } from "@/apps/landing/hooks/useTypewriter.tsx";
@@ -75,6 +76,7 @@ const Hero = () => {
           <div className="max-w-xl mx-auto text-center text-gray-600">
             <p>
               Passionate about clean code, scalable architecture, and driving innovation.
+              {/*When I'm not leading teams or crafting robust systems, you'll find me jamming on my guitar or strategizing my next chess move.*/}
             </p>
           </div>
 
