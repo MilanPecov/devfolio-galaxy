@@ -108,7 +108,11 @@ const BlogPost = () => {
             post={post} 
             seriesChapters={post.isSeries ? seriesChapters : []} 
           />
-          {!post.isSeries && <ChapterNavigation post={post} />}
+          
+          {/* Only show chapter navigation for series entries, not series main posts */}
+          {post.isSeriesEntry && <ChapterNavigation post={post} />}
+          
+          {/* Only show series chapter list for series main posts */}
           {post.isSeries && (
             <SeriesChapterList 
               post={post} 

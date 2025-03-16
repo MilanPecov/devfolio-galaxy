@@ -43,6 +43,10 @@ export class BlogController {
         raw: JSON.stringify(frontmatter)
       });
 
+      // Convert string "true"/"false" to actual boolean values
+      const isSeries = frontmatter.isSeries === true || frontmatter.isSeries === "true";
+      const isSeriesEntry = frontmatter.isSeriesEntry === true || frontmatter.isSeriesEntry === "true";
+
       // Map the parsed data to our BlogPost interface with validation
       const blogPost: BlogPost = {
         slug: frontmatter.slug || slug,
@@ -54,9 +58,9 @@ export class BlogController {
         icon: this.iconService.getIcon(frontmatter.icon || 'Code', frontmatter.iconColor || 'blue'),
         content: this.contentProcessor.processContent(content || ''),
         
-        // Series-related properties - ensure proper type conversion from string to boolean
-        isSeries: frontmatter.isSeries === true,
-        isSeriesEntry: frontmatter.isSeriesEntry === true,
+        // Series-related properties using the converted boolean values
+        isSeries,
+        isSeriesEntry,
         seriesSlug: frontmatter.seriesSlug,
         seriesTitle: frontmatter.seriesTitle,
         chapterTitle: frontmatter.chapterTitle,
