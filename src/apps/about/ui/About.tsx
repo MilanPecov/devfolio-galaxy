@@ -1,7 +1,7 @@
 
 import { Skills } from "@/apps/about";
 import { Link } from "react-router-dom";
-import { BookOpen, GitHub, Linkedin, Mail } from "lucide-react";
+import { BookOpen, Github, Linkedin, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const About = () => {
@@ -29,7 +29,7 @@ const About = () => {
             <div className="flex justify-center space-x-4">
               <Button variant="outline" size="icon" asChild>
                 <a href="https://github.com" target="_blank" rel="noopener noreferrer">
-                  <GitHub className="h-5 w-5" />
+                  <Github className="h-5 w-5" />
                 </a>
               </Button>
               <Button variant="outline" size="icon" asChild>
