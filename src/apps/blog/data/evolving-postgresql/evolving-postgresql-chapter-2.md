@@ -18,7 +18,7 @@ chapterNumber: 2
 previousChapter: evolving-postgresql-chapter-1
 previousChapterTitle: "Chapter 1: Whispers to the Machine"
 nextChapter: evolving-postgresql-chapter-3
-nextChapterTitle: "Chapter 3: The Challenge of Foreign Keys"
+nextChapterTitle: "Chapter 3: The Vows That Bind"
 ---
  
 ## —On Timelines, Shadows, and Silent Promises  
