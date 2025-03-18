@@ -7,7 +7,7 @@ import { exec } from 'child_process';
 
 // Detect GitHub Pages Deployment
 const isGitHubPages = process.env.GITHUB_ACTIONS === "true";
-const BASE_URL = isGitHubPages ? "/devfolio-galaxy/" : "/";
+const BASE_URL = isGitHubPages ? "/weblog/" : "/";
 
 /**
  * Custom Vite plugin to generate blog data before the build process

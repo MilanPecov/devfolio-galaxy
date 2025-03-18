@@ -9,7 +9,7 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "gh-pages -d dist -r https://github.com/MilanPecov/devfolio-galaxy.git"
+    "deploy": "gh-pages -d dist -r https://github.com/MilanPecov/weblog.git"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

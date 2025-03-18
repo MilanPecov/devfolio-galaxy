@@ -8,7 +8,7 @@ import AboutPage from "@/pages/AboutPage";
 import NotFound from "@/pages/NotFound";
 import Index from "@/pages/Index";
 
-const BASENAME = import.meta.env.MODE === "production" ? "/devfolio-galaxy" : "/";
+const BASENAME = import.meta.env.MODE === "production" ? "/weblog" : "/";
 
 function App() {
   return (
