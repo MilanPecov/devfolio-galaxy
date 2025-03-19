@@ -54,9 +54,9 @@ Tools exist to serve your core. Choose them like a chef selects knives: sharp, r
 
 **The Workhorses:**
 
-- **Orchestration:** Managed infrastructure that scales silently. No DevOps heroics.
+- **Orchestration:** Managed infrastructure that auto-scales silently.
 - **Automation:** Pipelines that test, deploy, and monitor while you focus on your kingdom.
-- **Observability:** Alerts that matter—only when revenue is at risk.
+- **Observability:** Trace everything. Alert only when it hits what matters—revenue, experience, or customer trust.
 
 > These tools aren’t “best in class.” They’re “best for focus.” They handle the mundane so you can think bigger.
 
