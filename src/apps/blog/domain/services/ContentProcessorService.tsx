@@ -149,21 +149,44 @@ export class ContentProcessorService {
    * Process lists (unordered lists)
    */
   private processList(element: Element, index: number): React.ReactNode {
+    // Check if this list is nested by seeing if its parent is an LI or UL
+    const isNestedList =
+        element.parentElement?.tagName === 'LI' ||
+        element.parentElement?.tagName === 'UL';
+
     const listItems: React.ReactNode[] = [];
-    element.querySelectorAll('li').forEach((li, liIndex) => {
-      // Process child nodes of list items to handle links and other elements
-      const childNodes: React.ReactNode[] = [];
-      li.childNodes.forEach((child, childIndex) => {
-        const processedChild = this.processNode(child, childIndex);
-        if (processedChild) {
-          childNodes.push(processedChild);
-        }
-      });
-      
-      listItems.push(<li key={liIndex} className="text-left">{childNodes.length > 0 ? childNodes : li.textContent}</li>);
+
+    // Process only direct child <li> elements
+    Array.from(element.children).forEach((child, liIndex) => {
+      if (child.tagName === 'LI') {
+        const childNodes: React.ReactNode[] = [];
+        child.childNodes.forEach((node, childIndex) => {
+          const processedChild = this.processNode(node, childIndex);
+          if (processedChild) {
+            childNodes.push(processedChild);
+          }
+        });
+
+        listItems.push(
+            <li key={liIndex} className="text-left">
+              {childNodes.length > 0 ? childNodes : child.textContent}
+            </li>
+        );
+      }
     });
-    return <ul key={index} className="list-disc pl-5 my-4 text-left">{listItems}</ul>;
+
+    // If nested, remove the top/bottom margin. If top-level, keep your usual spacing.
+    const ulClassName = isNestedList
+        ? "list-disc pl-5 text-left"  // no my-4
+        : "list-disc pl-5 my-4 text-left";
+
+    return (
+        <ul key={index} className={ulClassName}>
+          {listItems}
+        </ul>
+    );
   }
+
 
   /**
    * Process links with special handling for external links
