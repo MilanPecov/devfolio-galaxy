@@ -87,7 +87,7 @@ export const FeaturedSeries = ({ series = [] }: FeaturedSeriesProps) => {
                   </div>
                   
                   {/* Series chapters */}
-                  <div className="space-y-4">
+                  <div className="space-y-4 max-w-xl mx-auto">
                     <h3 className="font-medium text-slate-700">
                       Chapters in this series:
                     </h3>
@@ -101,7 +101,7 @@ export const FeaturedSeries = ({ series = [] }: FeaturedSeriesProps) => {
                           <div className="flex justify-between items-center">
                             <div>
                               <p className="text-sm font-medium text-slate-900 group-hover:text-blue-700 transition-colors">
-                                {entry.chapterNumber === 0 ? 'Prologue' : `Chapter ${entry.chapterNumber}`}: {entry.chapterTitle || entry.title}
+                                {entry.chapterTitle || entry.title}
                               </p>
                               <p className="text-xs text-slate-500 mt-1">{entry.readTime}</p>
                             </div>
@@ -109,7 +109,7 @@ export const FeaturedSeries = ({ series = [] }: FeaturedSeriesProps) => {
                           </div>
                         </Link>
                       ))}
-                      
+
                       {item.entries.length > 3 && (
                         <Link
                           to={`/blog/${item.main.slug}`}
