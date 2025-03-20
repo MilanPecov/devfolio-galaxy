@@ -72,61 +72,80 @@ const Hero = () => {
             </p>
           </div>
 
-          {/* Terminal-Like Interface */}
+          {/* Terminal-Like Interface - Improved for realism */}
           <div
             className="
               text-sm
               sm:text-base
-              text-gray-600
+              text-gray-200
               max-w-2xl
               mx-auto
               leading-relaxed
-              bg-gray-950/5
+              bg-[#222222]
               rounded-lg
               p-4
               sm:p-6
               font-mono
               min-h-[180px]    /* Enough height to prevent layout jump */
-              shadow-sm
+              shadow-md
+              border
+              border-gray-700
+              relative
+              overflow-hidden
             "
           >
-            {/* "locate" command */}
-            <div className="flex items-center gap-2 text-left mb-2">
-              <span className="text-green-600">milan@home</span>
-              <span className="text-gray-500">:~$</span>
-              <span className="text-indigo-600">locate</span>
-            </div>
-            <div className="pl-8 text-left">Calgary, Canada</div>
-
-            {/* "ls" command for roles */}
-            <div className="flex items-center gap-2 text-left mt-4 mb-2">
-              <span className="text-green-600">milan@home</span>
-              <span className="text-gray-500">:~$</span>
-              <span className="text-indigo-600 break-words">
-                ls -la /home/milan/roles
-              </span>
+            {/* Terminal header */}
+            <div className="absolute top-0 left-0 right-0 h-6 bg-[#333333] flex items-center px-2 border-b border-gray-700">
+              <div className="flex gap-1.5 items-center">
+                <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
+                <div className="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
+                <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+              </div>
+              <div className="text-xs text-gray-400 absolute left-1/2 transform -translate-x-1/2">
+                milan-terminal
+              </div>
             </div>
 
-            <div className="pl-8 text-left min-h-[80px] whitespace-pre-line break-words">
-              {displayText}
-              {showCursor ? (
-                <span className="inline-block w-1 h-5 ml-1 bg-indigo-400 animate-pulse" />
-              ) : (
-                // Always reserve space with a hidden element when typing is complete.
-                <span
-                  className="inline-block w-1 h-5 ml-1"
-                  style={{ visibility: "hidden" }}
-                />
+            {/* Terminal content - with added padding for the header */}
+            <div className="pt-4">
+              {/* "locate" command */}
+              <div className="flex items-center gap-2 text-left mb-2">
+                <span className="text-green-400">milan@home</span>
+                <span className="text-gray-400">:~$</span>
+                <span className="text-blue-300">locate</span>
+              </div>
+              <div className="pl-8 text-left">Calgary, Canada</div>
+
+              {/* "ls" command for roles */}
+              <div className="flex items-center gap-2 text-left mt-4 mb-2">
+                <span className="text-green-400">milan@home</span>
+                <span className="text-gray-400">:~$</span>
+                <span className="text-blue-300 break-words">
+                  ls -la /home/milan/roles
+                </span>
+              </div>
+
+              <div className="pl-8 text-left min-h-[80px] whitespace-pre-line break-words">
+                {displayText}
+                {showCursor ? (
+                  <span className="inline-block w-1 h-5 ml-1 bg-blue-400 animate-pulse" />
+                ) : (
+                  // Always reserve space with a hidden element when typing is complete.
+                  <span
+                    className="inline-block w-1 h-5 ml-1"
+                    style={{ visibility: "hidden" }}
+                  />
+                )}
+              </div>
+
+              {/* Final prompt rendered after the typewriter finishes */}
+              {!showCursor && (
+                <div className="flex items-center gap-2 text-left mt-2">
+                  <span className="text-green-400">milan@home</span>
+                  <span className="text-gray-400">:~$</span>
+                </div>
               )}
             </div>
-
-            {/* Final prompt rendered after the typewriter finishes */}
-            {!showCursor && (
-              <div className="flex items-center gap-2 text-left mt-2">
-                <span className="text-green-600">milan@home</span>
-                <span className="text-gray-500">:~$</span>
-              </div>
-            )}
           </div>
 
           {/* Personal Note */}
