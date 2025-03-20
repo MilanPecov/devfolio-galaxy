@@ -1056,41 +1056,48 @@ drwxr--r--  Tech Lead
 drwxrwxrwx  Founding Engineer
 dr--r--r--  Technical Mentor & Advisor`,30);return u.jsxs("section",{className:`
         relative
-        min-h-screen       /* Allows scrolling if content is taller than screen */
+        min-h-screen
         flex flex-col
         items-center
         justify-center
-        py-8               /* Adequate top/bottom padding on mobile */
+        py-8
         sm:py-20
         overflow-hidden
-      `,children:[u.jsx("div",{className:"absolute inset-0 bg-gradient-to-b from-gray-50 to-white pointer-events-none z-0"}),u.jsx(So,{className:"hidden sm:block absolute top-20 left-10 text-indigo-500 w-24 h-24 rotate-12 opacity-20 z-10"}),u.jsx(Eo,{className:"hidden sm:block absolute bottom-20 right-10 text-indigo-500 w-24 h-24 -rotate-12 opacity-20 z-10"}),u.jsx(vr,{className:"hidden sm:block absolute top-40 right-20 text-indigo-500 w-16 h-16 rotate-45 opacity-15 z-10"}),u.jsx(Tf,{className:"hidden sm:block absolute bottom-40 left-20 text-indigo-500 w-20 h-20 -rotate-45 opacity-15 z-10"}),u.jsx("div",{className:`
+        bg-[#0F0F11]
+        text-slate-200
+      `,children:[u.jsx("div",{className:"absolute inset-0 bg-[linear-gradient(rgba(36,36,36,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(36,36,36,0.2)_1px,transparent_1px)] bg-[size:40px_40px] opacity-70 z-0"}),u.jsx("div",{className:"absolute inset-0 bg-gradient-to-b from-[#0F0F11] via-[#0F0F11]/95 to-[#12121a] pointer-events-none z-0"}),u.jsx("div",{className:"absolute top-1/3 -left-32 w-96 h-96 bg-indigo-600/20 rounded-full blur-[100px] z-0"}),u.jsx("div",{className:"absolute bottom-1/3 -right-32 w-96 h-96 bg-blue-600/20 rounded-full blur-[100px] z-0"}),u.jsx(So,{className:"hidden sm:block absolute top-20 left-10 text-indigo-400/30 w-24 h-24 rotate-12 z-10"}),u.jsx(Eo,{className:"hidden sm:block absolute bottom-20 right-10 text-blue-400/30 w-24 h-24 -rotate-12 z-10"}),u.jsx(vr,{className:"hidden sm:block absolute top-40 right-20 text-cyan-400/20 w-16 h-16 rotate-45 z-10"}),u.jsx(Tf,{className:"hidden sm:block absolute bottom-40 left-20 text-purple-400/20 w-20 h-20 -rotate-45 z-10"}),u.jsx("div",{className:`
           container
           mx-auto
           px-6
           relative
           z-20
           animate-fade-up
-        `,children:u.jsxs("div",{className:"max-w-3xl mx-auto space-y-6 sm:space-y-8",children:[u.jsxs("div",{className:"text-center",children:[u.jsx("h1",{className:`
+        `,children:u.jsxs("div",{className:"max-w-3xl mx-auto space-y-8 sm:space-y-10",children:[u.jsxs("div",{className:"text-center",children:[u.jsx("div",{className:"inline-block px-3 py-1 text-xs font-mono tracking-wider text-indigo-300 bg-indigo-900/30 rounded-full mb-4 border border-indigo-800/30",children:"SOFTWARE ENGINEERING LEADER"}),u.jsx("h1",{className:`
                 text-3xl
-                sm:text-4xl
+                sm:text-5xl
                 font-bold
-                text-gray-900
+                text-white
                 mb-2
-              `,children:"Hello, I'm Milan"}),u.jsx("p",{className:"text-base sm:text-lg text-gray-700",children:"I build software and the teams that build software."})]}),u.jsxs("div",{className:`
+                tracking-tight
+              `,children:"Hello, I'm Milan"}),u.jsx("p",{className:"text-base sm:text-lg text-slate-400 max-w-xl mx-auto",children:"I build software and the teams that build software."})]}),u.jsxs("div",{className:`
+              font-mono
               text-sm
               sm:text-base
-              text-gray-600
+              text-slate-300
               max-w-2xl
               mx-auto
               leading-relaxed
-              bg-gray-950/5
+              bg-[#121218]
               rounded-lg
               p-4
               sm:p-6
-              font-mono
-              min-h-[180px]    /* Enough height to prevent layout jump */
-              shadow-sm
-            `,children:[u.jsxs("div",{className:"flex items-center gap-2 text-left mb-2",children:[u.jsx("span",{className:"text-green-600",children:"milan@home"}),u.jsx("span",{className:"text-gray-500",children:":~$"}),u.jsx("span",{className:"text-indigo-600",children:"locate"})]}),u.jsx("div",{className:"pl-8 text-left",children:"Calgary, Canada"}),u.jsxs("div",{className:"flex items-center gap-2 text-left mt-4 mb-2",children:[u.jsx("span",{className:"text-green-600",children:"milan@home"}),u.jsx("span",{className:"text-gray-500",children:":~$"}),u.jsx("span",{className:"text-indigo-600 break-words",children:"ls -la /home/milan/roles"})]}),u.jsxs("div",{className:"pl-8 text-left min-h-[80px] whitespace-pre-line break-words",children:[e,t?u.jsx("span",{className:"inline-block w-1 h-5 ml-1 bg-indigo-400 animate-pulse"}):u.jsx("span",{className:"inline-block w-1 h-5 ml-1",style:{visibility:"hidden"}})]}),!t&&u.jsxs("div",{className:"flex items-center gap-2 text-left mt-2",children:[u.jsx("span",{className:"text-green-600",children:"milan@home"}),u.jsx("span",{className:"text-gray-500",children:":~$"})]})]}),u.jsx("div",{className:"max-w-xl mx-auto text-center text-gray-600",children:u.jsx("p",{children:"Passionate about clean code, scalable architecture, and driving innovation."})}),u.jsxs("div",{className:"flex flex-col sm:flex-row items-center justify-center gap-4 pt-4",children:[u.jsxs("a",{href:"#blog",className:`
+              min-h-[180px]
+              border
+              border-slate-700/50
+              shadow-[0_0_15px_rgba(0,0,0,0.2)]
+              relative
+              overflow-hidden
+            `,children:[u.jsxs("div",{className:"absolute top-0 left-0 right-0 h-6 bg-slate-800/50 flex items-center px-4",children:[u.jsxs("div",{className:"flex space-x-2",children:[u.jsx("div",{className:"w-2.5 h-2.5 rounded-full bg-red-500/70"}),u.jsx("div",{className:"w-2.5 h-2.5 rounded-full bg-yellow-500/70"}),u.jsx("div",{className:"w-2.5 h-2.5 rounded-full bg-green-500/70"})]}),u.jsx("div",{className:"absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center text-xs text-slate-500",children:"milan@terminal ~ /career"})]}),u.jsxs("div",{className:"mt-4",children:[u.jsxs("div",{className:"flex items-center gap-2 text-left mb-2",children:[u.jsx("span",{className:"text-emerald-400",children:"milan@terminal"}),u.jsx("span",{className:"text-slate-500",children:":~$"}),u.jsx("span",{className:"text-indigo-400",children:"locate"}),u.jsx("span",{className:"text-slate-300",children:"milan"})]}),u.jsx("div",{className:"pl-8 text-left text-cyan-200",children:"Calgary, Canada"}),u.jsxs("div",{className:"flex items-center gap-2 text-left mt-4 mb-2",children:[u.jsx("span",{className:"text-emerald-400",children:"milan@terminal"}),u.jsx("span",{className:"text-slate-500",children:":~$"}),u.jsx("span",{className:"text-indigo-400 break-words",children:"ls -la /home/milan/roles"})]}),u.jsxs("div",{className:"pl-8 text-left min-h-[80px] whitespace-pre-line break-words",children:[u.jsx("span",{className:"text-slate-300",children:e}),t?u.jsx("span",{className:"inline-block w-1 h-5 ml-1 bg-indigo-400 animate-pulse"}):u.jsx("span",{className:"inline-block w-1 h-5 ml-1",style:{visibility:"hidden"}})]}),!t&&u.jsxs("div",{className:"flex items-center gap-2 text-left mt-2",children:[u.jsx("span",{className:"text-emerald-400",children:"milan@terminal"}),u.jsx("span",{className:"text-slate-500",children:":~$"}),u.jsx("span",{className:"text-indigo-400",children:"echo"}),u.jsx("span",{className:"text-cyan-200",children:'"Building scalable systems & teams"'})]})]})]}),u.jsx("div",{className:"max-w-xl mx-auto text-center text-slate-400",children:u.jsx("p",{children:"Passionate about clean code, scalable architecture, and driving innovation."})}),u.jsxs("div",{className:"flex flex-col sm:flex-row items-center justify-center gap-4 pt-4",children:[u.jsxs("a",{href:"#blog",className:`
                 group
                 w-full
                 sm:w-auto
@@ -1100,19 +1107,21 @@ dr--r--r--  Technical Mentor & Advisor`,30);return u.jsxs("section",{className:`
                 gap-2
                 bg-gradient-to-r
                 from-indigo-600
-                to-indigo-500
+                to-blue-600
                 text-white
                 px-8
                 py-4
                 rounded-lg
                 hover:from-indigo-500
-                hover:to-indigo-600
+                hover:to-blue-500
                 transition-all
                 duration-300
                 shadow-lg
-                shadow-indigo-500/20
+                shadow-indigo-900/40
                 hover:shadow-xl
-                hover:shadow-indigo-500/30
+                hover:shadow-indigo-900/30
+                border
+                border-indigo-500/20
               `,children:["Read Tech Insights",u.jsx(on,{size:20,className:"group-hover:translate-x-1 transition-transform"})]}),u.jsx("a",{href:"#contact",className:`
                 w-full
                 sm:w-auto
@@ -1120,18 +1129,18 @@ dr--r--r--  Technical Mentor & Advisor`,30);return u.jsxs("section",{className:`
                 items-center
                 justify-center
                 gap-2
-                bg-white
-                hover:bg-gray-50
-                text-gray-900
+                bg-slate-800/50
+                hover:bg-slate-700/50
+                text-slate-200
                 px-8
                 py-4
                 rounded-lg
                 transition-all
                 duration-300
                 shadow-lg
-                shadow-indigo-500/5
+                shadow-slate-900/20
                 hover:shadow-xl
-                hover:shadow-indigo-500/10
+                hover:shadow-slate-900/30
                 border
-                border-gray-200
-              `,children:"Contact Me"})]})]})})]})},qj=({posts:e,loading:t,error:n})=>u.jsx(u.Fragment,{children:t?u.jsx("div",{className:"flex justify-center py-12",children:u.jsx("div",{className:"animate-pulse text-center",children:u.jsx("p",{className:"text-gray-500",children:"Loading blog posts..."})})}):n?u.jsx("div",{className:"flex justify-center py-12",children:u.jsx("div",{className:"text-center",children:u.jsx("p",{className:"text-red-500",children:n})})}):e&&e.length>0?u.jsx("div",{className:"flex flex-col space-y-8",children:e.map((r,a)=>u.jsx("article",{className:"group relative bg-white rounded-xl p-8 hover:shadow-xl transition-all duration-500 animate-fade-up border border-gray-100 hover:border-gray-200",style:{animationDelay:`${a*100}ms`},children:u.jsxs("div",{className:"flex flex-col md:flex-row gap-6",children:[u.jsx("div",{className:"p-3 rounded-full bg-[#F8FAFC] md:self-start",children:r.icon}),u.jsxs("div",{className:"flex-1 text-left",children:[u.jsx("div",{className:"flex flex-wrap gap-2 mb-3",children:r.categories&&r.categories.map((i,o)=>u.jsx("span",{className:"px-3 py-1 bg-[#1E293B]/5 text-[#1E293B] rounded-full text-xs font-medium",children:i},`${r.slug}-cat-${o}`))}),u.jsxs("div",{className:"flex items-center gap-4 text-sm text-gray-500 mb-3",children:[u.jsx("span",{children:r.date}),u.jsx("span",{children:r.readTime})]}),u.jsx("h3",{className:"text-xl md:text-2xl font-semibold mb-3 text-[#1E293B] group-hover:text-[#334155] transition-colors text-left",children:r.title}),u.jsx("p",{className:"text-gray-600 mb-6 text-left",children:r.excerpt}),u.jsx("div",{className:"text-left",children:u.jsxs(me,{to:`/blog/${r.slug}`,className:"inline-flex items-center gap-2 text-[#1E293B] font-medium group-hover:text-[#475569] transition-colors",children:["Read More",u.jsx(on,{size:16,className:"group-hover:translate-x-1 transition-transform"})]})})]})]})},r.slug||a))}):u.jsx("div",{className:"flex justify-center py-12",children:u.jsx("div",{className:"text-center",children:u.jsx("p",{className:"text-gray-500",children:"No blog posts available."})})})}),Hj=()=>{const[e,t]=E.useState([]),[n,r]=E.useState([]),[a,i]=E.useState(!0),[o,s]=E.useState(null);return E.useEffect(()=>{(async()=>{try{i(!0);const c=await Er.loadAllBlogPosts();if(c&&c.length>0){const d=c.filter(h=>!h.isSeries&&!h.isSeriesEntry),p=c.filter(h=>h.isSeries),g=await Promise.all(p.map(async h=>{if(h.seriesSlug){const S=await Er.getSeriesChapters(h.seriesSlug);return{main:h,entries:S}}return{main:h,entries:[]}}));r(g),t(d.slice(0,1))}else t([]),s("No blog posts available.")}catch{s("Failed to load blog posts. Please try again later."),t([])}finally{i(!1)}})()},[]),u.jsxs("section",{id:"blog",className:"py-20 relative overflow-hidden",children:[u.jsxs("div",{className:"absolute inset-0 bg-[#F8FAFC]",children:[u.jsx("div",{className:"absolute inset-0 bg-[linear-gradient(90deg,rgba(238,238,238,0.6)_1px,transparent_1px),linear-gradient(rgba(238,238,238,0.6)_1px,transparent_1px)] bg-[size:24px_24px]"}),u.jsx("div",{className:"absolute inset-0 bg-gradient-to-b from-[#F8FAFC] via-white/90 to-[#F8FAFC]"})]}),u.jsxs("div",{className:"container mx-auto px-6 relative",children:[u.jsxs("div",{className:"max-w-3xl mx-auto text-center mb-16 animate-fade-up",children:[u.jsx("span",{className:"inline-block px-4 py-2 bg-[#1E293B]/5 text-[#1E293B] rounded-full text-sm font-medium mb-4 backdrop-blur-sm border border-[#1E293B]/10",children:"Technical Insights"}),u.jsx("h2",{className:"text-3xl md:text-4xl font-bold text-[#1E293B] mb-4",children:"Engineering Blog"}),u.jsx("p",{className:"text-gray-600",children:"Sharing experiences and insights from building large-scale systems."})]}),u.jsxs("div",{className:"max-w-4xl mx-auto",children:[n.length>0&&u.jsx(fj,{series:n}),e.length>0&&u.jsxs("div",{className:"mt-12",children:[u.jsx("h3",{className:"text-xl font-semibold text-slate-800 mb-6",children:"Latest Article"}),u.jsx(qj,{posts:e,loading:a,error:o}),u.jsx("div",{className:"mt-8 text-center",children:u.jsx(me,{to:"/blog",children:u.jsxs(ja,{variant:"outline",className:"group border-slate-200 hover:border-slate-300 px-6",children:["View all articles",u.jsx(on,{size:16,className:"ml-2 group-hover:translate-x-1 transition-transform"})]})})})]}),a&&!e.length&&!n.length&&u.jsx("div",{className:"flex justify-center py-12",children:u.jsx("div",{className:"animate-pulse text-center",children:u.jsx("p",{className:"text-gray-500",children:"Loading blog posts..."})})}),o&&!a&&!e.length&&!n.length&&u.jsx("div",{className:"flex justify-center py-12",children:u.jsx("div",{className:"text-center",children:u.jsx("p",{className:"text-red-500",children:o})})})]})]})]})},Vj=()=>u.jsxs("div",{className:"bg-white",children:[u.jsx(cr,{}),u.jsx(Gj,{}),u.jsx(Hj,{}),u.jsx(dR,{})]}),Wj="/weblog";function Yj(){return u.jsx(FC,{basename:Wj,children:u.jsxs(CC,{children:[u.jsx(zn,{path:"/",element:u.jsx(Vj,{})}),u.jsx(zn,{path:"/about",element:u.jsx(jj,{})}),u.jsx(zn,{path:"/blog",element:u.jsx(Cj,{})}),u.jsx(zn,{path:"/blog/:slug",element:u.jsx(mj,{})}),u.jsx(zn,{path:"*",element:u.jsx($j,{})})]})})}BT(document.getElementById("root")).render(u.jsx(Yj,{}));
+                border-slate-700/50
+              `,children:"Contact Me"})]})]})})]})},qj=({posts:e,loading:t,error:n})=>u.jsx(u.Fragment,{children:t?u.jsx("div",{className:"flex justify-center py-12",children:u.jsx("div",{className:"animate-pulse text-center",children:u.jsx("p",{className:"text-gray-500",children:"Loading blog posts..."})})}):n?u.jsx("div",{className:"flex justify-center py-12",children:u.jsx("div",{className:"text-center",children:u.jsx("p",{className:"text-red-500",children:n})})}):e&&e.length>0?u.jsx("div",{className:"flex flex-col space-y-8",children:e.map((r,a)=>u.jsx("article",{className:"group relative bg-white rounded-xl p-8 hover:shadow-xl transition-all duration-500 animate-fade-up border border-gray-100 hover:border-gray-200",style:{animationDelay:`${a*100}ms`},children:u.jsxs("div",{className:"flex flex-col md:flex-row gap-6",children:[u.jsx("div",{className:"p-3 rounded-full bg-[#F8FAFC] md:self-start",children:r.icon}),u.jsxs("div",{className:"flex-1 text-left",children:[u.jsx("div",{className:"flex flex-wrap gap-2 mb-3",children:r.categories&&r.categories.map((i,o)=>u.jsx("span",{className:"px-3 py-1 bg-[#1E293B]/5 text-[#1E293B] rounded-full text-xs font-medium",children:i},`${r.slug}-cat-${o}`))}),u.jsxs("div",{className:"flex items-center gap-4 text-sm text-gray-500 mb-3",children:[u.jsx("span",{children:r.date}),u.jsx("span",{children:r.readTime})]}),u.jsx("h3",{className:"text-xl md:text-2xl font-semibold mb-3 text-[#1E293B] group-hover:text-[#334155] transition-colors text-left",children:r.title}),u.jsx("p",{className:"text-gray-600 mb-6 text-left",children:r.excerpt}),u.jsx("div",{className:"text-left",children:u.jsxs(me,{to:`/blog/${r.slug}`,className:"inline-flex items-center gap-2 text-[#1E293B] font-medium group-hover:text-[#475569] transition-colors",children:["Read More",u.jsx(on,{size:16,className:"group-hover:translate-x-1 transition-transform"})]})})]})]})},r.slug||a))}):u.jsx("div",{className:"flex justify-center py-12",children:u.jsx("div",{className:"text-center",children:u.jsx("p",{className:"text-gray-500",children:"No blog posts available."})})})}),Hj=()=>{const[e,t]=E.useState([]),[n,r]=E.useState([]),[a,i]=E.useState(!0),[o,s]=E.useState(null);return E.useEffect(()=>{(async()=>{try{i(!0);const c=await Er.loadAllBlogPosts();if(c&&c.length>0){const d=c.filter(h=>!h.isSeries&&!h.isSeriesEntry),p=c.filter(h=>h.isSeries),g=await Promise.all(p.map(async h=>{if(h.seriesSlug){const S=await Er.getSeriesChapters(h.seriesSlug);return{main:h,entries:S}}return{main:h,entries:[]}}));r(g),t(d.slice(0,1))}else t([]),s("No blog posts available.")}catch{s("Failed to load blog posts. Please try again later."),t([])}finally{i(!1)}})()},[]),u.jsxs("section",{id:"blog",className:"py-20 relative overflow-hidden",children:[u.jsxs("div",{className:"absolute inset-0 bg-[#F8FAFC]",children:[u.jsx("div",{className:"absolute inset-0 bg-[linear-gradient(90deg,rgba(238,238,238,0.6)_1px,transparent_1px),linear-gradient(rgba(238,238,238,0.6)_1px,transparent_1px)] bg-[size:24px_24px]"}),u.jsx("div",{className:"absolute inset-0 bg-gradient-to-b from-[#F8FAFC] via-white/90 to-[#F8FAFC]"})]}),u.jsxs("div",{className:"container mx-auto px-6 relative",children:[u.jsxs("div",{className:"max-w-3xl mx-auto text-center mb-16 animate-fade-up",children:[u.jsx("span",{className:"inline-block px-4 py-2 bg-[#1E293B]/5 text-[#1E293B] rounded-full text-sm font-medium mb-4 backdrop-blur-sm border border-[#1E293B]/10",children:"Technical Insights"}),u.jsx("h2",{className:"text-3xl md:text-4xl font-bold text-[#1E293B] mb-4",children:"Engineering Blog"}),u.jsx("p",{className:"text-gray-600",children:"Sharing experiences and insights from building large-scale systems."})]}),u.jsxs("div",{className:"max-w-4xl mx-auto",children:[n.length>0&&u.jsx(fj,{series:n}),e.length>0&&u.jsxs("div",{className:"mt-12",children:[u.jsx("h3",{className:"text-xl font-semibold text-slate-800 mb-6",children:"Latest Article"}),u.jsx(qj,{posts:e,loading:a,error:o}),u.jsx("div",{className:"mt-8 text-center",children:u.jsx(me,{to:"/blog",children:u.jsxs(ja,{variant:"outline",className:"group border-slate-200 hover:border-slate-300 px-6",children:["View all articles",u.jsx(on,{size:16,className:"ml-2 group-hover:translate-x-1 transition-transform"})]})})})]}),a&&!e.length&&!n.length&&u.jsx("div",{className:"flex justify-center py-12",children:u.jsx("div",{className:"animate-pulse text-center",children:u.jsx("p",{className:"text-gray-500",children:"Loading blog posts..."})})}),o&&!a&&!e.length&&!n.length&&u.jsx("div",{className:"flex justify-center py-12",children:u.jsx("div",{className:"text-center",children:u.jsx("p",{className:"text-red-500",children:o})})})]})]})]})},Vj=()=>u.jsxs("div",{className:"bg-white",children:[u.jsx(cr,{}),u.jsx(Gj,{}),u.jsxs("div",{className:"bg-white",children:[u.jsx(Hj,{}),u.jsx(dR,{})]})]}),Wj="/weblog";function Yj(){return u.jsx(FC,{basename:Wj,children:u.jsxs(CC,{children:[u.jsx(zn,{path:"/",element:u.jsx(Vj,{})}),u.jsx(zn,{path:"/about",element:u.jsx(jj,{})}),u.jsx(zn,{path:"/blog",element:u.jsx(Cj,{})}),u.jsx(zn,{path:"/blog/:slug",element:u.jsx(mj,{})}),u.jsx(zn,{path:"*",element:u.jsx($j,{})})]})})}BT(document.getElementById("root")).render(u.jsx(Yj,{}));
