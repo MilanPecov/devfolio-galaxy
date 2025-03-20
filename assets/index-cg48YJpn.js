@@ -1079,18 +1079,22 @@ dr--r--r--  Technical Mentor & Advisor`,30);return u.jsxs("section",{className:`
               `,children:"Hello, I'm Milan"}),u.jsx("p",{className:"text-base sm:text-lg text-gray-700",children:"I build software and the teams that build software."})]}),u.jsxs("div",{className:`
               text-sm
               sm:text-base
-              text-gray-600
+              text-gray-200
               max-w-2xl
               mx-auto
               leading-relaxed
-              bg-gray-950/5
+              bg-[#222222]
               rounded-lg
               p-4
               sm:p-6
               font-mono
               min-h-[180px]    /* Enough height to prevent layout jump */
-              shadow-sm
-            `,children:[u.jsxs("div",{className:"flex items-center gap-2 text-left mb-2",children:[u.jsx("span",{className:"text-green-600",children:"milan@home"}),u.jsx("span",{className:"text-gray-500",children:":~$"}),u.jsx("span",{className:"text-indigo-600",children:"locate"})]}),u.jsx("div",{className:"pl-8 text-left",children:"Calgary, Canada"}),u.jsxs("div",{className:"flex items-center gap-2 text-left mt-4 mb-2",children:[u.jsx("span",{className:"text-green-600",children:"milan@home"}),u.jsx("span",{className:"text-gray-500",children:":~$"}),u.jsx("span",{className:"text-indigo-600 break-words",children:"ls -la /home/milan/roles"})]}),u.jsxs("div",{className:"pl-8 text-left min-h-[80px] whitespace-pre-line break-words",children:[e,t?u.jsx("span",{className:"inline-block w-1 h-5 ml-1 bg-indigo-400 animate-pulse"}):u.jsx("span",{className:"inline-block w-1 h-5 ml-1",style:{visibility:"hidden"}})]}),!t&&u.jsxs("div",{className:"flex items-center gap-2 text-left mt-2",children:[u.jsx("span",{className:"text-green-600",children:"milan@home"}),u.jsx("span",{className:"text-gray-500",children:":~$"})]})]}),u.jsx("div",{className:"max-w-xl mx-auto text-center text-gray-600",children:u.jsx("p",{children:"Passionate about clean code, scalable architecture, and driving innovation."})}),u.jsxs("div",{className:"flex flex-col sm:flex-row items-center justify-center gap-4 pt-4",children:[u.jsxs("a",{href:"#blog",className:`
+              shadow-md
+              border
+              border-gray-700
+              relative
+              overflow-hidden
+            `,children:[u.jsxs("div",{className:"absolute top-0 left-0 right-0 h-6 bg-[#333333] flex items-center px-2 border-b border-gray-700",children:[u.jsxs("div",{className:"flex gap-1.5 items-center",children:[u.jsx("div",{className:"w-2.5 h-2.5 rounded-full bg-red-500"}),u.jsx("div",{className:"w-2.5 h-2.5 rounded-full bg-yellow-500"}),u.jsx("div",{className:"w-2.5 h-2.5 rounded-full bg-green-500"})]}),u.jsx("div",{className:"text-xs text-gray-400 absolute left-1/2 transform -translate-x-1/2",children:"milan-terminal"})]}),u.jsxs("div",{className:"pt-4",children:[u.jsxs("div",{className:"flex items-center gap-2 text-left mb-2",children:[u.jsx("span",{className:"text-green-400",children:"milan@home"}),u.jsx("span",{className:"text-gray-400",children:":~$"}),u.jsx("span",{className:"text-blue-300",children:"locate"})]}),u.jsx("div",{className:"pl-8 text-left",children:"Calgary, Canada"}),u.jsxs("div",{className:"flex items-center gap-2 text-left mt-4 mb-2",children:[u.jsx("span",{className:"text-green-400",children:"milan@home"}),u.jsx("span",{className:"text-gray-400",children:":~$"}),u.jsx("span",{className:"text-blue-300 break-words",children:"ls -la /home/milan/roles"})]}),u.jsxs("div",{className:"pl-8 text-left min-h-[80px] whitespace-pre-line break-words",children:[e,t?u.jsx("span",{className:"inline-block w-1 h-5 ml-1 bg-blue-400 animate-pulse"}):u.jsx("span",{className:"inline-block w-1 h-5 ml-1",style:{visibility:"hidden"}})]}),!t&&u.jsxs("div",{className:"flex items-center gap-2 text-left mt-2",children:[u.jsx("span",{className:"text-green-400",children:"milan@home"}),u.jsx("span",{className:"text-gray-400",children:":~$"})]})]})]}),u.jsx("div",{className:"max-w-xl mx-auto text-center text-gray-600",children:u.jsx("p",{children:"Passionate about clean code, scalable architecture, and driving innovation."})}),u.jsxs("div",{className:"flex flex-col sm:flex-row items-center justify-center gap-4 pt-4",children:[u.jsxs("a",{href:"#blog",className:`
                 group
                 w-full
                 sm:w-auto
